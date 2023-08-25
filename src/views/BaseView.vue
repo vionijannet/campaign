@@ -1,5 +1,5 @@
 <template>
-    <div class="fixed top-0 w-full h-[8vh] p-4 flex items-center bg-gradient-to-r to-gray-50 from-slate-400">
+    <div class="fixed top-0 w-full h-[8vh] p-4 pr-0 flex items-center justify-between bg-blue-300">
         <div class="flex items-center">
             <button class="block md:hidden" @click="showSidebar = !showSidebar">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -8,9 +8,46 @@
             </button>
             <img src="../assets/logo.png" alt="Logo" class="h-20">
         </div>
+        <button v-if="!showSidebar" class="max-w-[276px] hover:bg-white hover:bg-opacity-25 p-2 px-4 hover:rounded-l-lg hover:cursor-pointer" @click="showOption=!showOption" @blur="onLeaveShowOption">
+            <div class="flex items-center justify-between text-left">
+                <div>
+                    <h2 class="font-medium text-base max-w-[180px] truncate">John Doe</h2>
+                    <h3 class="text-sm text-gray-500">Administrator</h3>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 ml-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </div>
+        </button>
     </div>
+    <ul class="bg-white right-0 absolute z-50 shadow-2xl rounded-l-lg w-[276px] transition duration-200 ease-in-out" v-show="showOption">
+        <div class="h-[8vh] bg-blue-darkest bg-opacity-85 rounded-tl-lg p-4 text-gray-50 flex items-center justify-start">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 mr-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <div class="">
+                <h2 class="font-medium text-base max-w-[180px] truncate">John Doe</h2>
+                <h3 class="text-sm text-gray-50">john.doe@gmail.com</h3>
+            </div>
+        </div>
+        <div class="p-1 m-1">
+            <li class="font-semibold text-sm text-gray-700 flex items-center p-2 hover:cursor-pointer hover:bg-slate-300 hover:rounded-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                </svg>
+                <span class="ml-4">View Profile</span>
+            </li>
+            <hr class="my-2" />
+            <li class="font-semibold text-sm text-gray-700 flex items-center p-2 hover:cursor-pointer hover:bg-slate-300 hover:rounded-lg" @click="signOut">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                </svg>
+                <span class="ml-4">Sign Out</span>
+            </li>
+        </div>
+    </ul>
     <div class="relative flex min-h-[92vh] top-[8vh]">
-        <div class="bg-white text-gray-700 w-full md:w-64 py-4 px-2 space-y-6 absolute inset-y-0 left-0 transform -translate-x-full transition duration-200 ease-in-out md:relative md:-translate-x-0" :class="{ 'relative -translate-x-0': showSidebar }">
+        <div class="bg-white text-gray-700 w-full md:w-64 py-4 px-2 space-y-6 absolute inset-y-0 left-0 transform transition duration-200 ease-in-out md:relative md:-translate-x-0" :class="{ 'relative -translate-x-0': showSidebar, '-translate-x-full': !showSidebar }">
             <nav>
                 <router-link to="/" class="flex items-center py-3 px-4 hover:bg-sky-100 space-x-2 hover:rounded-xl group transition duration-0">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -60,7 +97,7 @@
             </section>
         </div>
         <div class="bg-blue-50 w-full md:w-[calc(100%-16rem)] py-6 px-8" :class="{ 'hidden md:block': showSidebar }">
-            <span class="text-2xl font-bold">{{ $route.name }}</span>
+            <p class="text-2xl font-bold pt-2 pb-4">{{ $route.name }}</p>
             <router-view />
         </div>
     </div>
@@ -68,7 +105,17 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { timer } from "rxjs";
+import router from "@/router";
 
-const showSidebar = ref(true);
+const showSidebar = ref(false);
+const showOption = ref(false);
 
+function onLeaveShowOption(): void {
+    timer(300).subscribe(() => showOption.value = false);
+}
+
+function signOut(): void {
+    router.push("/sign-in")
+}
 </script>
