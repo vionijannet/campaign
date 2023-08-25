@@ -1,3 +1,35 @@
 <template>
-    <div>Dashboard Page</div>
+    <div class="absolute top-0 right-0 my-6 mx-8 flex space-x-4">
+        <div class="border rounded-lg border-blue-primary px-4 py-2 flex space-x-1 text-blue-primary font-semibold">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-primary">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+            </svg>
+            <span>
+                {{ shownDate }}
+            </span>
+        </div>
+        <div class="border rounded-lg border-blue-primary px-4 py-2 flex space-x-1 text-blue-primary font-semibold">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-primary">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>
+                {{ shownTime }}
+            </span>
+        </div>
+    </div>
 </template>
+
+<script setup lang="ts">
+import { interval, timer } from "rxjs";
+import { computed, ref } from "vue";
+import { DateConverter } from "@/util/DateConverter";
+
+const date = ref(new Date());
+
+const shownDate = computed(() => DateConverter.convertDateObjectToDateString(date.value));
+const shownTime = computed(() => DateConverter.convertDateObjectToTimeString(date.value));
+
+interval(1000).subscribe(() => {
+    date.value = new Date();
+})
+</script>
