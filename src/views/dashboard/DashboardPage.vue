@@ -17,12 +17,77 @@
             </span>
         </div>
     </div>
+    <div class="grid grid-cols-5 gap-4">
+        <div class="col-span-3 row-span-3 border rounded-lg bg-white p-4 flex">
+            <div class="max-w-fit">
+                <img src="../../assets/dashboard-cuate.png" alt="Dashboard" class="h-full">
+            </div>
+            <div class="flex-1 ml-2">
+                <p class="text-2xl font-bold">2700</p>
+                <p class="text-gray-600">Total Campaign</p>
+
+                <ButtonBase class="font-semibold px-4 my-8 w-auto !text-base">View Campaign</ButtonBase>
+
+                <hr class="mb-4" />
+
+                <div class="grid grid-cols-2 my-2">
+                    <div>
+                        <p class="text-xl font-bold">2000</p>
+                        <p class="text-green-500">Successfully Sent</p>
+                    </div>
+                    <div>
+                        <p class="text-xl font-bold">150</p>
+                        <p class="text-red-500">Failed to Send</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row-span-2 border rounded-lg bg-white p-4 flex flex-col justify-between">
+            <img src="../../assets/facebook-connect.png" alt="Facebook Connect" class="w-14 h-14">
+            <div class="flex justify-between items-end space-x-4 w-full">
+                <div>
+                    <p class="text-xl font-bold">100</p>
+                    <p class="text-gray-600">Facebook Connect</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                </svg>
+            </div>
+        </div>
+        <div class="row-span-2 border rounded-lg bg-white p-4 flex flex-col justify-between">
+            <img src="../../assets/page-connect.png" alt="Page Connect" class="w-14 h-14">
+            <div class="flex justify-between items-end space-x-4 w-full">
+                <div>
+                    <p class="text-xl font-bold">150</p>
+                    <p class="text-gray-600">Page Connect</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                </svg>
+            </div>
+        </div>
+        <div class="col-span-2 border rounded-lg bg-white p-4 flex items-center justify-between">
+            <div class="flex items-center">
+                <img src="../../assets/total-template.png" alt="Total Template">
+                <div class="ml-8">
+                    <p class="text-xl font-bold">50</p>
+                    <p class="text-gray-600">Total Template</p>
+                </div>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+            </svg>
+        </div>
+        <div class="col-span-3 !h-[40vh] rounded-lg bg-white">&nbsp;</div>
+        <div class="col-span-2 !h-[40vh] rounded-lg bg-white">&nbsp;</div>
+    </div>
 </template>
 
 <script setup lang="ts">
 import { interval, timer } from "rxjs";
 import { computed, ref } from "vue";
 import { DateConverter } from "@/util/DateConverter";
+import ButtonBase from "@/components/button/ButtonBase.vue";
 
 const date = ref(new Date());
 
