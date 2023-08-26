@@ -104,9 +104,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { timer } from "rxjs";
 import router from "@/router";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
 
 const showSidebar = ref(false);
 const showOption = ref(false);
@@ -118,4 +121,8 @@ function onLeaveShowOption(): void {
 function signOut(): void {
     router.push("/sign-in")
 }
+
+watch(route, () => {
+    showSidebar.value = false;
+})
 </script>
