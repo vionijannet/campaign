@@ -1,5 +1,5 @@
 <template>
-    <div class="absolute top-0 right-0 my-6 mx-8 flex space-x-4">
+    <div class="absolute -top-2 right-0 my-6 mx-8 flex space-x-4">
         <ButtonBase class="flex" @click="backToList">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                 class="w-6 h-6">
@@ -74,11 +74,14 @@
         </div>
     </div>
 
+    <ModalComponent v-if="false"></ModalComponent>
+
 </template>
 
 <script setup lang="ts">
 import ButtonBase from '@/components/button/ButtonBase.vue';
 import InputText from '@/components/input/InputText.vue';
+import ModalComponent from '@/components/modal/ModalComponent.vue';
 import router from '@/router';
 import { ref } from 'vue';
 import DatePicker from 'vue-datepicker-next';
