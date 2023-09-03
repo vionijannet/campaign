@@ -16,14 +16,14 @@
             <div class="flex justify-between items-center">
                 <p>Turning on to set schedule to your campaign</p>
                 
-                <label for="scheduler" tabindex="0" :aria-checked="isSchedulerOn" class="relative inline-flex flex-shrink-0 cursor-pointer transition-colors ease-in-out duration-200 border-2 border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 rounded-full" :class="{'bg-blue-primary': isSchedulerOn, 'bg-gray-100': !isSchedulerOn}">
+                <label for="scheduler" tabindex="0" :aria-checked="isSchedulerOn" class="peer relative inline-flex flex-shrink-0 cursor-pointer transition-colors ease-in-out duration-200 border-2 border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 rounded-full" :class="{'bg-blue-primary': isSchedulerOn, 'bg-gray-100': !isSchedulerOn}">
                     <input type="checkbox" id="scheduler" class="hidden" v-model="isSchedulerOn" />
                     <span aria-hidden="true" class="rounded-full w-5 h-5 flex items-center justify-center text-gray-400 text-xs"></span>
                     <span aria-hidden="true" class="rounded-full w-5 h-5 flex items-center justify-center text-gray-400 text-xs"></span>
                     <span aria-hidden="true" class="absolute transform transition ease-in-out duration-200 h-5 w-5 rounded-full bg-white shadow flex items-center justify-center text-xs" :class="{'translate-x-full text-blue-primary': isSchedulerOn, 'translate-x-0 text-gray-400': !isSchedulerOn}"></span>
                 </label>
             </div>
-            <div class="flex justify-between space-x-4 my-2">
+            <div class="flex justify-between space-x-4 my-2 transform transition ease-in-out duration-200 overflow-hidden" :class="{ 'h-full': isSchedulerOn, 'h-0': !isSchedulerOn }">
                 <div class="bg-gray-100 flex items-center rounded-lg border w-full">
                     <span class="mx-4">Date</span>
                     <DatePicker class="!w-full !border-none"></DatePicker>
@@ -54,9 +54,22 @@
                 </div>
             </div>
         </div>
-        <InputText label-for="audiens" label-text="Audiens" placeholder="Select audiens"></InputText>
+        <div class="w-full space-y-2">
+            <span for="labelFor" class="font-semibold text-lg">Audiens</span>
+            <div class="flex items-center justify-between bg-gray-100 p-4 w-full rounded-lg text-lg">
+                <span class="text-lg text-gray-400">Select audiens</span>
+                <button @click="isPopupAudiensOpen=true">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                </button>
+            </div>
+        </div>
         <div>
-            <p class="font-semibold text-lg">Message</p>
+            <div class="flex justify-between">
+                <p class="font-semibold text-lg">Message</p>
+                <p class="font-semibold text-blue-primary underline cursor-pointer" @click="isPopupTemplateOpen=true">Use Template</p>
+            </div>
             <div class="w-full border rounded-lg p-4 my-2 space-y-1">
                 <div class="flex items-center">
                     <input type="text" placeholder="Select image" disabled class="w-full h-12 border border-r-none rounded-r-none rounded-lg outline-none p-4" />
@@ -65,7 +78,22 @@
                 </div>
                 <textarea rows="5" class="w-full outline-none border rounded-lg p-4" placeholder="Type your message"></textarea>
             </div>
-            <ButtonBase class="my-2 !w-auto">Use Template</ButtonBase>
+            <div class="w-full border rounded-lg p-4 my-2 flex items-start space-x-2" v-for="m, i in messageList">
+                <div class="w-full space-y-1">
+                    <div class="flex items-center">
+                        <input type="text" placeholder="Select image" disabled class="w-full h-12 border border-r-none rounded-r-none rounded-lg outline-none p-4" />
+                        <label for="upload-image" class="flex items-center cursor-pointer border border-blue-primary text-blue-primary rounded-lg h-12 p-2 px-4 rounded-l-none">Browse</label>
+                        <input type="file" name="image" id="upload-image" class="hidden">
+                    </div>
+                    <textarea rows="5" class="w-full outline-none border rounded-lg p-4" placeholder="Type your message"></textarea>
+                </div>
+                <button class="flex-1" @click="removeMessage(i)">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#d93517" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                    </svg>
+                </button>
+            </div>
+            <ButtonBase class="my-2 !w-auto" @click="addMessage">Add Message</ButtonBase>
         </div>
         <hr />
         <div class="w-full flex justify-end items-center space-x-2">
@@ -74,22 +102,53 @@
         </div>
     </div>
 
-    <ModalComponent v-if="false"></ModalComponent>
+    <ModalComponent v-if="isPopupAudiensOpen" @close="isPopupAudiensOpen=false">
+        <div class="relative space-y-2">
+            <div class="flex items-center pb-4">
+                <label for="audiens" class="flex items-center space-x-3">
+                    <input type="checkbox" name="audiens" id="audiens" />
+                    <span>Select Audiens</span>
+                </label>
+            </div>
+            <CheckboxAudiens></CheckboxAudiens>
+            <CheckboxAudiens></CheckboxAudiens>
+            <CheckboxAudiens></CheckboxAudiens>
+            <CheckboxAudiens></CheckboxAudiens>
+            <CheckboxAudiens></CheckboxAudiens>
+        </div>
+    </ModalComponent>
 
+    <ModalComponent v-if="isPopupTemplateOpen" @close="isPopupTemplateOpen=false">
+        <SelectMessageTemplate></SelectMessageTemplate>
+    </ModalComponent>
 </template>
 
 <script setup lang="ts">
 import ButtonBase from '@/components/button/ButtonBase.vue';
 import InputText from '@/components/input/InputText.vue';
 import ModalComponent from '@/components/modal/ModalComponent.vue';
+import CheckboxAudiens from '@/components/in-app/CheckboxAudiens.vue';
+import SelectMessageTemplate from '@/views/campaign/SelectMessageTemplate.vue';
 import router from '@/router';
-import { ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import DatePicker from 'vue-datepicker-next';
 
 const isSchedulerOn = ref(false);
+const isPopupAudiensOpen = ref(false);
+const isPopupTemplateOpen = ref(false);
+
+const messageList: Ref<any[]> = ref([]);
 
 function backToList(): void {
     router.push("/campaign");
+}
+
+function addMessage(): void {
+    messageList.value.push({});
+}
+
+function removeMessage(index: number): void {
+    messageList.value.splice(index, 1);
 }
 </script>
 

@@ -4,7 +4,7 @@
             'border-red-500 bg-white text-red-500 hover:bg-gray-100': type === 'error',
             'border-blue-600 bg-blue-600 text-white hover:bg-blue-800': type === 'primary'
         }"
-        @click="$emit('click')"> 
+        @click="click"> 
         <slot />
     </button>
 </template>
@@ -15,4 +15,10 @@ const props = defineProps({
         default: "primary"
     }
 });
+
+const emit = defineEmits(["click"]);
+
+function click(): void {
+    emit("click");
+}
 </script>
