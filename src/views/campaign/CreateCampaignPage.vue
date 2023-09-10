@@ -9,7 +9,7 @@
         </ButtonBase>
     </div>
     <div class="bg-white w-full rounded-2xl p-6 space-y-6">
-        <InputText label-for="page-name" label-text="Page Name" placeholder="Page Name Goes Here"></InputText>
+        <InputText :value="pageId" disabled="true" label-for="page-name" label-text="Page Name" placeholder="Page Name Goes Here"></InputText>
         <InputText label-for="campaign-name" label-text="Campaign Name" placeholder="Type your campaign name"></InputText>
         <div>
             <p class="font-semibold text-lg">Scheduler</p>
@@ -102,13 +102,22 @@
         </div>
     </div>
 
-    <ModalComponent v-if="isPopupAudiensOpen" @close="isPopupAudiensOpen=false">
+    <ModalComponent v-if="isPopupAudiensOpen" @close="isPopupAudiensOpen=false" :custom-class="'!max-w-xl'">
         <div class="relative space-y-2">
-            <div class="flex items-center pb-4">
+            <div class="flex items-center pb-2">
                 <label for="audiens" class="flex items-center space-x-3">
                     <input type="checkbox" name="audiens" id="audiens" />
-                    <span>Select Audiens</span>
+                    <span class="font-semibold">Select Audiens</span>
                 </label>
+            </div>
+            <div class="pb-4 space-y-2">
+                <p class="font-semibold">Filter Flag</p>
+                <div class="flex space-x-2">
+                    <div class="w-9 h-9 rounded bg-green-500" title="Filter 1"></div>
+                    <div class="w-9 h-9 rounded bg-blue-500" title="Filter 2"></div>
+                    <div class="w-9 h-9 rounded bg-teal-500" title="Filter 3"></div>
+                    <div class="w-9 h-9 rounded bg-emerald-500" title="Filter 4"></div>
+                </div>
             </div>
             <CheckboxAudiens></CheckboxAudiens>
             <CheckboxAudiens></CheckboxAudiens>
@@ -116,10 +125,14 @@
             <CheckboxAudiens></CheckboxAudiens>
             <CheckboxAudiens></CheckboxAudiens>
         </div>
+        <div class="pt-8 flex justify-center space-x-8">
+            <ButtonBase type="error" class="w-32" @click="isPopupAudiensOpen=false">Cancel</ButtonBase>
+            <ButtonBase class="w-32">Done</ButtonBase>
+        </div>
     </ModalComponent>
 
     <ModalComponent v-if="isPopupTemplateOpen" @close="isPopupTemplateOpen=false">
-        <SelectMessageTemplate></SelectMessageTemplate>
+        <SelectMessageTemplate @cancel="isPopupTemplateOpen=false"></SelectMessageTemplate>
     </ModalComponent>
 </template>
 
@@ -130,12 +143,16 @@ import ModalComponent from '@/components/modal/ModalComponent.vue';
 import CheckboxAudiens from '@/components/in-app/CheckboxAudiens.vue';
 import SelectMessageTemplate from '@/views/campaign/SelectMessageTemplate.vue';
 import router from '@/router';
-import { ref, type Ref } from 'vue';
+import { computed, ref, type Ref } from 'vue';
 import DatePicker from 'vue-datepicker-next';
+import { useRoute } from "vue-router";
 
+const route = useRoute();
 const isSchedulerOn = ref(false);
 const isPopupAudiensOpen = ref(false);
 const isPopupTemplateOpen = ref(false);
+
+const pageId = computed(() => route.query.pageId);
 
 const messageList: Ref<any[]> = ref([]);
 
