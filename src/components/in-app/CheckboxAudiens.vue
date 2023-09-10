@@ -7,7 +7,7 @@
                 <div class="flex items-center space-x-2">
                     <img src="https://http.dog/200.jpg" alt="Audiens" class="w-[50px] h-[50px] rounded-2xl">
                     <div>
-                        <p>John Doe</p>
+                        <p class="font-semibold">John Doe</p>
                         <p class="text-sm text-gray-800">Message</p>
                     </div>
                 </div>
