@@ -134,12 +134,15 @@
     <ModalComponent v-if="isPopupTemplateOpen" @close="isPopupTemplateOpen=false">
         <SelectMessageTemplate @cancel="isPopupTemplateOpen=false"></SelectMessageTemplate>
     </ModalComponent>
+
+    <LoadingScreen v-if="false"></LoadingScreen>
 </template>
 
 <script setup lang="ts">
 import ButtonBase from '@/components/button/ButtonBase.vue';
 import InputText from '@/components/input/InputText.vue';
 import ModalComponent from '@/components/modal/ModalComponent.vue';
+import LoadingScreen from '@/components/loading/LoadingScreen.vue';
 import CheckboxAudiens from '@/components/in-app/CheckboxAudiens.vue';
 import SelectMessageTemplate from '@/views/campaign/SelectMessageTemplate.vue';
 import router from '@/router';
