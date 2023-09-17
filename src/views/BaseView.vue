@@ -1,12 +1,15 @@
 <template>
-    <div class="fixed top-0 w-full h-[8vh] p-4 pr-0 flex items-center justify-between bg-blue-300">
+    <div class="fixed top-0 w-full h-[8vh] p-4 pr-0 flex items-center justify-between bg-blue-300 bg-opacity-5">
         <div class="flex items-center">
             <button class="block md:hidden" @click="showSidebar = !showSidebar">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
             </button>
-            <img src="../assets/logo.png" alt="Logo" class="h-20">
+            <div class="space-x-4 flex items-center">
+                <img src="../assets/logo.png" alt="Logo" class="h-16 py-4">
+                <h1 class="text-xl font-bold">RepliEm</h1>
+            </div>
         </div>
         <button v-if="!showSidebar" class="max-w-[276px] hover:bg-white hover:bg-opacity-25 p-2 px-4 hover:rounded-l-lg hover:cursor-pointer" @click="showOption=!showOption" @blur="onLeaveShowOption">
             <div class="flex items-center justify-between text-left">
@@ -67,6 +70,14 @@
                     </router-link>
                 </nav>
                 <nav>
+                    <router-link to="#" class="flex items-center py-3 px-4 hover:bg-sky-100 space-x-2 hover:rounded-xl group transition duration-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                        </svg>
+                        <span class="text-gray-700 group-hover:text-cyan-700 text-lg font-semibold">Audiens</span>
+                    </router-link>
+                </nav>
+                <nav>
                     <router-link to="/message" class="flex items-center py-3 px-4 hover:bg-sky-100 space-x-2 hover:rounded-xl group transition duration-0">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
@@ -76,8 +87,8 @@
                 </nav>
                 <nav>
                     <router-link to="/facebook" class="flex items-center py-3 px-4 hover:bg-sky-100 space-x-2 hover:rounded-xl group transition duration-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 12.75c1.148 0 2.278.08 3.383.237 1.037.146 1.866.966 1.866 2.013 0 3.728-2.35 6.75-5.25 6.75S6.75 18.728 6.75 15c0-1.046.83-1.867 1.866-2.013A24.204 24.204 0 0112 12.75zm0 0c2.883 0 5.647.508 8.207 1.44a23.91 23.91 0 01-1.152 6.06M12 12.75c-2.883 0-5.647.508-8.208 1.44.125 2.104.52 4.136 1.153 6.06M12 12.75a2.25 2.25 0 002.248-2.354M12 12.75a2.25 2.25 0 01-2.248-2.354M12 8.25c.995 0 1.971-.08 2.922-.236.403-.066.74-.358.795-.762a3.778 3.778 0 00-.399-2.25M12 8.25c-.995 0-1.97-.08-2.922-.236-.402-.066-.74-.358-.795-.762a3.734 3.734 0 01.4-2.253M12 8.25a2.25 2.25 0 00-2.248 2.146M12 8.25a2.25 2.25 0 012.248 2.146M8.683 5a6.032 6.032 0 01-1.155-1.002c.07-.63.27-1.222.574-1.747m.581 2.749A3.75 3.75 0 0115.318 5m0 0c.427-.283.815-.62 1.155-.999a4.471 4.471 0 00-.575-1.752M4.921 6a24.048 24.048 0 00-.392 3.314c1.668.546 3.416.914 5.223 1.082M19.08 6c.205 1.08.337 2.187.392 3.314a23.882 23.882 0 01-5.223 1.082" />
+                        <svg width="13" height="22" viewBox="0 0 13 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 1.5C12 1.22386 11.7761 1 11.5 1H9C7.67392 1 6.40215 1.52678 5.46447 2.46447C4.52678 3.40215 4 4.67392 4 6V8.5C4 8.77614 3.77614 9 3.5 9H1.5C1.22386 9 1 9.22386 1 9.5V12.5C1 12.7761 1.22386 13 1.5 13H3.5C3.77614 13 4 13.2239 4 13.5V20.5C4 20.7761 4.22386 21 4.5 21H7.5C7.77614 21 8 20.7761 8 20.5V13.5C8 13.2239 8.22386 13 8.5 13H10.6096C10.839 13 11.039 12.8439 11.0947 12.6213L11.8447 9.62127C11.9236 9.30569 11.6849 9 11.3596 9H8.5C8.22386 9 8 8.77614 8 8.5V6C8 5.73478 8.10536 5.48043 8.29289 5.29289C8.48043 5.10536 8.73478 5 9 5H11.5C11.7761 5 12 4.77614 12 4.5V1.5Z" stroke="#4F4F4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                         <span class="text-gray-700 group-hover:text-cyan-700 text-lg font-semibold">Facebook</span>
                     </router-link>
