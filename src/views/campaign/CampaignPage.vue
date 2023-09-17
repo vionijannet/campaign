@@ -1,6 +1,6 @@
 <template>
     <div class="absolute -top-2 right-0 my-6 mx-8 flex space-x-4">
-        <ButtonBase class="flex" @click="openPopupCreate">
+        <ButtonBase class="flex" @click="redirectToCreate">
             <img src="../../assets/icon-create.svg" alt="Create">
             <span class="ml-2">Create</span>
         </ButtonBase>
@@ -41,10 +41,6 @@
             </template>
         </TableExpandComponent>
     </div>
-
-    <ModalComponent v-if="isPopupCreateOpen" @close="isPopupCreateOpen = false">
-        <SelectPage @cancel="isPopupCreateOpen=false" @continue="redirectToCreate"></SelectPage>
-    </ModalComponent>
 </template>
 
 <script setup lang="ts">
@@ -54,20 +50,12 @@ import router from "@/router";
 import { ref, type Ref } from 'vue';
 import { DummyCampaign } from "@/entity/Campaign";
 import { SearchCriteria, TableHeader } from '@/components/ComponentEntity';
-import SelectPage from './SelectPage.vue';
-import ModalComponent from '@/components/modal/ModalComponent.vue';
 
 const STATUS_PENDING = "Pending";
 const STATUS_DONE = "Done";
 
-const isPopupCreateOpen = ref(false);
-
-function openPopupCreate(): void {
-    isPopupCreateOpen.value = true;
-}
-
-function redirectToCreate(pageId: string): void {
-    router.push({ name: "Create Campaign", query: { pageId }});
+function redirectToCreate(): void {
+    router.push("/campaign/create");
 }
 
 const campaignList: Ref<DummyCampaign[]> = ref([

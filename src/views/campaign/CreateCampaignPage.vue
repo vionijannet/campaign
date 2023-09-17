@@ -135,6 +135,10 @@
         <SelectMessageTemplate @cancel="isPopupTemplateOpen=false"></SelectMessageTemplate>
     </ModalComponent>
 
+    <ModalComponent v-if="isPopupCreateOpen">
+        <SelectPage @continue="continueCreateCampaign"></SelectPage>
+    </ModalComponent>
+
     <LoadingScreen v-if="false"></LoadingScreen>
 </template>
 
@@ -146,16 +150,18 @@ import LoadingScreen from '@/components/loading/LoadingScreen.vue';
 import CheckboxAudiens from '@/components/in-app/CheckboxAudiens.vue';
 import SelectMessageTemplate from '@/views/campaign/SelectMessageTemplate.vue';
 import router from '@/router';
-import { computed, ref, type Ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import DatePicker from 'vue-datepicker-next';
 import { useRoute } from "vue-router";
+import SelectPage from './SelectPage.vue';
 
 const route = useRoute();
 const isSchedulerOn = ref(false);
 const isPopupAudiensOpen = ref(false);
 const isPopupTemplateOpen = ref(false);
+const isPopupCreateOpen = ref(true);
 
-const pageId = computed(() => route.query.pageId);
+const pageId: Ref<string> = ref("");
 
 const messageList: Ref<any[]> = ref([]);
 
@@ -169,6 +175,11 @@ function addMessage(): void {
 
 function removeMessage(index: number): void {
     messageList.value.splice(index, 1);
+}
+
+function continueCreateCampaign(page: string): void {
+    pageId.value = page;
+    isPopupCreateOpen.value = false;
 }
 </script>
 
