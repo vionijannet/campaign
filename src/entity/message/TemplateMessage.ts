@@ -12,6 +12,7 @@ export interface Message {
 }
 
 export interface MessageAttachment {
-    messageAttachment: File;
-    checksum: string;
+    messageAttachment?: File;
+    filename: string;
+    checksum?: string;
 }
