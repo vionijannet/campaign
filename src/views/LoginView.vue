@@ -25,6 +25,10 @@
             </div>
         </div>
     </div>
+
+    <ModalComponent v-if="isPopupCreateAccountShown" @close="isPopupCreateAccountShown=false">
+        <CreateAccount></CreateAccount>
+    </ModalComponent>
 </template>
 
 <script setup lang="ts">
@@ -32,12 +36,15 @@ import InputText from "@/components/input/InputText.vue";
 import ButtonBase from "@/components/button/ButtonBase.vue";
 import { ref } from "vue";
 import router from "@/router";
+import ModalComponent from "@/components/modal/ModalComponent.vue";
+import CreateAccount from "./account/CreateAccount.vue";
 
 const isPopupForgotPasswordShown = ref(false);
 const isPopupCreateAccountShown = ref(false);
 
 function redirectTo(name: string): void {
     const path = name === "tos" ? "/terms" : "/policy";
-    router.push(path);
+    const routeData = router.resolve(path);
+    window.open(routeData.href, "_blank");
 }
 </script>
