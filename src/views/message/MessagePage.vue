@@ -37,7 +37,7 @@ import { SearchCriteria, TableHeader } from '@/components/ComponentEntity';
 import { TemplateMessage } from "@/entity/message/TemplateMessage";
 
 function redirectToCreate(): void {
-    console.log("add template");
+    router.push("/message/create");
 }
 
 const templateList: Ref<TemplateMessage[]> = ref([
