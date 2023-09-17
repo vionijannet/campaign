@@ -96,7 +96,7 @@
             <ButtonBase class="my-2 !w-auto" @click="addMessage">Add Message</ButtonBase>
         </div>
         <hr />
-        <div class="w-full flex justify-end items-center space-x-2">
+        <div class="w-full flex justify-end items-center space-x-4">
             <ButtonBase type="error" class="!w-32" @click="backToList">Cancel</ButtonBase>
             <ButtonBase class="!w-32">Save</ButtonBase>
         </div>
