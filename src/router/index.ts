@@ -73,7 +73,17 @@ const router = createRouter({
       path: "/sign-in",
       name: "login",
       component: () => import("../views/LoginView.vue")
-    }
+    },
+    {
+      path: "/terms",
+      name: "terms",
+      component: () => import("../views/other/TermsOfServicePage.vue")
+    },
+    {
+      path: "/policy",
+      name: "policy",
+      component: () => import("../views/other/PolicyPage.vue")
+    },
   ]
 })
 

@@ -1,19 +1,27 @@
 <template>
     <div class="grid lg:grid-cols-2 h-screen">
-        <div class="hidden lg:block bg-blue-300">
+        <div class="hidden lg:flex bg-sky-100 items-center p-8">
+            <img src="@/assets/login-img.png" alt="Login Page">
         </div>
         <div class="bg-gray-200 flex items-center">
-            <div class="mx-auto bg-white rounded-2xl p-8 leading-8 w-3/4 max-w-xl">
-                <h1 class="font-bold text-2xl">Sign In to Your Account</h1>
-                <h2 class="text-gray-500">Enter email, password & token to login</h2>
+            <div class="mx-auto bg-white rounded-2xl p-8 leading-8 w-3/4 max-w-xl space-y-2">
+                <img src="@/assets/logo.png" alt="RepliEm" class="mx-auto w-10">
+                <h1 class="font-extrabold text-4xl text-center">Welcome to RepliEm</h1>
 
                 <div class="py-8 space-y-4">
                     <InputText label-for="email" label-text="Email Address" placeholder="example@mail.com" />
-                    <InputText label-for="password" label-text="Password" placeholder="********" />
-                    <InputText label-for="token" label-text="Token" placeholder="ex. 2T8Y67K" />
+                    <div>
+                        <InputText label-for="password" label-text="Password" placeholder="********" />
+                        <p class="text-sm underline cursor-pointer py-1" @click="isPopupForgotPasswordShown = true">Forgot your password?</p>
+                    </div>
                 </div>
 
-                <ButtonBase @click="$router.push('/')">Sign In</ButtonBase>
+                <div>
+                    <ButtonBase @click="$router.push('/')">Sign In</ButtonBase>
+                    <p class="text-xs text-right py-1 text-neutral-500">Not on RepliEm yet? <b class="underline cursor-pointer" @click="isPopupCreateAccountShown = true">Sign Up</b></p>
+                </div>
+
+                <p class="text-xs text-neutral-500">by continuing, you agree to RepliEm's <b class="underline cursor-pointer" @click="redirectTo('tos')">Terms of Service</b> and acknowledge you've read our <b class="underline cursor-pointer" @click="redirectTo('policy')">Privacy Policy</b>.</p>
             </div>
         </div>
     </div>
@@ -22,4 +30,14 @@
 <script setup lang="ts">
 import InputText from "@/components/input/InputText.vue";
 import ButtonBase from "@/components/button/ButtonBase.vue";
+import { ref } from "vue";
+import router from "@/router";
+
+const isPopupForgotPasswordShown = ref(false);
+const isPopupCreateAccountShown = ref(false);
+
+function redirectTo(name: string): void {
+    const path = name === "tos" ? "/terms" : "/policy";
+    router.push(path);
+}
 </script>
