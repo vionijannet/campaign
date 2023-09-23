@@ -48,7 +48,7 @@ import ButtonBase from '@/components/button/ButtonBase.vue';
 import TableExpandComponent from '@/components/table/TableExpandComponent.vue';
 import router from "@/router";
 import { ref, type Ref } from 'vue';
-import { DummyCampaign } from "@/entity/Campaign";
+import { DummyCampaign } from "@/entity/campaign/Campaign";
 import { SearchCriteria, TableHeader } from '@/components/ComponentEntity';
 
 const STATUS_PENDING = "Pending";
