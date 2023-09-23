@@ -8,12 +8,16 @@
                 <img src="@/assets/logo.png" alt="RepliEm" class="mx-auto w-10">
                 <h1 class="font-extrabold text-4xl text-center">Welcome to RepliEm</h1>
 
-                <div class="py-8 space-y-4">
+                <div class="py-8 space-y-4 !pb-2">
                     <InputText label-for="email" label-text="Email Address" placeholder="example@mail.com" />
                     <div>
                         <InputText label-for="password" label-text="Password" placeholder="********" />
                         <p class="text-sm underline cursor-pointer py-1" @click="isPopupForgotPasswordShown = true">Forgot your password?</p>
                     </div>
+                </div>
+
+                <div class="flex items-center justify-center">
+                    <vue-recaptcha :sitekey="siteKey" class="pb-2 mx-auto"></vue-recaptcha>
                 </div>
 
                 <div>
@@ -38,9 +42,12 @@ import { ref } from "vue";
 import router from "@/router";
 import ModalComponent from "@/components/modal/ModalComponent.vue";
 import CreateAccount from "./account/CreateAccount.vue";
+import vueRecaptcha from 'vue3-recaptcha2';
 
 const isPopupForgotPasswordShown = ref(false);
 const isPopupCreateAccountShown = ref(false);
+
+const siteKey = "6Lc9Z40hAAAAAFRdtS72GNcB76a1ltmdqWQ-6Zd5";
 
 function redirectTo(name: string): void {
     const path = name === "tos" ? "/terms" : "/policy";
