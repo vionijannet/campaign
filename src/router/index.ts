@@ -36,6 +36,14 @@ const router = createRouter({
           component: () => import("../views/campaign/CreateCampaignPage.vue"),
         },
         {
+          path: "/campaign/:campaignId",
+          name: "Update Campaign",
+          // route level code-splitting
+          // this generates a separate chunk (About.[hash].js) for this route
+          // which is lazy-loaded when the route is visited.
+          component: () => import("../views/campaign/UpdateCampaignPage.vue"),
+        },
+        {
           path: "/message",
           name: "Templates",
           // route level code-splitting

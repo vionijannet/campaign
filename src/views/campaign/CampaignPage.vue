@@ -141,7 +141,7 @@ function manualTriggerCampaign(campaignId: string): void {
 }
 
 function redirectToUpdateCampaign(campaignId: string): void {
-    console.log("update", campaignId);
+    router.push(`/campaign/${campaignId}`);
 }
 
 function deleteCampaign(campaignId: string): void {
