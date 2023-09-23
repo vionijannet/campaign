@@ -43,7 +43,7 @@
                         <p class="text-stone-500">Select Image to Upload</p>
                     </label>
                 </div>
-                <div v-else class="grid grid-cols-4 gap-4">
+                <div v-else class="grid lg:grid-cols-2 xl:grid-cols-4 gap-4">
                     <div class="border flex items-center bg-white rounded-lg" v-for="attachment, index in attachmentList" :key="index">
                         <div class="p-4">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -51,8 +51,8 @@
                             </svg>
                         </div>
                         <div class="flex items-center w-full h-full pl-4 border-l">
-                            <div class="flex-col">
-                                <p class="truncate max-w-fit">
+                            <div class="flex-col w-full">
+                                <p class="truncate max-w-[calc(100%-3.5rem)]">
                                     {{ attachment.filename }}
                                 </p>
                                 <p class="text-xs text-red-500 cursor-pointer hover:underline" @click="removeAttachment(index)">
