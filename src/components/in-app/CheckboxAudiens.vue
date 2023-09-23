@@ -3,7 +3,7 @@
         <!-- checkbox and profile -->
         <div class="flex items-center">
             <label for="audiens-1" class="flex items-center space-x-3">
-                <input type="checkbox" name="audiens-1" id="audiens-1" />
+                <input type="checkbox" name="audiens-1" id="audiens-1" @change="selectAudiens" />
                 <div class="flex items-center space-x-2">
                     <img src="https://http.dog/200.jpg" alt="Audiens" class="w-[50px] h-[50px] rounded-2xl">
                     <div>
@@ -21,3 +21,13 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+const props = defineProps(["id", "imageUrl", "name", "message", "lastUpdate", "unreadMessage"]);
+const emit = defineEmits(["select"]);
+
+function selectAudiens(event: Event): void {
+    const check = (event.target as HTMLInputElement).checked;
+    emit("select", props.id, check);
+}
+</script>
