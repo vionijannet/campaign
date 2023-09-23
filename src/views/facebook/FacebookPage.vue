@@ -1,9 +1,12 @@
 <template>
-    <div class="absolute -top-2 right-0 my-6 mx-8 flex space-x-4">
-        <ButtonBase class="flex" @click="redirectToCreate">
-            <img src="../../assets/icon-create.svg" alt="Create">
-            <span class="ml-2">Add Account</span>
-        </ButtonBase>
+    <div class="absolute -top-2 right-0 my-6 mx-8">
+        <div class="flex space-x-4">
+            <Search />
+            <ButtonBase class="flex w-fit" @click="redirectToCreate">
+                <img src="../../assets/icon-create.svg" alt="Create">
+                <span class="ml-2">Add Account</span>
+            </ButtonBase>
+        </div>
     </div>
     <div>
         <TableExpandComponent class="mb-2" :table-header="tableHeader" :table-body="templateList" :search-criteria="searchCriteria" :total-row="totalRow">
@@ -33,6 +36,7 @@ import router from "@/router";
 import { ref, type Ref } from 'vue';
 import { Facebook } from "@/entity/facebook/Facebook";
 import { SearchCriteria, TableHeader } from '@/components/ComponentEntity';
+import Search from '@/components/search/Search.vue';
 
 function redirectToCreate(): void {
     router.push("/message/create");
