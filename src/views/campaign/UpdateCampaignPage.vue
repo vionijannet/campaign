@@ -9,8 +9,8 @@
         </ButtonBase>
     </div>
     <div class="bg-white w-full rounded-2xl p-6 space-y-6">
-        <InputText :value="pageId" disabled="true" label-for="page-name" label-text="Page Name" placeholder="Page Name Goes Here"></InputText>
-        <InputText label-for="campaign-name" label-text="Campaign Name" placeholder="Type your campaign name" :value="campaignId"></InputText>
+        <InputText :value="campaignId" disabled="true" label-for="page-name" label-text="Page Name" placeholder="Page Name Goes Here"></InputText>
+        <InputText label-for="campaign-name" label-text="Campaign Name" placeholder="Type your campaign name"></InputText>
         <div>
             <p class="font-semibold text-lg">Scheduler</p>
             <div class="flex justify-between items-center">
@@ -155,8 +155,6 @@ const isSchedulerOn = ref(false);
 const isPopupAudiensOpen = ref(false);
 const isPopupTemplateOpen = ref(false);
 const campaignId = route.params.campaignId;
-
-const pageId: Ref<string> = ref("");
 
 const messageList: Ref<any[]> = ref([]);
 
