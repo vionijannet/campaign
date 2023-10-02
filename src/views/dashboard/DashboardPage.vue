@@ -20,8 +20,8 @@
             </span>
         </div>
     </div>
-    <div class="grid grid-cols-5 gap-4">
-        <div class="col-span-3 row-span-3 border rounded-lg bg-white p-4 flex">
+    <div class="grid grid-cols-2 gap-4">
+        <div class="row-span-3 border rounded-lg bg-white p-4 flex">
             <div class="max-w-fit">
                 <img src="../../assets/dashboard-cuate.png" alt="Dashboard" class="h-full">
             </div>
@@ -45,7 +45,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-span-2 row-span-5 border rounded-lg bg-white p-4 justify-between overflow-y-auto max-h-[78vh]">
+        <div class="row-span-5 border rounded-lg bg-white p-4 justify-between overflow-y-auto max-h-[78vh]">
             <p class="text-2xl font-bold">Log History</p>
 
             <ol class="ml-4 mt-4 border-l border-gray-200 space-y-4">
@@ -214,7 +214,7 @@
                 </li>
             </ol>
         </div>
-        <div class="col-span-3 row-span-2 grid grid-cols-2 gap-4 border rounded-lg bg-white p-4 justify-between">
+        <div class="row-span-2 grid grid-cols-2 gap-4 border rounded-lg bg-white p-4 justify-between">
             <div class="border rounded p-4">
                 <img src="../../assets/facebook-connect.png" alt="Facebook Connect" class="w-14 h-14">
                 <div class="flex justify-between items-end space-y-12 w-full">
