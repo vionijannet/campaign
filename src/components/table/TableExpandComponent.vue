@@ -1,56 +1,57 @@
 <template>
-    <table class="w-full pt-8">
-        <thead class="bg-blue-100">
-            <tr class="text-blue-primary text-left rounded">
-                <!-- <th class="py-3 pl-4 w-3 rounded-tl-lg"><input type="checkbox" name="" id=""></th> -->
-                <th class="p-3" :class="{ 'rounded-tr-lg' : tableHeader.length - 1 === index, 'rounded-tl-lg': index === 0 }" v-for="head, index in tableHeader" :key="head.key">
-                    <div class="flex justify-between" @click="changeSort(head.key)">
-                        <span>{{ head.name }}</span>
-                        <template v-if="head.isSortable">
-                            <img v-if="searchCriteria.sortKey === head.key && searchCriteria.sortOrder === 'asc'" src="../../assets/sort-asc.svg" alt="sort_asc">
-                            <img v-else-if="searchCriteria.sortKey === head.key && searchCriteria.sortOrder === 'dsc'" src="../../assets/sort-dsc.svg" alt="sort_dsc">
-                            <img v-else src="../../assets/sort.svg" alt="sort">
-                        </template>
-                    </div>
-                </th>
-            </tr>
-        </thead>
-        <tbody v-for="body, index in tableBody" :key="index" class="bg-white shadow-inner">
-            <tr class="">
-                <!-- <td class="py-4 pl-4 w-3" :class="{'rounded-bl-lg': !body.isExpanded}">
-                    <input type="checkbox" name="" id="" class="w-3">
-                </td> -->
-                <td class="p-2" v-for="head, j in tableHeader" :key="`${index}-${j}`"
-                    :class="{ 'rounded-br-lg': tableHeader.length-1 === j && !body.isExpanded, 'rounded-bl-lg': j === 0 }">
-                    <slot :name="head.key" :slot-props="body">{{ body[head.key] }}</slot>
-                </td>
-            </tr>
-            <tr v-if="body.isExpanded" class="">
-                <td :colspan="tableHeader.length + 1" class="p-2 pb-4 rounded-b-lg">
-                    <slot name="expand" :slot-props="body" class="bg-blue-100" />
-                </td>
-            </tr>
-        </tbody>
-        <tbody class="bg-white shadow-inner">
-            <tr>
-                <td :colspan="tableHeader.length + 1" class="p-4">
-                    <div class="flex items-center justify-between">
-                        <div class="flex">
-                            <button class="rounded-l-lg border px-2 py-1" @click="changePage('prev')">Prev</button>
-                            <button v-for="page, index in shownPage" class="border-y border-r px-2 py-1" @click="changePage(page)"
-                            :class="{'border-r-0': index === shownPage.length-1, 'cursor-default': page === '...', 'font-bold': page === props.searchCriteria.page.toString()}">{{ page }}</button>
-                            <button class="rounded-r-lg border px-2 py-1" @click="changePage('next')">Next</button>
+    <div class="overflow-x-auto">
+        <table class="w-full pt-8 items-center justify-center">
+            <!-- <div class="overflow-x-auto"> -->
+                <thead class="bg-blue-100 w-full">
+                    <tr class="text-blue-primary text-left rounded">
+                        <!-- <th class="py-3 pl-4 w-3 rounded-tl-lg"><input type="checkbox" name="" id=""></th> -->
+                        <th class="p-3" :class="{ 'rounded-tr-lg' : tableHeader.length - 1 === index, 'rounded-tl-lg': index === 0 }" v-for="head, index in tableHeader" :key="head.key">
+                            <div class="flex justify-between" @click="changeSort(head.key)">
+                                <span>{{ head.name }}</span>
+                                <template v-if="head.isSortable">
+                                    <img v-if="searchCriteria.sortKey === head.key && searchCriteria.sortOrder === 'asc'" src="../../assets/sort-asc.svg" alt="sort_asc">
+                                    <img v-else-if="searchCriteria.sortKey === head.key && searchCriteria.sortOrder === 'dsc'" src="../../assets/sort-dsc.svg" alt="sort_dsc">
+                                    <img v-else src="../../assets/sort.svg" alt="sort">
+                                </template>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody v-for="body, index in tableBody" :key="index" class="bg-white shadow-inner !w-full">
+                    <tr class="w-full">
+                        <td class="p-2 w-fit" v-for="head, j in tableHeader" :key="`${index}-${j}`"
+                            :class="{ 'rounded-br-lg': tableHeader.length-1 === j && !body.isExpanded, 'rounded-bl-lg': j === 0 }">
+                            <slot :name="head.key" :slot-props="body">{{ body[head.key] }}</slot>
+                        </td>
+                    </tr>
+                    <tr v-if="body.isExpanded" class=" w-full">
+                        <td :colspan="tableHeader.length + 1" class="p-2 pb-4 rounded-b-lg">
+                            <slot name="expand" :slot-props="body" class="bg-blue-100" />
+                        </td>
+                    </tr>
+                </tbody>
+            <!-- </div> -->
+            <tbody class="bg-white shadow-inner">
+                <tr>
+                    <td :colspan="tableHeader.length + 1" class="p-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex">
+                                <button class="rounded-l-lg border px-2 py-1" @click="changePage('prev')">Prev</button>
+                                <button v-for="page, index in shownPage" class="border-y border-r px-2 py-1" @click="changePage(page)"
+                                    :class="{'border-r-0': index === shownPage.length-1, 'cursor-default': page === '...', 'font-bold': page === props.searchCriteria.page.toString()}">{{ page }}</button>
+                                <button class="rounded-r-lg border px-2 py-1" @click="changePage('next')">Next</button>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <p>Rows per page: </p>
+                                <SelectComponent :optionList="rowPerPage" :selected="props.searchCriteria.rowPerPage" @change="changeRowPerPage($event)"></SelectComponent>
+                                <p>of {{ totalRow }} data</p>
+                            </div>
                         </div>
-                        <div class="flex items-center space-x-2">
-                            <p>Rows per page: </p>
-                            <SelectComponent :optionList="rowPerPage" :selected="props.searchCriteria.rowPerPage" @change="changeRowPerPage($event)"></SelectComponent>
-                            <p>of {{ totalRow }} data</p>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </template>
 
 <script setup lang="ts">
