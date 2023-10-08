@@ -5,6 +5,7 @@ export const useUserStore = defineStore("user", () => {
     const name = ref("John Doe");
     const email = ref("johndoe@gmail.com");
     const role = ref("Administrator");
+    const phone = ref("08113276836");
 
     function setName(value: string): void {
         name.value = value;
@@ -18,11 +19,15 @@ export const useUserStore = defineStore("user", () => {
         role.value = value;
     }
 
+    function setPhone(value: string): void {
+        phone.value = value;
+    }
+
     function removeData(): void {
         name.value = "";
         email.value = "";
         role.value = "";
     }
 
-    return { name, email ,setName, setEmail, setRole, removeData, role }
+    return { name, email ,setName, setEmail, setRole, removeData, role, setPhone, phone }
 });
