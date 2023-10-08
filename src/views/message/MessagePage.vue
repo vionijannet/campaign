@@ -100,7 +100,7 @@ function previewMessage(messageId: string): void {
 }
 
 function redirectToUpdate(messageId: string): void {
-    console.log("update", messageId);
+    router.push(`/message/${messageId}`);
 }
 
 function deleteTemplate(messageId: string): void {

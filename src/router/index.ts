@@ -45,7 +45,7 @@ const router = createRouter({
         },
         {
           path: "/message",
-          name: "Templates",
+          name: "Message",
           // route level code-splitting
           // this generates a separate chunk (About.[hash].js) for this route
           // which is lazy-loaded when the route is visited.
@@ -53,11 +53,19 @@ const router = createRouter({
         },
         {
           path: "/message/create",
-          name: "Add Templates",
+          name: "Add Template",
           // route level code-splitting
           // this generates a separate chunk (About.[hash].js) for this route
           // which is lazy-loaded when the route is visited.
           component: () => import("../views/message/CreateMessagePage.vue"),
+        },
+        {
+          path: "/message/:templateId",
+          name: "Update Template",
+          // route level code-splitting
+          // this generates a separate chunk (About.[hash].js) for this route
+          // which is lazy-loaded when the route is visited.
+          component: () => import("../views/message/UpdateMessagePage.vue"),
         },
         {
           path: "/facebook",
