@@ -9,7 +9,7 @@
         </ButtonBase>
     </div>
     <div class="bg-white w-full rounded-2xl p-6 space-y-6">
-        <!-- <InputText label-for="message-name" label-text="Message Name" placeholder="Type your message name"></InputText> -->
+        <InputText label-for="message-name" label-text="Message Name" placeholder="Type your message name"></InputText>
 
         <InputText label-for="template-name" label-text="Template" placeholder="Type your template name" @type="setTemplateName" :value="templateName"></InputText>
 
@@ -102,7 +102,6 @@ import router from '@/router';
 import { CreateTemplateUseCase } from '@/usecase/template/CreateTemplateUseCase';
 import { NotificationManager } from '@/util/NotificationManager';
 import { inject, ref, type Ref } from 'vue';
-import { useRoute } from "vue-router";
 
 const createTemplateUseCase: CreateTemplateUseCase = inject("createTemplateUseCase")!;
 
@@ -114,6 +113,7 @@ const messageList: Ref<Message[]> = ref([
         message_order: "",
         message_type: "Message",
         message_content: "",
+        flag_delete: false,
     }
 ]);
 const indexActiveGreeting = ref(0);
@@ -123,6 +123,7 @@ const greetingList: Ref<Message[]> = ref([
         message_order: "",
         message_type: "Greeting",
         message_content: "",
+        flag_delete: false,
     }
 ]);
 
@@ -138,6 +139,7 @@ function addMessage(): void {
         message_content: "",
         message_order: (messageList.value.length + 1).toString(),
         message_type: "Message",
+        flag_delete: false,
     });
 }
 
@@ -147,6 +149,7 @@ function addGreeting(): void {
         message_content: "",
         message_order: (greetingList.value.length + 1).toString(),
         message_type: "Greeting",
+        flag_delete: false,
     });
 }
 

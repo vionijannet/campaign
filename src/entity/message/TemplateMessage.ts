@@ -11,6 +11,7 @@ export interface Message {
     message_order: string;
     message_type: "Greeting" | "Message";
     message_content: string;
+    flag_delete: boolean;
 }
 
 export interface MessageAttachment {

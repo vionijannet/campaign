@@ -11,7 +11,7 @@
     <div class="bg-white w-full rounded-2xl p-6 space-y-6">
         <InputText label-for="message-name" label-text="Message Name" placeholder="Type your message name"></InputText>
 
-        <InputText label-for="template-name" label-text="Template" placeholder="Type your template name"></InputText>
+        <InputText label-for="template-name" label-text="Template" placeholder="Type your template name" :value="templateName" @type="setTemplateName"></InputText>
 
         <div class="w-full">
             <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
@@ -22,7 +22,7 @@
                 <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addMessage">Add Message</ButtonBase>
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
-                <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="messageList[indexActiveMessage].message_id"></textarea>
+                <textarea v-if="messageList.length > 0" class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="messageList[indexActiveMessage].message_content"></textarea>
             </div>
         </div>
 
@@ -37,7 +37,7 @@
                 <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addGreeting">Add Message</ButtonBase>
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
-                <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message_id"></textarea>
+                <textarea v-if="greetingList.length > 0" class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message_content"></textarea>
             </div>
         </div>
 
@@ -85,7 +85,7 @@
         <hr />
         <div class="w-full flex justify-end items-center space-x-4">
             <ButtonBase type="error" class="!w-32" @click="backToList">Cancel</ButtonBase>
-            <ButtonBase class="!w-32">Save</ButtonBase>
+            <ButtonBase class="!w-32" @click="updateTemplate">Save</ButtonBase>
         </div>
     </div>
 
@@ -97,57 +97,74 @@ import ButtonBase from '@/components/button/ButtonBase.vue';
 import InputText from '@/components/input/InputText.vue';
 import LoadingScreen from '@/components/loading/LoadingScreen.vue';
 import { Message, MessageAttachment } from '@/entity/message/TemplateMessage';
+import { UpdateTemplateReq } from '@/entity/message/UpdateTemplateReq';
 import router from '@/router';
-import { ref, type Ref } from 'vue';
+import { GetDetailTemplateUseCase } from '@/usecase/template/GetDetailTemplateUseCase';
+import { UpdateTemplateUseCase } from '@/usecase/template/UpdateTemplateUseCase';
+import { NotificationManager } from '@/util/NotificationManager';
+import { inject, onMounted, ref, type Ref } from 'vue';
 import { useRoute } from "vue-router";
+
+const templateId: string = useRoute().params["templateId"] as string;
+const templateName = ref("");
+
+const updateTemplateUseCase: UpdateTemplateUseCase = inject("updateTemplateUseCase")!;
+const getDetailTemplateUseCase: GetDetailTemplateUseCase = inject("getDetailTemplateUseCase")!;
 
 const indexActiveMessage = ref(0);
 const messageList: Ref<Message[]> = ref([
-    {
-        message_id: "1",
-        message_order: "1",
-        message_type: "Message",
-        message_content: "abc",
-    },
-    {
-        message_id: "2",
-        message_order: "2",
-        message_type: "Message",
-        message_content: "def",
-    },
-    {
-        message_id: "3",
-        message_order: "3",
-        message_type: "Message",
-        message_content: "ghi",
-    },
-    {
-        message_id: "3",
-        message_order: "3",
-        message_type: "Message",
-        message_content: "jkl",
-    }
+    // {
+    //     message_id: "1",
+    //     message_order: "1",
+    //     message_type: "Message",
+    //     message_content: "abc",
+    //     flag_delete: false,
+    // },
+    // {
+    //     message_id: "2",
+    //     message_order: "2",
+    //     message_type: "Message",
+    //     message_content: "def",
+    //     flag_delete: false,
+    // },
+    // {
+    //     message_id: "3",
+    //     message_order: "3",
+    //     message_type: "Message",
+    //     message_content: "ghi",
+    //     flag_delete: false,
+    // },
+    // {
+    //     message_id: "3",
+    //     message_order: "3",
+    //     message_type: "Message",
+    //     message_content: "jkl",
+    //     flag_delete: false,
+    // }
 ]);
 const indexActiveGreeting = ref(0);
 const greetingList: Ref<Message[]> = ref([
-    {
-        message_id: "1",
-        message_order: "1",
-        message_type: "Greeting",
-        message_content: "ypp1",
-    },
-    {
-        message_id: "2",
-        message_order: "2",
-        message_type: "Greeting",
-        message_content: "ypp2",
-    },
-    {
-        message_id: "3",
-        message_order: "3",
-        message_type: "Greeting",
-        message_content: "ypp3",
-    },
+    // {
+    //     message_id: "1",
+    //     message_order: "1",
+    //     message_type: "Greeting",
+    //     message_content: "ypp1",
+    //     flag_delete: false,
+    // },
+    // {
+    //     message_id: "2",
+    //     message_order: "2",
+    //     message_type: "Greeting",
+    //     message_content: "ypp2",
+    //     flag_delete: false,
+    // },
+    // {
+    //     message_id: "3",
+    //     message_order: "3",
+    //     message_type: "Greeting",
+    //     message_content: "ypp3",
+    //     flag_delete: false,
+    // },
 ]);
 
 const attachmentList: Ref<MessageAttachment[]> = ref([]);
@@ -161,7 +178,8 @@ function addMessage(): void {
         message_id: "",
         message_content: "",
         message_order: (messageList.value.length + 1).toString(),
-        message_type: "Message"
+        message_type: "Message",
+        flag_delete: false,
     });
 }
 
@@ -170,7 +188,8 @@ function addGreeting(): void {
         message_id: "",
         message_content: "",
         message_order: (greetingList.value.length + 1).toString(),
-        message_type: "Greeting"
+        message_type: "Greeting",
+        flag_delete: false,
     });
 }
 
@@ -189,5 +208,88 @@ function uploadFile(event: Event): void {
 
 function removeAttachment(index: number): void {
     attachmentList.value.splice(index, 1);
+}
+
+function setTemplateName(name: string): void {
+    templateName.value = name;
+}
+
+onMounted(() => {
+    loadData();
+})
+
+function loadData(): void {
+    getDetailTemplateUseCase.execute({
+        template_id: templateId
+    }).subscribe(
+        {
+            next: (templateResp) => {
+                if (templateResp.code === 200) {
+                    templateName.value = templateResp.result.data.template_name ?? "";
+                    const list = templateResp.result.data.message_list ?? [];
+
+                    messageList.value = list.filter(h => h.message_type === "Message");
+                    if (messageList.value.length < 1) {
+                        messageList.value.push({
+                            flag_delete: false,
+                            message_content: "",
+                            message_id: "",
+                            message_order: "1",
+                            message_type: "Message"
+                        });
+                    }
+                    greetingList.value = list.filter(h => h.message_type === "Greeting");
+                    if (greetingList.value.length < 1) {
+                        greetingList.value.push({
+                            flag_delete: false,
+                            message_content: "",
+                            message_id: "",
+                            message_order: "1",
+                            message_type: "Greeting"
+                        });
+                    }
+                } else {
+                    const message = templateResp.result?.message ?? templateResp.message;
+                    NotificationManager.showMessage("Failed to Load Data", message, "error");
+                }
+            },
+            error: (error) => {
+                NotificationManager.showMessage("Failed to Load Data", error, "error");
+            }
+        }
+    )
+}
+
+function updateTemplate(): void {
+    const updateReq: UpdateTemplateReq = {
+        template_id: templateId,
+        template_name: templateName.value,
+        message_list: messageList.value.concat(greetingList.value)
+            .map(v => {
+                return {
+                    message_id: v.message_id,
+                    message_order: v.message_order,
+                    message: v.message_content,
+                    message_type: v.message_type,
+                    flag_delete: v.flag_delete,
+                }
+            })
+    };
+
+    updateTemplateUseCase.execute(updateReq).subscribe(
+        {
+            next: (resp) => {
+                if (resp.code === 200) {
+                    backToList();
+                } else {
+                    const message = resp.result?.message ?? resp.message;
+                    NotificationManager.showMessage("Failed to Update Data", message, "error");
+                }
+            },
+            error: (error) => {
+                NotificationManager.showMessage("Failed to Update Data", error, "error");
+            }
+        }
+    )
 }
 </script>

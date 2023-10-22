@@ -7,11 +7,13 @@ import { GetDetailTemplateReq } from "@/entity/message/GetDetailTemplateReq";
 import { GetDetailTemplateResp } from "@/entity/message/GetDetailTemplateResp";
 import { CreateTemplateReq } from "@/entity/message/CreateTemplateReq";
 import { BaseResp } from "@/entity/BaseResp";
+import { UpdateTemplateReq } from "@/entity/message/UpdateTemplateReq";
 
 export interface TemplateService {
     getTemplate(template: GetTemplateReq): Observable<GetTemplateResp>;
     getDetailTemplate(template: GetDetailTemplateReq): Observable<GetDetailTemplateResp>;
     createTemplate(template: CreateTemplateReq): Observable<BaseResp>;
+    updateTemplate(template: UpdateTemplateReq): Observable<BaseResp>;
 }
 
 export class TemplateServiceImpl extends BaseService implements TemplateService {
@@ -59,6 +61,13 @@ export class TemplateServiceImpl extends BaseService implements TemplateService 
     
     createTemplate(template: CreateTemplateReq): Observable<BaseResp> {
         return this.httpPost(this.API_ENDPOINT, template)
+            .pipe(
+                map((response) => JSON.parse(JSON.stringify(response.data as string)))
+            )
+    }
+    
+    updateTemplate(template: UpdateTemplateReq): Observable<BaseResp> {
+        return this.httpPut(this.API_ENDPOINT, template)
             .pipe(
                 map((response) => JSON.parse(JSON.stringify(response.data as string)))
             )
