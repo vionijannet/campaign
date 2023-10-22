@@ -49,11 +49,13 @@ import { GetTemplateUseCase } from '@/usecase/template/GetTemplateUseCase';
 import { DateConverter } from '@/util/DateConverter';
 import ModalComponent from '@/components/modal/ModalComponent.vue';
 import { NotificationManager } from "@/util/NotificationManager";
+import { DeleteTemplateUseCase } from "@/usecase/template/DeleteTemplateUseCase";
 
 const asyncSubscription: Subscription = new Subscription();
 const selectedTemplateId = ref("");
 
 const getTemplateUseCase: GetTemplateUseCase = inject("getTemplateUseCase")!;
+const deleteTemplateUseCase: DeleteTemplateUseCase = inject("deleteTemplateUseCase")!;
 
 function redirectToCreate(): void {
     router.push("/message/create");
@@ -97,7 +99,27 @@ function redirectToUpdate(messageId: string): void {
 }
 
 function deleteTemplate(messageId: string): void {
-    console.log("delete", messageId);
+    asyncSubscription.add(
+        deleteTemplateUseCase.execute({
+            template_id: messageId
+        }).subscribe(
+            {
+                next: (resp) => {
+                    if (resp.code === 200) {
+                        NotificationManager.showMessage("Success to Delete Data", "");
+                        searchCriteria.value.page = 1;
+                        loadTemplate("");
+                    } else {
+                        const message = resp.result?.message ?? resp.message;
+                        NotificationManager.showMessage("Failed to Delete Data", message, "error");
+                    }
+                },
+                error: (error) => {
+                    NotificationManager.showMessage("Network Error", error, "error");
+                }
+            }
+        )
+    )
 }
 
 function convertCreatedAt(date: string): string {

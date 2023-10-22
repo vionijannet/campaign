@@ -14,6 +14,7 @@ export interface TemplateService {
     getDetailTemplate(template: GetDetailTemplateReq): Observable<GetDetailTemplateResp>;
     createTemplate(template: CreateTemplateReq): Observable<BaseResp>;
     updateTemplate(template: UpdateTemplateReq): Observable<BaseResp>;
+    deleteTemplate(template: GetDetailTemplateReq): Observable<BaseResp>;
 }
 
 export class TemplateServiceImpl extends BaseService implements TemplateService {
@@ -73,4 +74,10 @@ export class TemplateServiceImpl extends BaseService implements TemplateService 
             )
     }
 
+    deleteTemplate(template: GetDetailTemplateReq): Observable<BaseResp> {
+        return this.httpDelete(`${this.API_ENDPOINT}/${template.template_id}`)
+            .pipe(
+                map((response) => JSON.parse(JSON.stringify(response.data as string)))
+            )
+    }
 }

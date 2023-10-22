@@ -10,6 +10,7 @@ import { GetTemplateUseCase, GetTemplateUseCaseImpl } from './usecase/template/G
 import { GetDetailTemplateUseCase, GetDetailTemplateUseCaseImpl } from './usecase/template/GetDetailTemplateUseCase';
 import { CreateTemplateUseCase, CreateTemplateUseCaseImpl } from './usecase/template/CreateTemplateUseCase';
 import { UpdateTemplateUseCase, UpdateTemplateUseCaseImpl } from './usecase/template/UpdateTemplateUseCase';
+import { DeleteTemplateUseCase, DeleteTemplateUseCaseImpl } from './usecase/template/DeleteTemplateUseCase';
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: "http://192.168.1.16:8080",
@@ -25,4 +26,6 @@ const createTemplate: CreateTemplateUseCase = new CreateTemplateUseCaseImpl(temp
 provide("createTemplateUseCase", createTemplate);
 const updateTemplate: UpdateTemplateUseCase = new UpdateTemplateUseCaseImpl(templateService);
 provide("updateTemplateUseCase", updateTemplate);
+const deleteTemplate: DeleteTemplateUseCase = new DeleteTemplateUseCaseImpl(templateService);
+provide("deleteTemplateUseCase", deleteTemplate);
 </script>
