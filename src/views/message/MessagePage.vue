@@ -34,9 +34,14 @@
             </template>
         </TableExpandComponent>
     </div>
+
+    <ModalComponent v-if="selectedTemplateId.length > 0" @close="selectedTemplateId=''">
+        <DetailMessageTemplate></DetailMessageTemplate>
+    </ModalComponent>
 </template>
 
 <script setup lang="ts">
+import DetailMessageTemplate from "./DetailMessageTemplate.vue";
 import ButtonBase from '@/components/button/ButtonBase.vue';
 import TableExpandComponent from '@/components/table/TableExpandComponent.vue';
 import router from "@/router";
@@ -47,8 +52,10 @@ import Search from '@/components/search/Search.vue';
 import { Subscription } from 'rxjs';
 import { GetTemplateUseCase } from '@/usecase/template/GetTemplateUseCase';
 import { DateConverter } from '@/util/DateConverter';
+import ModalComponent from '@/components/modal/ModalComponent.vue';
 
 const asyncSubscription: Subscription = new Subscription();
+const selectedTemplateId = ref("");
 
 const getTemplateUseCase: GetTemplateUseCase = inject("getTemplateUseCase")!;
 
@@ -91,7 +98,7 @@ const tableHeader: Ref<TableHeader[]> = ref([
 ] as TableHeader[]);
 
 function previewMessage(messageId: string): void {
-    console.log("preview message", messageId);
+    selectedTemplateId.value = messageId;
 }
 
 function redirectToUpdate(messageId: string): void {

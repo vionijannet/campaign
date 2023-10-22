@@ -1,0 +1,68 @@
+<template>
+    <div class="p-4 space-y-4">
+        <p class="text-2xl font-bold">Detail Message</p>
+
+        <div class="w-full">
+            <p>Template Name</p>
+            <div class="w-full pt-2">
+                <div class="border border-b-0 p-4 rounded-2xl rounded-b-none">
+                    <div class="flex items-center justify-start space-x-8">
+                        <p class="cursor-pointer font-semibold" @click="indexActiveMessage = index"
+                            :class="{ 'text-blue-primary': indexActiveMessage === index, 'text-gray-700': indexActiveMessage !== index }" v-for="m, index in messageList.length" :key="index">Message {{ m }}</p>
+                    </div>
+                </div>
+                <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
+                    <textarea disabled class="w-full resize-none bg-gray-100 rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="messageList[indexActiveMessage].message"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full">
+            <p>Greetings Name</p>
+            <div class="w-full pt-2">
+                <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
+                    <div class="flex items-center justify-start space-x-8">
+                        <p class="cursor-pointer font-semibold" @click="indexActiveGreeting = index"
+                            :class="{ 'text-blue-primary': indexActiveGreeting === index, 'text-gray-700': indexActiveGreeting !== index }" v-for="g, index in greetingList.length" :key="index">Greeting {{ g }}</p>
+                    </div>
+                </div>
+                <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
+                    <textarea disabled class="w-full resize-none bg-gray-100 rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { Message } from "@/entity/message/TemplateMessage";
+import { Ref, ref } from "vue";
+
+const indexActiveMessage = ref(0);
+const messageList: Ref<Message[]> = ref([
+    {
+        message: "abc"
+    },
+    {
+        message: "def"
+    },
+    {
+        message: "ghi"
+    },
+    {
+        message: "jkl"
+    }
+]);
+const indexActiveGreeting = ref(0);
+const greetingList: Ref<Message[]> = ref([
+    {
+        message: "ypp"
+    },
+    {
+        message: "ypp"
+    },
+    {
+        message: "ypp"
+    },
+]);
+</script>
