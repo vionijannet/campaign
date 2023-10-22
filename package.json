@@ -10,9 +10,10 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false"
   },
   "dependencies": {
+    "axios": "^0.27.2",
     "pinia": "^2.1.4",
     "pinia-plugin-persistedstate": "^3.2.0",
-    "rxjs": "^7.8.1",
+    "rxjs": "^7.5.1",
     "vue": "^3.3.4",
     "vue-datepicker-next": "^1.0.3",
     "vue-router": "^4.2.4",
