@@ -2,7 +2,6 @@ export interface TemplateMessage {
     template_id: string;
     template_name: string;
     message_list: Message[];
-    preview_message: string;
     created_at: string;
     attachment: MessageAttachment[];
 }

@@ -15,11 +15,6 @@
                     {{ slotProps.template_name }}
                 </div>
             </template>
-            <template #message="{slotProps}">
-                <div class="p-2">
-                    {{ slotProps.preview_message }}
-                </div>
-            </template>
             <template #createdAt="{slotProps}">
                 <div class="p-2">
                     {{ convertCreatedAt(slotProps.created_at) }}
@@ -78,11 +73,6 @@ const tableHeader: Ref<TableHeader[]> = ref([
     {
         key: "name",
         name: "Name",
-        isSortable: true
-    },
-    {
-        key: "message",
-        name: "Message",
         isSortable: true
     },
     {
