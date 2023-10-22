@@ -36,7 +36,7 @@
     </div>
 
     <ModalComponent v-if="selectedTemplateId.length > 0" @close="selectedTemplateId=''">
-        <DetailMessageTemplate></DetailMessageTemplate>
+        <DetailMessageTemplate :template-id="selectedTemplateId"></DetailMessageTemplate>
     </ModalComponent>
 </template>
 

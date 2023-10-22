@@ -2,7 +2,7 @@
     <div class="p-4 space-y-4">
         <p class="text-2xl font-bold">Detail Message</p>
 
-        <div class="w-full">
+        <div class="w-full" v-if="messageList.length > 0">
             <p>Template Name</p>
             <div class="w-full pt-2">
                 <div class="border border-b-0 p-4 rounded-2xl rounded-b-none">
@@ -12,12 +12,12 @@
                     </div>
                 </div>
                 <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
-                    <textarea disabled class="w-full resize-none bg-gray-100 rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="messageList[indexActiveMessage].message"></textarea>
+                    <textarea disabled class="w-full resize-none bg-gray-100 rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="messageList[indexActiveMessage].message_content"></textarea>
                 </div>
             </div>
         </div>
 
-        <div class="w-full">
+        <div class="w-full" v-if="greetingList.length > 0">
             <p>Greetings Name</p>
             <div class="w-full pt-2">
                 <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
-                    <textarea disabled class="w-full resize-none bg-gray-100 rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message"></textarea>
+                    <textarea disabled class="w-full resize-none bg-gray-100 rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message_content"></textarea>
                 </div>
             </div>
         </div>
@@ -36,33 +36,52 @@
 
 <script setup lang="ts">
 import { Message } from "@/entity/message/TemplateMessage";
-import { Ref, ref } from "vue";
+import { GetDetailTemplateUseCase } from "@/usecase/template/GetDetailTemplateUseCase";
+import { Subscription } from "rxjs";
+import { Ref, inject, onMounted, ref } from "vue";
+
+const props = defineProps({
+    templateId: {
+        type: String,
+        default: ""
+    }
+});
+
+const asyncSubscription: Subscription = new Subscription();
+const getDetailTemplateUseCase: GetDetailTemplateUseCase = inject("getDetailTemplateUseCase")!;
 
 const indexActiveMessage = ref(0);
-const messageList: Ref<Message[]> = ref([
-    {
-        message: "abc"
-    },
-    {
-        message: "def"
-    },
-    {
-        message: "ghi"
-    },
-    {
-        message: "jkl"
-    }
-]);
+const messageList: Ref<Message[]> = ref([]);
 const indexActiveGreeting = ref(0);
-const greetingList: Ref<Message[]> = ref([
-    {
-        message: "ypp"
-    },
-    {
-        message: "ypp"
-    },
-    {
-        message: "ypp"
-    },
-]);
+const greetingList: Ref<Message[]> = ref([]);
+
+onMounted(() => {
+    loadDetailTemplate();
+})
+
+function loadDetailTemplate(): void {
+    asyncSubscription.add(
+        getDetailTemplateUseCase.execute({
+            template_id: props.templateId
+        }).subscribe(
+            (templateResp) => {
+                if (templateResp.code === 200) {
+                    messageList.value = templateResp.result.data.message_list.filter(m => m.message_type === "Message")
+                        .sort((a, b) => {
+                            if (a.message_order < b.message_order) return -1;
+                            else if (a.message_order > b.message_order) return 1;
+                            else return 0;
+                        });
+
+                    greetingList.value = templateResp.result.data.message_list.filter(m => m.message_type === "Greeting")
+                        .sort((a, b) => {
+                            if (a.message_order < b.message_order) return -1;
+                            else if (a.message_order > b.message_order) return 1;
+                            else return 0;
+                        });
+                }
+            }
+        )
+    );
+}
 </script>

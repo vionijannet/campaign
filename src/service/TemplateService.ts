@@ -3,9 +3,12 @@ import { GetTemplateReq } from "@/entity/message/GetTemplateReq";
 import { GetTemplateResp } from "@/entity/message/GetTemplateResp";
 import { BaseService } from "./BaseService";
 import { AxiosInstance } from "axios";
+import { GetDetailTemplateReq } from "@/entity/message/GetDetailTemplateReq";
+import { GetDetailTemplateResp } from "@/entity/message/GetDetailTemplateResp";
 
 export interface TemplateService {
     getTemplate(template: GetTemplateReq): Observable<GetTemplateResp>;
+    getDetailTemplate(template: GetDetailTemplateReq): Observable<GetDetailTemplateResp>;
 }
 
 export class TemplateServiceImpl extends BaseService implements TemplateService {
@@ -36,5 +39,16 @@ export class TemplateServiceImpl extends BaseService implements TemplateService 
                 map((response) => JSON.parse(JSON.stringify(response.data as string)))
             )
 
+    }
+
+    getDetailTemplate(template: GetDetailTemplateReq): Observable<GetDetailTemplateResp> {
+        const params = {
+            "template-id": template.template_id
+        };
+
+        return this.httpGet(`${this.API_ENDPOINT}/detail`, { params })
+            .pipe(
+                map((response) => JSON.parse(JSON.stringify(response.data as string)))
+            )
     }
 }

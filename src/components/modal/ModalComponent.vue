@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div tabindex="0" @keydown.esc="$emit('close')">
         <div class="fixed inset-0 z-50 flex justify-center items-center">
-            <div class="relative flex flex-col w-1/2 max-w-3xl rounded-lg shadow-lg bg-white p-4 slide-in-bottom" :class="[open ? 'slide-in-bottom' : 'slide-out-bottom', customClass]">
+            <div class="relative flex flex-col w-1/2 max-w-3xl rounded-lg shadow-lg bg-white p-4 slide-in-bottom    " :class="[open ? 'slide-in-bottom' : 'slide-out-bottom', customClass]">
                 <div class="absolute -right-3 -top-3">
                     <svg xmlns="http://www.w3.org/2000/svg" @click="$emit('close')" fill="white" viewBox="0 0 24 24"
                         stroke-width="1.5" stroke="red" class="w-8 h-8 cursor-pointer">
@@ -9,7 +9,10 @@
                             d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
-                <slot />
+
+                <div class="max-h-[90vh] overflow-y-auto">
+                    <slot />
+                </div>
             </div>
         </div>
         <div class="opacity-25 bg-black h-screen fixed inset-0 z-40"></div>

@@ -22,7 +22,7 @@
                 <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addMessage">Add Message</ButtonBase>
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
-                <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="messageList[indexActiveMessage].message"></textarea>
+                <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="messageList[indexActiveMessage].message_id"></textarea>
             </div>
         </div>
 
@@ -34,10 +34,10 @@
                     <p class="cursor-pointer font-semibold" @click="indexActiveGreeting = index"
                         :class="{ 'text-blue-primary': indexActiveGreeting === index, 'text-gray-700': indexActiveGreeting !== index }" v-for="g, index in greetingList.length" :key="index">Greeting {{ g }}</p>
                 </div>
-                <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addMessage">Add Message</ButtonBase>
+                <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addGreeting">Add Message</ButtonBase>
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
-                <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message"></textarea>
+                <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message_id"></textarea>
             </div>
         </div>
 
@@ -104,28 +104,49 @@ import { useRoute } from "vue-router";
 const indexActiveMessage = ref(0);
 const messageList: Ref<Message[]> = ref([
     {
-        message: "abc"
+        message_id: "1",
+        message_order: "1",
+        message_type: "Message",
+        message_content: "abc",
     },
     {
-        message: "def"
+        message_id: "2",
+        message_order: "2",
+        message_type: "Message",
+        message_content: "def",
     },
     {
-        message: "ghi"
+        message_id: "3",
+        message_order: "3",
+        message_type: "Message",
+        message_content: "ghi",
     },
     {
-        message: "jkl"
+        message_id: "3",
+        message_order: "3",
+        message_type: "Message",
+        message_content: "jkl",
     }
 ]);
 const indexActiveGreeting = ref(0);
 const greetingList: Ref<Message[]> = ref([
     {
-        message: "ypp"
+        message_id: "1",
+        message_order: "1",
+        message_type: "Greeting",
+        message_content: "ypp1",
     },
     {
-        message: "ypp"
+        message_id: "2",
+        message_order: "2",
+        message_type: "Greeting",
+        message_content: "ypp2",
     },
     {
-        message: "ypp"
+        message_id: "3",
+        message_order: "3",
+        message_type: "Greeting",
+        message_content: "ypp3",
     },
 ]);
 
@@ -137,7 +158,19 @@ function backToList(): void {
 
 function addMessage(): void {
     messageList.value.push({
-        message: ""
+        message_id: "",
+        message_content: "",
+        message_order: (messageList.value.length + 1).toString(),
+        message_type: "Message"
+    });
+}
+
+function addGreeting(): void {
+    greetingList.value.push({
+        message_id: "",
+        message_content: "",
+        message_order: (greetingList.value.length + 1).toString(),
+        message_type: "Greeting"
     });
 }
 
