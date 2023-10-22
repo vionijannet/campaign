@@ -48,6 +48,7 @@ import { Subscription } from 'rxjs';
 import { GetTemplateUseCase } from '@/usecase/template/GetTemplateUseCase';
 import { DateConverter } from '@/util/DateConverter';
 import ModalComponent from '@/components/modal/ModalComponent.vue';
+import { NotificationManager } from "@/util/NotificationManager";
 
 const asyncSubscription: Subscription = new Subscription();
 const selectedTemplateId = ref("");
@@ -67,7 +68,7 @@ const searchCriteria: Ref<SearchCriteria> = ref({
     sortOrder: "asc"
 });
 
-const totalRow: Ref<number> = ref(2);
+const totalRow: Ref<number> = ref(0);
 
 const tableHeader: Ref<TableHeader[]> = ref([
     {
@@ -115,12 +116,18 @@ function loadTemplate(template_name: string): void {
             sort_by: searchCriteria.value.sortKey.length > 0 ? `${searchCriteria.value.sortKey},${searchCriteria.value.sortOrder}` : "",
             template_name
         }).subscribe(
-            (getTemplateResp) => {
-                if (getTemplateResp.code === 200) {
-                    templateList.value = getTemplateResp.result.data.content;
-                    totalRow.value = getTemplateResp.result.data.total_elements;
-                } else {
-                    console.log("gagal", getTemplateResp);
+            {
+                next: (getTemplateResp) => {
+                    if (getTemplateResp.code === 200) {
+                        templateList.value = getTemplateResp.result.data.content ?? [];
+                        totalRow.value = getTemplateResp.result.data.total_elements ?? 0;
+                    } else {
+                        const message = getTemplateResp.result?.message ?? getTemplateResp.message;
+                        NotificationManager.showMessage("Failed to Load Data", message, "error");
+                    }
+                },
+                error: (error) => {
+                    NotificationManager.showMessage("Network Error", error, "error");
                 }
             }
         )

@@ -37,6 +37,7 @@
 <script setup lang="ts">
 import { Message } from "@/entity/message/TemplateMessage";
 import { GetDetailTemplateUseCase } from "@/usecase/template/GetDetailTemplateUseCase";
+import { NotificationManager } from "@/util/NotificationManager";
 import { Subscription } from "rxjs";
 import { Ref, inject, onMounted, ref } from "vue";
 
@@ -46,6 +47,7 @@ const props = defineProps({
         default: ""
     }
 });
+const emit = defineEmits(["close"])
 
 const asyncSubscription: Subscription = new Subscription();
 const getDetailTemplateUseCase: GetDetailTemplateUseCase = inject("getDetailTemplateUseCase")!;
@@ -64,21 +66,31 @@ function loadDetailTemplate(): void {
         getDetailTemplateUseCase.execute({
             template_id: props.templateId
         }).subscribe(
-            (templateResp) => {
-                if (templateResp.code === 200) {
-                    messageList.value = templateResp.result.data.message_list.filter(m => m.message_type === "Message")
-                        .sort((a, b) => {
-                            if (a.message_order < b.message_order) return -1;
-                            else if (a.message_order > b.message_order) return 1;
-                            else return 0;
-                        });
+            {
+                next: (templateResp) => {
+                    if (templateResp.code === 200) {
+                        const list = templateResp.result.data.message_list ?? [];
 
-                    greetingList.value = templateResp.result.data.message_list.filter(m => m.message_type === "Greeting")
-                        .sort((a, b) => {
-                            if (a.message_order < b.message_order) return -1;
-                            else if (a.message_order > b.message_order) return 1;
-                            else return 0;
-                        });
+                        messageList.value = list.filter(m => m.message_type === "Message")
+                            .sort((a, b) => {
+                                if (a.message_order < b.message_order) return -1;
+                                else if (a.message_order > b.message_order) return 1;
+                                else return 0;
+                            });
+
+                        greetingList.value = list.filter(m => m.message_type === "Greeting")
+                            .sort((a, b) => {
+                                if (a.message_order < b.message_order) return -1;
+                                else if (a.message_order > b.message_order) return 1;
+                                else return 0;
+                            });
+                    } else {
+                        const message = templateResp.result?.message ?? templateResp.message;
+                        NotificationManager.showMessage("Failed to Load Data", message, "error");
+                    }
+                },
+                error: (error) => {
+                    NotificationManager.showMessage("Network Error", error, "error");
                 }
             }
         )

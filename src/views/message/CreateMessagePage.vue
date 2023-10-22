@@ -100,6 +100,7 @@ import { CreateTemplateReq } from '@/entity/message/CreateTemplateReq';
 import { Message, MessageAttachment } from '@/entity/message/TemplateMessage';
 import router from '@/router';
 import { CreateTemplateUseCase } from '@/usecase/template/CreateTemplateUseCase';
+import { NotificationManager } from '@/util/NotificationManager';
 import { inject, ref, type Ref } from 'vue';
 import { useRoute } from "vue-router";
 
@@ -171,7 +172,6 @@ function removeAttachment(index: number): void {
 }
 
 function createTemplate(): void {
-
     const createReq: CreateTemplateReq = {
         message_list: messageList.value.filter(h => h.message_content.trim().length > 0)
             .concat(greetingList.value.filter(h => h.message_content.trim().length > 0))
@@ -186,9 +186,17 @@ function createTemplate(): void {
     };
 
     createTemplateUseCase.execute(createReq).subscribe(
-        (resp) => {
-            if (resp.code === 200) {
-                backToList();
+        {
+            next: (resp) => {
+                if (resp.code === 200) {
+                    backToList();
+                } else {
+                    const message = resp.result?.message ?? resp.message;
+                    NotificationManager.showMessage("Failed to Create Data", message, "error");
+                }
+            },
+            error: (error) => {
+                NotificationManager.showMessage("Failed to Create Data", error, "error");
             }
         }
     )
