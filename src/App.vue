@@ -8,6 +8,7 @@ import { TemplateService, TemplateServiceImpl } from './service/TemplateService'
 import { provide } from 'vue';
 import { GetTemplateUseCase, GetTemplateUseCaseImpl } from './usecase/template/GetTemplateUseCase';
 import { GetDetailTemplateUseCase, GetDetailTemplateUseCaseImpl } from './usecase/template/GetDetailTemplateUseCase';
+import { CreateTemplateUseCase, CreateTemplateUseCaseImpl } from './usecase/template/CreateTemplateUseCase';
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: "http://192.168.1.16:8080",
@@ -19,4 +20,6 @@ const getTemplate: GetTemplateUseCase = new GetTemplateUseCaseImpl(templateServi
 provide("getTemplateUseCase", getTemplate);
 const getDetailTemplate: GetDetailTemplateUseCase = new GetDetailTemplateUseCaseImpl(templateService);
 provide("getDetailTemplateUseCase", getDetailTemplate);
+const createTemplate: CreateTemplateUseCase = new CreateTemplateUseCaseImpl(templateService);
+provide("createTemplateUseCase", createTemplate);
 </script>

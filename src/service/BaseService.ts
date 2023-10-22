@@ -42,7 +42,6 @@ export class BaseService {
         return defer(() => from(this.axiosInstance.get(this.BASE_API_ENDPOINT + url, config))
             .pipe(
                 catchError((error) => {
-                    console.log(JSON.stringify(error));
                     if (error.response?.data) {
                         const tempResp = error.response.data;
                         if (tempResp.code) return of(tempResp);
@@ -65,7 +64,7 @@ export class BaseService {
     httpPost(
         url: string,
         data?: any,
-        config?: AxiosRequestConfig | undefined
+        config?: AxiosRequestConfig
     ): Observable<AxiosResponse<any>> {
         // this.initializeHttpHeader();
 
