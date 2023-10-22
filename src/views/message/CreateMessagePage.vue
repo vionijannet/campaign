@@ -148,7 +148,7 @@ function uploadFile(event: Event): void {
             attachmentList.value.push({
                 filename: fileList[i].name,
                 checksum: "",
-                messageAttachment: fileList[i]
+                message_attachment: fileList[i]
             });
         }
     }

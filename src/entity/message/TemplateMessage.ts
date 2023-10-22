@@ -1,9 +1,9 @@
 export interface TemplateMessage {
-    templateId: string;
-    name: string;
+    template_id: string;
+    template_name: string;
     message: Message[];
-    previewMessage: string;
-    createdAt: string;
+    preview_message: string;
+    created_at: string;
     attachment: MessageAttachment[];
 }
 
@@ -12,7 +12,7 @@ export interface Message {
 }
 
 export interface MessageAttachment {
-    messageAttachment?: File;
+    message_attachment?: File;
     filename: string;
     checksum?: string;
 }
