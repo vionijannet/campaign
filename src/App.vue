@@ -13,8 +13,8 @@ import { UpdateTemplateUseCase, UpdateTemplateUseCaseImpl } from './usecase/temp
 import { DeleteTemplateUseCase, DeleteTemplateUseCaseImpl } from './usecase/template/DeleteTemplateUseCase';
 
 const axiosInstance: AxiosInstance = axios.create({
-    baseURL: "http://192.168.1.16:8080",
-    timeout: 15000
+    baseURL: "http://192.168.1.148:8080",
+    timeout: 5000
 });
 
 const templateService: TemplateService = new TemplateServiceImpl(axiosInstance);

@@ -1,11 +1,36 @@
 <template>
-    <div class="overflow-x-auto">
+    <div v-if="isLoading">
+        <div class="grid grid-cols-3 gap-x-8 p-2 px-4 rounded-t-lg bg-blue-100">
+            <div class="rounded-tl-lg">
+                <div class="h-6 w-1/4 bg-gray-300 my-3 rounded animate-pulse"></div>
+            </div>
+            <div>
+                <div class="h-6 w-1/4 bg-gray-300 my-3 rounded animate-pulse"></div>
+            </div>
+            <div class="rounded-tr-lg">
+                <div class="h-6 w-1/4 bg-gray-300 my-3 rounded animate-pulse"></div>
+            </div>
+        </div>
+        <div class="grid grid-cols-3 gap-x-8 p-2 px-4 rounded-b-lg bg-white">
+            <div class="rounded-bl-lg">
+                <div class="h-4 w-3/5 bg-gray-300 my-3 rounded animate-pulse"></div>
+            </div>
+            <div>
+                <div class="h-4 w-3/5 bg-gray-300 my-3 rounded animate-pulse"></div>
+            </div>
+            <div class="rounded-br-lg">
+                <div class="h-4 w-3/5 bg-gray-300 my-3 rounded animate-pulse"></div>
+            </div>
+        </div>
+    </div>
+
+    <div v-else class="overflow-x-auto">
         <table class="w-full pt-8 items-center justify-center">
             <!-- <div class="overflow-x-auto"> -->
                 <thead class="bg-blue-100 w-full">
                     <tr class="text-blue-primary text-left rounded">
                         <!-- <th class="py-3 pl-4 w-3 rounded-tl-lg"><input type="checkbox" name="" id=""></th> -->
-                        <th class="p-3" :class="{ 'rounded-tr-lg' : tableHeader.length - 1 === index, 'rounded-tl-lg': index === 0 }" v-for="head, index in tableHeader" :key="head.key">
+                        <th class="p-3" :class="{ 'rounded-tr-lg' : tableHeader.length - 1 === index, 'rounded-tl-lg': index === 0 }" v-for="(head, index) in tableHeader" :key="head.key">
                             <div class="flex justify-between" @click="changeSort(head.key)">
                                 <span>{{ head.name }}</span>
                                 <template v-if="head.isSortable">
@@ -24,14 +49,19 @@
                             <slot :name="head.key" :slot-props="body">{{ body[head.key] }}</slot>
                         </td>
                     </tr>
-                    <tr v-if="body.isExpanded" class=" w-full">
+                    <tr v-if="body.isExpanded" class="w-full">
                         <td :colspan="tableHeader.length + 1" class="p-2 pb-4 rounded-b-lg">
                             <slot name="expand" :slot-props="body" class="bg-blue-100" />
                         </td>
                     </tr>
                 </tbody>
             <!-- </div> -->
-            <tbody class="bg-white shadow-inner">
+            <tbody class="bg-white shadow-inner" v-if="tableBody.length < 1">
+                <tr>
+                    <td :colspan="tableHeader.length + 1" class="p-4 py-12 text-center rounded-b-lg">No data available</td>
+                </tr>
+            </tbody>
+            <tbody class="bg-white shadow-inner" v-else>
                 <tr>
                     <td :colspan="tableHeader.length + 1" class="p-4">
                         <div class="flex items-center justify-between">
@@ -59,7 +89,7 @@ import { computed, ref } from 'vue';
 import SelectComponent from "../select/SelectComponent.vue";
 import { OptionEntity } from '../ComponentEntity';
 
-const props = defineProps(["tableHeader", "tableBody", "searchCriteria", "totalRow"])
+const props = defineProps(["tableHeader", "tableBody", "searchCriteria", "totalRow", "isLoading"])
 const totalPage = computed(() => 
     Math.ceil(props.totalRow / props.searchCriteria.rowPerPage)
 );
