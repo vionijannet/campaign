@@ -12,7 +12,7 @@
                     </div>
                 </div>
                 <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
-                    <textarea disabled class="w-full resize-none bg-gray-100 rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="messageList[indexActiveMessage].message_content"></textarea>
+                    <textarea disabled class="w-full resize-none bg-gray-100 rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="messageList[indexActiveMessage].message"></textarea>
                 </div>
             </div>
         </div>
@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
-                    <textarea disabled class="w-full resize-none bg-gray-100 rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message_content"></textarea>
+                    <textarea disabled class="w-full resize-none bg-gray-100 rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message"></textarea>
                 </div>
             </div>
         </div>

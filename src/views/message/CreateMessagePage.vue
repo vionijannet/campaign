@@ -22,7 +22,7 @@
                 <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addGreeting">Add Greeting</ButtonBase>
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100" v-if="greetingList.length > 0">
-                <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message_content"></textarea>
+                <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message"></textarea>
                 <p class="text-right underline pt-2 px-1 text-red-500 font-semibold cursor-pointer" @click="deleteGreeting">Delete</p>
             </div>
         </div>
@@ -39,7 +39,7 @@
                 <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addMessage">Add Message</ButtonBase>
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100" v-if="messageList.length > 0">
-                <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="messageList[indexActiveMessage].message_content"></textarea>
+                <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="messageList[indexActiveMessage].message"></textarea>
                 <p class="text-right underline pt-2 px-1 text-red-500 font-semibold cursor-pointer" @click="deleteMessage">Delete</p>
             </div>
         </div>
@@ -118,7 +118,7 @@ const messageList: Ref<Message[]> = ref([
         message_id: "",
         message_order: "",
         message_type: "Message",
-        message_content: "",
+        message: "",
         flag_delete: false,
     }
 ]);
@@ -128,7 +128,7 @@ const greetingList: Ref<Message[]> = ref([
         message_id: "",
         message_order: "",
         message_type: "Greeting",
-        message_content: "",
+        message: "",
         flag_delete: false,
     }
 ]);
@@ -145,7 +145,7 @@ function backToList(): void {
 function addMessage(): void {
     messageList.value.push({
         message_id: "",
-        message_content: "",
+        message: "",
         message_order: (messageList.value.length + 1).toString(),
         message_type: "Message",
         flag_delete: false,
@@ -155,7 +155,7 @@ function addMessage(): void {
 function addGreeting(): void {
     greetingList.value.push({
         message_id: "",
-        message_content: "",
+        message: "",
         message_order: (greetingList.value.length + 1).toString(),
         message_type: "Greeting",
         flag_delete: false,
@@ -185,11 +185,11 @@ function removeAttachment(index: number): void {
 
 function createTemplate(): void {
     const createReq: CreateTemplateReq = {
-        message_list: messageList.value.filter(h => h.message_content.trim().length > 0)
-        .concat(greetingList.value.filter(h => h.message_content.trim().length > 0))
+        message_list: messageList.value.filter(h => h.message.trim().length > 0)
+        .concat(greetingList.value.filter(h => h.message.trim().length > 0))
         .map(v => {
             return {
-                message: v.message_content,
+                message: v.message,
                 message_order: v.message_order,
                 message_type: v.message_type
             }

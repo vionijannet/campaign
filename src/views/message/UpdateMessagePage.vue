@@ -21,8 +21,8 @@
                 </div>
                 <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addGreeting">Add Greeting</ButtonBase>
             </div>
-            <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
-                <textarea v-if="filteredGreetingList.length > 0" class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" :value="filteredGreetingList[indexActiveGreeting].message_content" @input="updateGreetingListFromFilteredData($event)"></textarea>
+            <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100" v-if="filteredGreetingList.length > 0">
+                <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" :value="filteredGreetingList[indexActiveGreeting].message" @input="updateGreetingListFromFilteredData($event)"></textarea>
                 <p class="text-right underline pt-2 px-1 text-red-500 font-semibold cursor-pointer" @click="deleteGreeting">Delete</p>
             </div>
         </div>
@@ -38,7 +38,7 @@
                 <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addMessage">Add Message</ButtonBase>
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100" v-if="filteredMessageList.length > 0">
-                <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" :value="filteredMessageList[indexActiveMessage].message_content" @input="updateMessageListFromFilteredData($event)"></textarea>
+                <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" :value="filteredMessageList[indexActiveMessage].message" @input="updateMessageListFromFilteredData($event)"></textarea>
                 <p class="text-right underline pt-2 px-1 text-red-500 font-semibold cursor-pointer" @click="deleteMessage">Delete</p>
             </div>
         </div>
@@ -119,7 +119,7 @@ const getDetailTemplateUseCase: GetDetailTemplateUseCase = inject("getDetailTemp
 const indexActiveMessage = ref(0);
 const messageList: Ref<Message[]> = ref([{
     flag_delete: false,
-    message_content: "",
+    message: "",
     message_id: "",
     message_order: "1",
     message_type: "Message"
@@ -127,7 +127,7 @@ const messageList: Ref<Message[]> = ref([{
 const indexActiveGreeting = ref(0);
 const greetingList: Ref<Message[]> = ref([{
     flag_delete: false,
-    message_content: "",
+    message: "",
     message_id: "",
     message_order: "1",
     message_type: "Greeting"
@@ -135,7 +135,7 @@ const greetingList: Ref<Message[]> = ref([{
 
 const filteredMessageList = computed(() => {
     return messageList.value.map((data, index) => {
-        return { ...data, index }
+        return { ...data, flag_delete: data.flag_delete ?? false, index }
     }).filter(data => data.flag_delete === false);
 });
 
@@ -154,7 +154,7 @@ function backToList(): void {
 function addMessage(): void {
     messageList.value.push({
         message_id: "",
-        message_content: "",
+        message: "",
         message_order: (messageList.value.length + 1).toString(),
         message_type: "Message",
         flag_delete: false,
@@ -164,7 +164,7 @@ function addMessage(): void {
 function addGreeting(): void {
     greetingList.value.push({
         message_id: "",
-        message_content: "",
+        message: "",
         message_order: (greetingList.value.length + 1).toString(),
         message_type: "Greeting",
         flag_delete: false,
@@ -229,9 +229,9 @@ function updateTemplate(): void {
                 return {
                     message_id: v.message_id,
                     message_order: v.message_order,
-                    message: v.message_content,
+                    message: v.message,
                     message_type: v.message_type,
-                    flag_delete: v.flag_delete,
+                    flag_delete: v.flag_delete ?? false,
                 }
             })
     };
@@ -288,7 +288,7 @@ function updateMessageListFromFilteredData(event: Event): void {
     const trueIndex = filteredMessageList.value[indexActiveMessage.value].index;
 
     // Set data to message list
-    messageList.value[trueIndex].message_content = value;
+    messageList.value[trueIndex].message = value;
 }
 
 function updateGreetingListFromFilteredData(event: Event): void {
@@ -299,7 +299,7 @@ function updateGreetingListFromFilteredData(event: Event): void {
     const trueIndex = filteredGreetingList.value[indexActiveGreeting.value].index;
 
     // Set data to message list
-    greetingList.value[trueIndex].message_content = value;
+    greetingList.value[trueIndex].message = value;
 }
 
 function validateTemplate(error: FieldError[]): void {

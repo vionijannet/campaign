@@ -10,7 +10,7 @@ export interface Message {
     message_id: string;
     message_order: string;
     message_type: "Greeting" | "Message";
-    message_content: string;
+    message: string;
     flag_delete: boolean;
 }
 

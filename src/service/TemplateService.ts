@@ -50,11 +50,7 @@ export class TemplateServiceImpl extends BaseService implements TemplateService 
     }
 
     getDetailTemplate(template: GetDetailTemplateReq): Observable<GetDetailTemplateResp> {
-        const params = {
-            "template-id": template.template_id
-        };
-
-        return this.httpGet(`${this.API_ENDPOINT}/detail`, { params })
+        return this.httpGet(`${this.API_ENDPOINT}/detail/${template.template_id}`)
             .pipe(
                 map((response) => {
                     const tempResp: any = response;
