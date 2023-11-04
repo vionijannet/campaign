@@ -59,6 +59,7 @@ import { SearchCriteria, TableHeader } from '@/components/ComponentEntity';
 import { finalize, Subscription } from 'rxjs';
 import { GetCampaignUseCase } from '@/usecase/campaign/GetCampaignUseCase';
 import { NotificationManager } from '@/util/NotificationManager';
+import { DeleteCampaignUseCase } from '@/usecase/campaign/DeleteCampaignUseCase';
 
 const asyncSubscription: Subscription = new Subscription();
 
@@ -149,6 +150,7 @@ const tableHeader: Ref<TableHeader[]> = ref([
 ] as TableHeader[]);
 
 const getCampaignUseCase: GetCampaignUseCase = inject("getCampaignUseCase")!;
+const deleteCampaignUseCase: DeleteCampaignUseCase = inject("deleteCampaignUseCase")!;
 
 function manualTriggerCampaign(campaignId: string): void {
     console.log("manual trigger campaign", campaignId);
@@ -158,8 +160,28 @@ function redirectToUpdateCampaign(campaignId: string): void {
     router.push(`/campaign/${campaignId}`);
 }
 
-function deleteCampaign(campaignId: string): void {
-    console.log("delete", campaignId);
+function deleteCampaign(campaign_id: string): void {
+    asyncSubscription.add(
+        deleteCampaignUseCase.execute({
+            campaign_id
+        }).subscribe(
+            {
+                next: (resp) => {
+                    if (resp.code === 200) {
+                        NotificationManager.showMessage("Success to Delete Data", "");
+                        searchCriteria.value.page = 1;
+                        loadCampaign("");
+                    } else {
+                        const message = resp.result?.message ?? resp.message;
+                        NotificationManager.showMessage("Failed to Delete Data", message, "error");
+                    }
+                },
+                error: (error) => {
+                    NotificationManager.showMessage("Network Error", error, "error");
+                }
+            }
+        )
+    )
 }
 
 function percentageDeliver(data: Campaign): string {
