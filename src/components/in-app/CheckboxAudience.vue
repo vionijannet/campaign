@@ -5,7 +5,7 @@
             <label for="audiens-1" class="flex items-center space-x-3">
                 <input type="checkbox" name="audiens-1" id="audiens-1" @change="selectAudiens" />
                 <div class="flex items-center space-x-2">
-                    <img src="https://http.dog/200.jpg" alt="Audiens" class="w-[50px] h-[50px] rounded-2xl">
+                    <img src="https://http.dog/200.jpg" alt="Audience" class="w-[50px] h-[50px] rounded-2xl">
                     <div>
                         <p class="font-semibold">John Doe</p>
                         <p class="text-sm text-gray-800">Message</p>

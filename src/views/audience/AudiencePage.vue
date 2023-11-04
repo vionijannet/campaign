@@ -31,7 +31,7 @@ import ButtonBase from '@/components/button/ButtonBase.vue';
 import TableExpandComponent from '@/components/table/TableExpandComponent.vue';
 import router from "@/router";
 import { ref, type Ref } from 'vue';
-import { Audiens } from "@/entity/audiens/Audiens";
+import { Audience } from "@/entity/audience/Audience";
 import { SearchCriteria, TableHeader } from '@/components/ComponentEntity';
 import Search from '@/components/search/Search.vue';
 
@@ -40,7 +40,7 @@ function redirectToCreate(): void {
     // router.push("/message/create");
 }
 
-const audiensList: Ref<Audiens[]> = ref([
+const audiensList: Ref<Audience[]> = ref([
     {
         category_id: "c-01",
         category_name: "Loyal Fans",

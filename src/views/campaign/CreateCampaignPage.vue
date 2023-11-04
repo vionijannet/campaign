@@ -55,7 +55,7 @@
             </div>
         </div>
         <div class="w-full space-y-2">
-            <span for="labelFor" class="font-semibold text-lg">Audiens</span>
+            <span for="labelFor" class="font-semibold text-lg">Audience</span>
             <div class="flex items-center justify-between bg-gray-100 p-4 w-full rounded-lg text-lg">
                 <span class="text-lg text-gray-400">Select audiens</span>
                 <button @click="isPopupAudiensOpen=true">
@@ -107,7 +107,7 @@
             <div class="flex items-center pb-2">
                 <label for="audiens" class="flex items-center space-x-3">
                     <input type="checkbox" name="audiens" id="audiens" />
-                    <span class="font-semibold">Select Audiens</span>
+                    <span class="font-semibold">Select Audience</span>
                 </label>
             </div>
             <div class="pb-4 space-y-2">
@@ -147,7 +147,7 @@ import ButtonBase from '@/components/button/ButtonBase.vue';
 import InputText from '@/components/input/InputText.vue';
 import ModalComponent from '@/components/modal/ModalComponent.vue';
 import LoadingScreen from '@/components/loading/LoadingScreen.vue';
-import CheckboxAudiens from '@/components/in-app/CheckboxAudiens.vue';
+import CheckboxAudiens from '@/components/in-app/CheckboxAudience.vue';
 import SelectMessageTemplate from '@/views/campaign/SelectMessageTemplate.vue';
 import router from '@/router';
 import { ref, type Ref } from 'vue';

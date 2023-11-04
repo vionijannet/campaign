@@ -1,4 +1,4 @@
-export interface Audiens {
+export interface Audience {
     category_id: string;
     category_name: string;
     tag: string;
