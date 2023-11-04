@@ -13,6 +13,8 @@ import { UpdateTemplateUseCase, UpdateTemplateUseCaseImpl } from './usecase/temp
 import { DeleteTemplateUseCase, DeleteTemplateUseCaseImpl } from './usecase/template/DeleteTemplateUseCase';
 import { CampaignService, CampaignServiceImpl } from './service/CampaignService';
 import { GetCampaignUseCase, GetCampaignUseCaseImpl } from './usecase/campaign/GetCampaignUseCase';
+import { PageService, PageServiceImpl } from './service/PageService';
+import { GetPageUseCase, GetPageUseCaseImpl } from './usecase/page/GetPageUseCase';
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: "http://127.0.0.1:8080",
@@ -34,4 +36,8 @@ provide("deleteTemplateUseCase", deleteTemplate);
 const campaignService: CampaignService = new CampaignServiceImpl(axiosInstance);
 const getCampaign: GetCampaignUseCase = new GetCampaignUseCaseImpl(campaignService);
 provide("getCampaignUseCase", getCampaign);
+
+const pageService: PageService = new PageServiceImpl(axiosInstance);
+const getPage: GetPageUseCase = new GetPageUseCaseImpl(pageService);
+provide("getPageUseCase", getPage);
 </script>
