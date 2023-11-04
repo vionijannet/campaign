@@ -42,9 +42,9 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody v-for="body, index in tableBody" :key="index" class="bg-white shadow-inner !w-full">
+                <tbody v-for="(body, index) in tableBody" :key="index" class="bg-white shadow-inner !w-full">
                     <tr class="w-full">
-                        <td class="p-2 w-fit" v-for="head, j in tableHeader" :key="`${index}-${j}`"
+                        <td class="p-2 w-fit" v-for="(head, j) in tableHeader" :key="`${index}-${j}`"
                             :class="{ 'rounded-br-lg': tableHeader.length-1 === j && !body.isExpanded, 'rounded-bl-lg': j === 0 }">
                             <slot :name="head.key" :slot-props="body">{{ body[head.key] }}</slot>
                         </td>
@@ -67,7 +67,7 @@
                         <div class="flex items-center justify-between">
                             <div class="flex">
                                 <button class="rounded-l-lg border px-2 py-1" @click="changePage('prev')">Prev</button>
-                                <button v-for="page, index in shownPage" class="border-y border-r px-2 py-1" @click="changePage(page)"
+                                <button v-for="(page, index) in shownPage" class="border-y border-r px-2 py-1" @click="changePage(page)"
                                     :class="{'border-r-0': index === shownPage.length-1, 'cursor-default': page === '...', 'font-bold': page === props.searchCriteria.page.toString()}">{{ page }}</button>
                                 <button class="rounded-r-lg border px-2 py-1" @click="changePage('next')">Next</button>
                             </div>
@@ -85,14 +85,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import SelectComponent from "../select/SelectComponent.vue";
 import { OptionEntity } from '../ComponentEntity';
 
 const props = defineProps(["tableHeader", "tableBody", "searchCriteria", "totalRow", "isLoading"])
-const totalPage = computed(() => 
-    Math.ceil(props.totalRow / props.searchCriteria.rowPerPage)
-);
+const totalPage = computed(() => {
+    if (!props.totalRow || props.totalRow < 1) {
+        return 1;
+    }
+    return Math.ceil(props.totalRow / props.searchCriteria.rowPerPage);
+
+});
 
 function changeSort(sortKey: string): void {
     let tempSortOrder = "asc";

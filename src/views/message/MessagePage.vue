@@ -153,7 +153,6 @@ function loadTemplate(template_name: string): void {
                         templateList.value = getTemplateResp.result.data.content ?? [];
                         totalRow.value = getTemplateResp.result.data.total_elements ?? 0;
                     } else {
-                        console.log("?");
                         const message = getTemplateResp.result?.message ?? getTemplateResp.message;
                         NotificationManager.showMessage("Failed to Load Data", message, "error");
                     }
