@@ -25,9 +25,9 @@
             </template>
             <template #action="{slotProps}">
                 <div class="flex items-center space-x-4">
-                    <img src="../../assets/manual-trigger.svg" title="Manual Trigger" alt="Manual Trigger" class="cursor-pointer" @click="manualTriggerCampaign(slotProps.id)" />
-                    <img src="../../assets/update.svg" title="Update" alt="Update" class="cursor-pointer" @click="redirectToUpdateCampaign(slotProps.id)" />
-                    <img src="../../assets/trash.svg" title="Delete" alt="Delete" class="cursor-pointer" @click="deleteCampaign(slotProps.id)" />
+                    <img src="../../assets/manual-trigger.svg" title="Manual Trigger" alt="Manual Trigger" class="cursor-pointer" @click="manualTriggerCampaign(slotProps.campaign_id)" />
+                    <img src="../../assets/update.svg" title="Update" alt="Update" class="cursor-pointer" @click="redirectToUpdateCampaign(slotProps.campaign_id)" />
+                    <img src="../../assets/trash.svg" title="Delete" alt="Delete" class="cursor-pointer" @click="deleteCampaign(slotProps.campaign_id)" />
                 </div>
             </template>
             <template #campaign_date="{slotProps}">
