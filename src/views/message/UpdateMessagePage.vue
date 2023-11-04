@@ -9,15 +9,14 @@
         </ButtonBase>
     </div>
     <div class="bg-white w-full rounded-2xl p-6 space-y-6">
-        <InputText label-for="message-name" label-text="Message Name" placeholder="Type your message name"></InputText>
-
-        <InputText label-for="template-name" label-text="Template" placeholder="Type your template name" :value="templateName" @type="setTemplateName"></InputText>
-
+        <InputText label-for="message-name" label-text="Message Name" placeholder="Type your message name" :value="templateName" @type="setTemplateName"></InputText>
         <div class="w-full">
             <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
                 <div class="flex items-center justify-start space-x-8">
-                    <p class="cursor-pointer font-semibold" @click="indexActiveMessage = index"
-                        :class="{ 'text-blue-primary': indexActiveMessage === index, 'text-gray-700': indexActiveMessage !== index }" v-for="m, index in messageList.length" :key="index">Message {{ m }}</p>
+                    <p class="cursor-pointer font-semibold" @click="indexActiveMessage = index" v-for="(m, index) in messageList.length"
+                        :class="{ 'text-blue-primary': indexActiveMessage === index, 'text-gray-700': indexActiveMessage !== index }" :key="index">
+                        Message {{ m }}
+                    </p>
                 </div>
                 <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addMessage">Add Message</ButtonBase>
             </div>
@@ -26,13 +25,13 @@
             </div>
         </div>
 
-        <InputText label-for="greeting-name" label-text="Greeting" placeholder="Type your greeting"></InputText>
-
         <div class="w-full">
             <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
                 <div class="flex items-center justify-start space-x-8">
-                    <p class="cursor-pointer font-semibold" @click="indexActiveGreeting = index"
-                        :class="{ 'text-blue-primary': indexActiveGreeting === index, 'text-gray-700': indexActiveGreeting !== index }" v-for="g, index in greetingList.length" :key="index">Greeting {{ g }}</p>
+                    <p class="cursor-pointer font-semibold" @click="indexActiveGreeting = index" v-for="(g, index) in greetingList.length"
+                        :class="{ 'text-blue-primary': indexActiveGreeting === index, 'text-gray-700': indexActiveGreeting !== index }" :key="index">
+                        Greeting {{ g }}
+                    </p>
                 </div>
                 <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addGreeting">Add Message</ButtonBase>
             </div>
@@ -51,7 +50,6 @@
                     <label for="upload-image" class="flex items-center cursor-pointer border bg-white hover:bg-gray-100 border-blue-primary text-blue-primary p-2 px-4 rounded-lg font-semibold">Browse Image</label>
                     <input @change="uploadFile($event)" type="file" multiple name="image" id="upload-image" class="hidden">
                 </div>
-                <!-- <ButtonBase type="secondary" class="!w-36">Browse Image</ButtonBase> -->
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
                 <div v-if="attachmentList.length < 1">
@@ -61,7 +59,7 @@
                     </label>
                 </div>
                 <div v-else class="grid lg:grid-cols-2 xl:grid-cols-4 gap-4">
-                    <div class="border flex items-center bg-white rounded-lg" v-for="attachment, index in attachmentList" :key="index">
+                    <div class="border flex items-center bg-white rounded-lg" v-for="(attachment, index) in attachmentList" :key="index">
                         <div class="p-4">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
@@ -112,60 +110,9 @@ const updateTemplateUseCase: UpdateTemplateUseCase = inject("updateTemplateUseCa
 const getDetailTemplateUseCase: GetDetailTemplateUseCase = inject("getDetailTemplateUseCase")!;
 
 const indexActiveMessage = ref(0);
-const messageList: Ref<Message[]> = ref([
-    // {
-    //     message_id: "1",
-    //     message_order: "1",
-    //     message_type: "Message",
-    //     message_content: "abc",
-    //     flag_delete: false,
-    // },
-    // {
-    //     message_id: "2",
-    //     message_order: "2",
-    //     message_type: "Message",
-    //     message_content: "def",
-    //     flag_delete: false,
-    // },
-    // {
-    //     message_id: "3",
-    //     message_order: "3",
-    //     message_type: "Message",
-    //     message_content: "ghi",
-    //     flag_delete: false,
-    // },
-    // {
-    //     message_id: "3",
-    //     message_order: "3",
-    //     message_type: "Message",
-    //     message_content: "jkl",
-    //     flag_delete: false,
-    // }
-]);
+const messageList: Ref<Message[]> = ref([]);
 const indexActiveGreeting = ref(0);
-const greetingList: Ref<Message[]> = ref([
-    // {
-    //     message_id: "1",
-    //     message_order: "1",
-    //     message_type: "Greeting",
-    //     message_content: "ypp1",
-    //     flag_delete: false,
-    // },
-    // {
-    //     message_id: "2",
-    //     message_order: "2",
-    //     message_type: "Greeting",
-    //     message_content: "ypp2",
-    //     flag_delete: false,
-    // },
-    // {
-    //     message_id: "3",
-    //     message_order: "3",
-    //     message_type: "Greeting",
-    //     message_content: "ypp3",
-    //     flag_delete: false,
-    // },
-]);
+const greetingList: Ref<Message[]> = ref([]);
 
 const attachmentList: Ref<MessageAttachment[]> = ref([]);
 
