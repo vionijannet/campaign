@@ -1,14 +1,16 @@
-export interface DummyCampaign {
-    id: string;
-    name: string;
-    pageName: string;
-    status: string;
-    sent: string;
-    failed: string;
-    scheduled: string;
-    createdAt: string;
-    delivered: string;
-    read: string;
-    clicked: string;
+export interface Campaign {
+    campaign_id: string;
+    campaign_name: string;
+    page_id: string;
+    page_name: string;
+    campaign_status: string;
+    campaign_date: string | null;
+    created_at: string;
+    total_amount: number;
+    pending_amount: number;
+    failed_amount: number;
+    success_amount: number;
     isExpanded: boolean;
+    clicked?: string;
+    read?: string;
 }

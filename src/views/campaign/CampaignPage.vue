@@ -15,11 +15,13 @@
                     <svg @click="slotProps.isExpanded = !slotProps.isExpanded" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 transform transition-all cursor-pointer" :class="slotProps.isExpanded ? 'rotate-90' : ''">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
                     </svg>
-                    <span>{{ slotProps.name }}</span>
+                    <span>{{ slotProps.campaign_name }}</span>
                 </div>
             </template>
             <template #status="{slotProps}">
-                <div class="p-2" :class="{'text-amber-500': slotProps.status === STATUS_PENDING, 'text-green-500': slotProps.status === STATUS_DONE}">{{ slotProps.status }}</div>
+                <div class="p-2" :class="{'text-amber-500': slotProps.campaign_status === STATUS_PENDING, 'text-green-500': slotProps.campaign_status === STATUS_DONE}">
+                    {{ slotProps.campaign_status }}
+                </div>
             </template>
             <template #action="{slotProps}">
                 <div class="flex items-center space-x-4">
@@ -32,13 +34,9 @@
                 <div class="bg-blue-100 p-2 pl-8 mx-2">
                     <div class="grid grid-cols-6 auto-cols-fr text-sm gap-y-1">
                         <p>Created at</p>
-                        <p class="col-span-5">{{ slotProps.createdAt }}</p>
+                        <p class="col-span-5">{{ slotProps.created_at }}</p>
                         <p>Delivered(%)</p>
-                        <p class="col-span-5">{{ slotProps.delivered }}</p>
-                        <p>Read(%)</p>
-                        <p class="col-span-5">{{ slotProps.read }}</p>
-                        <p>Clicked(%)</p>
-                        <p class="col-span-5">{{ slotProps.clicked }}</p>
+                        <p class="col-span-5">{{ slotProps.success_amount }}/{{ slotProps.total_amount }} ({{ percentageDeliver(slotProps) }})</p>
                     </div>
                 </div>
             </template>
@@ -52,7 +50,7 @@ import TableExpandComponent from '@/components/table/TableExpandComponent.vue';
 import Search from '@/components/search/Search.vue';
 import router from "@/router";
 import { ref, type Ref } from 'vue';
-import { DummyCampaign } from "@/entity/campaign/Campaign";
+import { Campaign } from "@/entity/campaign/Campaign";
 import { SearchCriteria, TableHeader } from '@/components/ComponentEntity';
 
 const STATUS_PENDING = "Pending";
@@ -62,33 +60,33 @@ function redirectToCreate(): void {
     router.push("/campaign/create");
 }
 
-const campaignList: Ref<DummyCampaign[]> = ref([
+const campaignList: Ref<Campaign[]> = ref([
     {
-        id: "id-01",
-        name: "Campaign Name Here",
-        pageName: "Page Name",
-        status: "Pending",
-        sent: "5/100",
-        failed: "3",
-        scheduled: "Not Scheduled",
-        createdAt: "28 October 2022, 11:03",
-        delivered: "50/100(50%)",
-        read: "25(50%)",
-        clicked: "0(0.00%)",
+        campaign_id: "id-01",
+        campaign_name: "Campaign Name Here",
+        page_id: "p-01",
+        page_name: "Page Name",
+        campaign_status: "Pending",
+        campaign_date: null,
+        pending_amount: 5,
+        failed_amount: 3,
+        success_amount: 2,
+        total_amount: 10,
+        created_at: "28 October 2022, 11:03",
         isExpanded: false,
     },
     {
-        id: "id-02",
-        name: "Campaign Name Here 2",
-        pageName: "Page Name",
-        status: "Done",
-        sent: "90/100",
-        failed: "1",
-        scheduled: "30 October 2022, 14:30",
-        createdAt: "18 October 2022, 11:03",
-        delivered: "50/100(50%)",
-        read: "25(50%)",
-        clicked: "0(0.00%)",
+        campaign_id: "id-02",
+        campaign_name: "Campaign Name Here 2",
+        page_id: "p-01",
+        page_name: "Page Name",
+        campaign_status: "Done",
+        campaign_date: "30 October 2022, 14:30",
+        pending_amount: 5,
+        failed_amount: 3,
+        success_amount: 2,
+        total_amount: 10,
+        created_at: "18 October 2022, 11:03",
         isExpanded: false,
     },
 ]);
@@ -109,7 +107,7 @@ const tableHeader: Ref<TableHeader[]> = ref([
         isSortable: true
     },
     {
-        key: "pageName",
+        key: "page_name",
         name: "Page Name",
         isSortable: true
     },
@@ -119,17 +117,17 @@ const tableHeader: Ref<TableHeader[]> = ref([
         isSortable: true
     },
     {
-        key: "sent",
+        key: "success_amount",
         name: "Sent",
         isSortable: false
     },
     {
-        key: "failed",
+        key: "failed_amount",
         name: "Failed",
         isSortable: false
     },
     {
-        key: "scheduled",
+        key: "campaign_status",
         name: "Scheduled",
         isSortable: false
     },
@@ -150,5 +148,12 @@ function redirectToUpdateCampaign(campaignId: string): void {
 
 function deleteCampaign(campaignId: string): void {
     console.log("delete", campaignId);
+}
+
+function percentageDeliver(data: Campaign): string {
+    if (data.total_amount > 0) {
+        return `${(data.success_amount / data.total_amount) * 100} %`;
+    }
+    return "0%"
 }
 </script>
