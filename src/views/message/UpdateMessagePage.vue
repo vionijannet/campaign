@@ -10,37 +10,40 @@
     </div>
     <div class="bg-white w-full rounded-2xl p-6 space-y-6">
         <InputText label-for="message-name" label-text="Message Name" placeholder="Type your message name" :value="templateName" @type="setTemplateName"></InputText>
-        <div class="w-full">
-            <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
+
+        <div class="w-full" id="greeting">
+            <div class="border p-4 rounded-2xl rounded-b-none flex items-center justify-between" :class="{ 'border-b-0' : filteredGreetingList.length > 0 }">
                 <div class="flex items-center justify-start space-x-8">
-                    <p class="cursor-pointer font-semibold" @click="indexActiveMessage = index" v-for="(m, index) in messageList.length"
+                    <p class="cursor-pointer font-semibold" @click="indexActiveGreeting = index" v-for="(g, index) in filteredGreetingList.length"
+                        :class="{ 'text-blue-primary': indexActiveGreeting === index, 'text-gray-700': indexActiveGreeting !== index }" :key="index">
+                        Greeting {{ g }}
+                    </p>
+                </div>
+                <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addGreeting">Add Greeting</ButtonBase>
+            </div>
+            <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
+                <textarea v-if="filteredGreetingList.length > 0" class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" :value="filteredGreetingList[indexActiveGreeting].message_content" @input="updateGreetingListFromFilteredData($event)"></textarea>
+                <p class="text-right underline pt-2 px-1 text-red-500 font-semibold cursor-pointer" @click="deleteGreeting">Delete</p>
+            </div>
+        </div>
+
+        <div class="w-full" id="message">
+            <div class="border p-4 rounded-2xl rounded-b-none flex items-center justify-between" :class="{ 'border-b-0' : filteredMessageList.length > 0 }">
+                <div class="flex items-center justify-start space-x-8">
+                    <p class="cursor-pointer font-semibold" @click="indexActiveMessage = index" v-for="(m, index) in filteredMessageList.length"
                         :class="{ 'text-blue-primary': indexActiveMessage === index, 'text-gray-700': indexActiveMessage !== index }" :key="index">
                         Message {{ m }}
                     </p>
                 </div>
                 <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addMessage">Add Message</ButtonBase>
             </div>
-            <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
-                <textarea v-if="messageList.length > 0" class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="messageList[indexActiveMessage].message_content"></textarea>
+            <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100" v-if="filteredMessageList.length > 0">
+                <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" :value="filteredMessageList[indexActiveMessage].message_content" @input="updateMessageListFromFilteredData($event)"></textarea>
+                <p class="text-right underline pt-2 px-1 text-red-500 font-semibold cursor-pointer" @click="deleteMessage">Delete</p>
             </div>
         </div>
 
-        <div class="w-full">
-            <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
-                <div class="flex items-center justify-start space-x-8">
-                    <p class="cursor-pointer font-semibold" @click="indexActiveGreeting = index" v-for="(g, index) in greetingList.length"
-                        :class="{ 'text-blue-primary': indexActiveGreeting === index, 'text-gray-700': indexActiveGreeting !== index }" :key="index">
-                        Greeting {{ g }}
-                    </p>
-                </div>
-                <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addGreeting">Add Message</ButtonBase>
-            </div>
-            <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
-                <textarea v-if="greetingList.length > 0" class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message_content"></textarea>
-            </div>
-        </div>
-
-        <div class="w-full">
+        <div class="w-full" id="upload-attachment">
             <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
                 <div class="flex-col">
                     <p class="font-medium">Upload Image</p>
@@ -87,7 +90,7 @@
         </div>
     </div>
 
-    <LoadingScreen v-if="false"></LoadingScreen>
+    <LoadingScreen v-if="isLoading"></LoadingScreen>
 </template>
 
 <script setup lang="ts">
@@ -100,11 +103,13 @@ import router from '@/router';
 import { GetDetailTemplateUseCase } from '@/usecase/template/GetDetailTemplateUseCase';
 import { UpdateTemplateUseCase } from '@/usecase/template/UpdateTemplateUseCase';
 import { NotificationManager } from '@/util/NotificationManager';
-import { inject, onMounted, ref, type Ref } from 'vue';
+import { finalize } from 'rxjs';
+import { computed, inject, onMounted, ref, type Ref } from 'vue';
 import { useRoute } from "vue-router";
 
 const templateId: string = useRoute().params["templateId"] as string;
 const templateName = ref("");
+const isLoading = ref(false);
 
 const updateTemplateUseCase: UpdateTemplateUseCase = inject("updateTemplateUseCase")!;
 const getDetailTemplateUseCase: GetDetailTemplateUseCase = inject("getDetailTemplateUseCase")!;
@@ -125,6 +130,18 @@ const greetingList: Ref<Message[]> = ref([{
     message_order: "1",
     message_type: "Greeting"
 }]);
+
+const filteredMessageList = computed(() => {
+    return messageList.value.map((data, index) => {
+        return { ...data, index }
+    }).filter(data => data.flag_delete === false);
+});
+
+const filteredGreetingList = computed(() => {
+    return greetingList.value.map((data, index) => {
+        return { ...data, index }
+    }).filter(data => data.flag_delete === false);
+});
 
 const attachmentList: Ref<MessageAttachment[]> = ref([]);
 
@@ -201,6 +218,8 @@ function loadData(): void {
 }
 
 function updateTemplate(): void {
+    isLoading.value = true;
+
     const updateReq: UpdateTemplateReq = {
         template_id: templateId,
         template_name: templateName.value,
@@ -216,7 +235,9 @@ function updateTemplate(): void {
             })
     };
 
-    updateTemplateUseCase.execute(updateReq).subscribe(
+    updateTemplateUseCase.execute(updateReq).pipe(
+        finalize(() => isLoading.value = false)
+    ).subscribe(
         {
             next: (resp) => {
                 if (resp.code === 200) {
@@ -231,5 +252,45 @@ function updateTemplate(): void {
             }
         }
     )
+}
+
+function deleteMessage(): void {
+    const indexToUpdate = filteredMessageList.value[indexActiveMessage.value].index;
+    messageList.value[indexToUpdate].flag_delete = true;
+
+    if (indexActiveMessage.value > filteredMessageList.value.length) {
+        indexActiveMessage.value = filteredMessageList.value.length - 1;
+    }
+}
+
+function deleteGreeting(): void {
+    const indexToUpdate = filteredGreetingList.value[indexActiveGreeting.value].index;
+    greetingList.value[indexToUpdate].flag_delete = true;
+
+    if (indexActiveGreeting.value > filteredGreetingList.value.length) {
+        indexActiveGreeting.value = filteredGreetingList.value.length - 1;
+    }
+}
+
+function updateMessageListFromFilteredData(event: Event): void {
+    // Get new value
+    const value = (event.target as HTMLTextAreaElement).value;
+
+    // Get index from message list
+    const trueIndex = filteredMessageList.value[indexActiveMessage.value].index;
+
+    // Set data to message list
+    messageList.value[trueIndex].message_content = value;
+}
+
+function updateGreetingListFromFilteredData(event: Event): void {
+    // Get new value
+    const value = (event.target as HTMLTextAreaElement).value;
+
+    // Get index from message list
+    const trueIndex = filteredGreetingList.value[indexActiveGreeting.value].index;
+
+    // Set data to message list
+    greetingList.value[trueIndex].message_content = value;
 }
 </script>

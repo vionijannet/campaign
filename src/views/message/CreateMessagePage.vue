@@ -10,8 +10,8 @@
     </div>
     <div class="bg-white w-full rounded-2xl p-6 space-y-6">
         <InputText label-for="message-name" label-text="Message" placeholder="Type your message name" @type="setTemplateName" :value="templateName" />
-        <div class="w-full">
-            <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
+        <div class="w-full" id="greeting">
+            <div class="border p-4 rounded-2xl rounded-b-none flex items-center justify-between" :class="messageList.length > 0 ? 'border-b-0' : ''">
                 <div class="flex items-center justify-start space-x-8">
                     <p class="cursor-pointer font-semibold" @click="indexActiveGreeting = index"
                         :class="{ 'text-blue-primary': indexActiveGreeting === index, 'text-gray-700': indexActiveGreeting !== index }"
@@ -19,15 +19,16 @@
                         Greeting {{ g }}
                     </p>
                 </div>
-                <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addGreeting">Add Message</ButtonBase>
+                <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addGreeting">Add Greeting</ButtonBase>
             </div>
-            <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
-                <textarea v-if="greetingList.length > 0" class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message_content"></textarea>
+            <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100" v-if="greetingList.length > 0">
+                <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message_content"></textarea>
+                <p class="text-right underline pt-2 px-1 text-red-500 font-semibold cursor-pointer" @click="deleteGreeting">Delete</p>
             </div>
         </div>
 
-        <div class="w-full">
-            <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
+        <div class="w-full" id="message">
+            <div class="border p-4 rounded-2xl rounded-b-none flex items-center justify-between" :class="messageList.length > 0 ? 'border-b-0' : ''">
                 <div class="flex items-center justify-start space-x-8">
                     <p class="cursor-pointer font-semibold" @click="indexActiveMessage = index"
                         :class="{ 'text-blue-primary': indexActiveMessage === index, 'text-gray-700': indexActiveMessage !== index }"
@@ -37,12 +38,13 @@
                 </div>
                 <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addMessage">Add Message</ButtonBase>
             </div>
-            <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
-                <textarea v-if="messageList.length > 0" class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="messageList[indexActiveMessage].message_content"></textarea>
+            <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100" v-if="messageList.length > 0">
+                <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="messageList[indexActiveMessage].message_content"></textarea>
+                <p class="text-right underline pt-2 px-1 text-red-500 font-semibold cursor-pointer" @click="deleteMessage">Delete</p>
             </div>
         </div>
 
-        <div class="w-full">
+        <div class="w-full" id="upload-attachment">
             <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
                 <div class="flex-col">
                     <p class="font-medium">Upload Image</p>
@@ -91,7 +93,7 @@
         </div>
     </div>
 
-    <LoadingScreen v-if="false"></LoadingScreen>
+    <LoadingScreen v-if="isLoading"></LoadingScreen>
 </template>
 
 <script setup lang="ts">
@@ -103,6 +105,7 @@ import { Message, MessageAttachment } from '@/entity/message/TemplateMessage';
 import router from '@/router';
 import { CreateTemplateUseCase } from '@/usecase/template/CreateTemplateUseCase';
 import { NotificationManager } from '@/util/NotificationManager';
+import { finalize } from 'rxjs';
 import { inject, ref, type Ref } from 'vue';
 
 const createTemplateUseCase: CreateTemplateUseCase = inject("createTemplateUseCase")!;
@@ -130,6 +133,7 @@ const greetingList: Ref<Message[]> = ref([
 ]);
 
 const attachmentList: Ref<MessageAttachment[]> = ref([]);
+const isLoading = ref(false);
 
 function backToList(): void {
     router.push("/message");
@@ -177,6 +181,8 @@ function removeAttachment(index: number): void {
 }
 
 function createTemplate(): void {
+    isLoading.value = true;
+
     const createReq: CreateTemplateReq = {
         message_list: messageList.value.filter(h => h.message_content.trim().length > 0)
             .concat(greetingList.value.filter(h => h.message_content.trim().length > 0))
@@ -190,20 +196,38 @@ function createTemplate(): void {
         template_name: templateName.value
     };
 
-    createTemplateUseCase.execute(createReq).subscribe(
-        {
-            next: (resp) => {
-                if (resp.code === 200) {
-                    backToList();
-                } else {
-                    const message = resp.result?.message ?? resp.message;
-                    NotificationManager.showMessage("Failed to Create Data", message, "error");
+    createTemplateUseCase.execute(createReq)
+        .pipe(
+            finalize(() => isLoading.value = false)
+        )
+        .subscribe(
+            {
+                next: (resp) => {
+                    if (resp.code === 200) {
+                        backToList();
+                    } else {
+                        const message = resp.result?.message ?? resp.message;
+                        NotificationManager.showMessage("Failed to Create Data", message, "error");
+                    }
+                },
+                error: (error) => {
+                    NotificationManager.showMessage("Failed to Create Data", error, "error");
                 }
-            },
-            error: (error) => {
-                NotificationManager.showMessage("Failed to Create Data", error, "error");
             }
-        }
-    )
+        )
+}
+
+function deleteMessage(): void {
+    messageList.value.splice(indexActiveMessage.value, 1);
+    if (indexActiveMessage.value > messageList.value.length) {
+        indexActiveMessage.value = messageList.value.length - 1;
+    }
+}
+
+function deleteGreeting(): void {
+    greetingList.value.splice(indexActiveGreeting.value, 1);
+    if (indexActiveGreeting.value > greetingList.value.length) {
+        indexActiveGreeting.value = greetingList.value.length - 1;
+    }
 }
 </script>
