@@ -56,7 +56,12 @@ export class TemplateServiceImpl extends BaseService implements TemplateService 
 
         return this.httpGet(`${this.API_ENDPOINT}/detail`, { params })
             .pipe(
-                map((response) => JSON.parse(JSON.stringify(response.data as string)))
+                map((response) => {
+                    const tempResp: any = response;
+                    if (tempResp.data)
+                        return JSON.parse(JSON.stringify(response.data as string))
+                    return JSON.parse(JSON.stringify(tempResp as string))
+                })
             )
     }
     

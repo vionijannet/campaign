@@ -110,9 +110,21 @@ const updateTemplateUseCase: UpdateTemplateUseCase = inject("updateTemplateUseCa
 const getDetailTemplateUseCase: GetDetailTemplateUseCase = inject("getDetailTemplateUseCase")!;
 
 const indexActiveMessage = ref(0);
-const messageList: Ref<Message[]> = ref([]);
+const messageList: Ref<Message[]> = ref([{
+    flag_delete: false,
+    message_content: "",
+    message_id: "",
+    message_order: "1",
+    message_type: "Message"
+}]);
 const indexActiveGreeting = ref(0);
-const greetingList: Ref<Message[]> = ref([]);
+const greetingList: Ref<Message[]> = ref([{
+    flag_delete: false,
+    message_content: "",
+    message_id: "",
+    message_order: "1",
+    message_type: "Greeting"
+}]);
 
 const attachmentList: Ref<MessageAttachment[]> = ref([]);
 
@@ -174,27 +186,8 @@ function loadData(): void {
                 if (templateResp.code === 200) {
                     templateName.value = templateResp.result.data.template_name ?? "";
                     const list = templateResp.result.data.message_list ?? [];
-
                     messageList.value = list.filter(h => h.message_type === "Message");
-                    if (messageList.value.length < 1) {
-                        messageList.value.push({
-                            flag_delete: false,
-                            message_content: "",
-                            message_id: "",
-                            message_order: "1",
-                            message_type: "Message"
-                        });
-                    }
                     greetingList.value = list.filter(h => h.message_type === "Greeting");
-                    if (greetingList.value.length < 1) {
-                        greetingList.value.push({
-                            flag_delete: false,
-                            message_content: "",
-                            message_id: "",
-                            message_order: "1",
-                            message_type: "Greeting"
-                        });
-                    }
                 } else {
                     const message = templateResp.result?.message ?? templateResp.message;
                     NotificationManager.showMessage("Failed to Load Data", message, "error");
