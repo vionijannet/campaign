@@ -52,6 +52,7 @@ import router from "@/router";
 import ModalComponent from "@/components/modal/ModalComponent.vue";
 import CreateAccount from "./account/CreateAccount.vue";
 import vueRecaptcha from 'vue3-recaptcha2';
+import { useUserStore } from "@/stores/UserStore";
 
 const isPopupForgotPasswordShown = ref(false);
 const isPopupCreateAccountShown = ref(false);
@@ -60,6 +61,8 @@ const recaptcha: Ref<any> = ref(null);
 const isRecaptchaError = ref(false);
 
 const siteKey = "6Lc9Z40hAAAAAFRdtS72GNcB76a1ltmdqWQ-6Zd5";
+
+const userStore = useUserStore();
 
 function redirectTo(name: string): void {
     const path = name === "tos" ? "/terms" : "/policy";
@@ -84,6 +87,12 @@ function recaptchaError(reason: any): void {
 }
 
 function signIn(): void {
+    userStore.setName("John Doe");
+    userStore.setEmail("johndoe@gmail.com");
+    userStore.setRole("Administrator");
+    userStore.setPhone("08113276836");
+    userStore.setToken("tokenabcdefg");
+
     router.push('/')
 }
 </script>

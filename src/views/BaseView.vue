@@ -34,12 +34,14 @@
             </div>
         </div>
         <div class="p-1 m-1">
-            <li class="font-semibold text-sm text-gray-700 flex items-center p-2 hover:cursor-pointer hover:bg-slate-300 hover:rounded-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                </svg>
-                <span class="ml-4">View Profile</span>
-            </li>
+            <router-link to="/account">
+                <li class="font-semibold text-sm text-gray-700 flex items-center p-2 hover:cursor-pointer hover:bg-slate-300 hover:rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                    </svg>
+                    <span class="ml-4">View Profile</span>
+                </li>
+            </router-link>
             <hr class="my-2" />
             <li class="font-semibold text-sm text-gray-700 flex items-center p-2 hover:cursor-pointer hover:bg-slate-300 hover:rounded-lg" @click="signOut">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -115,7 +117,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { timer } from "rxjs";
 import router from "@/router";
 import { useRoute } from "vue-router";
@@ -127,6 +129,7 @@ const store = useUserStore();
 const name = computed(() => store.name);
 const email = computed(() => store.email);
 const role = computed(() => store.role);
+const token = computed(() => store.token);
 
 const showSidebar = ref(false);
 const showOption = ref(false);
@@ -135,8 +138,15 @@ function onLeaveShowOption(): void {
     timer(300).subscribe(() => showOption.value = false);
 }
 
+onMounted(() => {
+    if (token.value.trim().length < 1) {
+        signOut();
+    }
+})
+
 function signOut(): void {
-    router.push("/sign-in")
+    store.removeData();
+    router.push("/sign-in");
 }
 
 function isActiveLink(path: string): boolean {
