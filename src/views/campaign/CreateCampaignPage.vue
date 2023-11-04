@@ -9,7 +9,7 @@
         </ButtonBase>
     </div>
     <div class="bg-white w-full rounded-2xl p-6 space-y-6">
-        <InputText :value="pageId" disabled="true" label-for="page-name" label-text="Page Name" placeholder="Page Name Goes Here"></InputText>
+        <InputText :value="page.page_name" disabled="true" label-for="page-name" label-text="Page Name" placeholder="Page Name Goes Here"></InputText>
         <InputText label-for="campaign-name" label-text="Campaign Name" placeholder="Type your campaign name"></InputText>
         <div>
             <p class="font-semibold text-lg">Scheduler</p>
@@ -57,7 +57,11 @@
         <div class="w-full space-y-2">
             <span for="labelFor" class="font-semibold text-lg">Audience</span>
             <div class="flex items-center justify-between bg-gray-100 p-4 w-full rounded-lg text-lg">
-                <span class="text-lg text-gray-400">Select audiens</span>
+                <span class="text-lg text-gray-400" v-if="checkedAudience.length < 1">Select audiens</span>
+                <span v-else class="text-base bg-blue-primary p-1 rounded-lg text-gray-50 px-2" v-for="(a, index) in checkedAudience" :key=index>
+                    <span class="pr-2 border-r">{{ getAudienceNameFromId(a) }}</span>
+                    <span class="ml-2 cursor-pointer text-white" @click="removeAudience(index)">&#x2715;</span>
+                </span>
                 <button @click="isPopupAudiensOpen=true">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -103,32 +107,9 @@
     </div>
 
     <ModalComponent v-if="isPopupAudiensOpen" @close="isPopupAudiensOpen=false" :custom-class="'!max-w-xl'">
-        <div class="relative space-y-2">
-            <div class="flex items-center pb-2">
-                <label for="audiens" class="flex items-center space-x-3">
-                    <input type="checkbox" name="audiens" id="audiens" />
-                    <span class="font-semibold">Select Audience</span>
-                </label>
-            </div>
-            <div class="pb-4 space-y-2">
-                <p class="font-semibold">Filter Flag</p>
-                <div class="flex space-x-2">
-                    <div class="w-9 h-9 rounded bg-green-500" title="Filter 1"></div>
-                    <div class="w-9 h-9 rounded bg-blue-500" title="Filter 2"></div>
-                    <div class="w-9 h-9 rounded bg-teal-500" title="Filter 3"></div>
-                    <div class="w-9 h-9 rounded bg-emerald-500" title="Filter 4"></div>
-                </div>
-            </div>
-            <CheckboxAudiens></CheckboxAudiens>
-            <CheckboxAudiens></CheckboxAudiens>
-            <CheckboxAudiens></CheckboxAudiens>
-            <CheckboxAudiens></CheckboxAudiens>
-            <CheckboxAudiens></CheckboxAudiens>
-        </div>
-        <div class="pt-8 flex justify-center space-x-8">
-            <ButtonBase type="error" class="w-32" @click="isPopupAudiensOpen=false">Cancel</ButtonBase>
-            <ButtonBase class="w-32">Done</ButtonBase>
-        </div>
+        <SelectAudience :audience_list="page.audience_list" :checked-audience="checkedAudience"
+            @cancel="isPopupAudiensOpen = false" @continue="setCheckedAudience">
+        </SelectAudience>
     </ModalComponent>
 
     <ModalComponent v-if="isPopupTemplateOpen" @close="isPopupTemplateOpen=false">
@@ -147,13 +128,14 @@ import ButtonBase from '@/components/button/ButtonBase.vue';
 import InputText from '@/components/input/InputText.vue';
 import ModalComponent from '@/components/modal/ModalComponent.vue';
 import LoadingScreen from '@/components/loading/LoadingScreen.vue';
-import CheckboxAudiens from '@/components/in-app/CheckboxAudience.vue';
 import SelectMessageTemplate from '@/views/campaign/SelectMessageTemplate.vue';
 import router from '@/router';
 import { ref, type Ref } from 'vue';
 import DatePicker from 'vue-datepicker-next';
 import { useRoute } from "vue-router";
 import SelectPage from './SelectPage.vue';
+import { Page } from '@/entity/page/Page';
+import SelectAudience from './SelectAudience.vue';
 
 const route = useRoute();
 const isSchedulerOn = ref(false);
@@ -161,7 +143,14 @@ const isPopupAudiensOpen = ref(false);
 const isPopupTemplateOpen = ref(false);
 const isPopupCreateOpen = ref(true);
 
-const pageId: Ref<string> = ref("");
+const page: Ref<Page> = ref({
+    page_id: "",
+    page_name: "",
+    created_at: "",
+    audience_list: [],
+});
+
+const checkedAudience: Ref<string[]> = ref([]);
 
 const messageList: Ref<any[]> = ref([]);
 
@@ -177,9 +166,22 @@ function removeMessage(index: number): void {
     messageList.value.splice(index, 1);
 }
 
-function continueCreateCampaign(page: string): void {
-    pageId.value = page;
+function continueCreateCampaign(data: Page): void {
+    page.value = data;
     isPopupCreateOpen.value = false;
+}
+
+function setCheckedAudience(data: string[]): void {
+    checkedAudience.value = data;
+    isPopupAudiensOpen.value = false;
+}
+
+function getAudienceNameFromId(id: string): string {
+    return page.value.audience_list.filter(data => data.audience_id === id)[0].audience_name;
+}
+
+function removeAudience(index: number): void {
+    checkedAudience.value.splice(index, 1);
 }
 </script>
 

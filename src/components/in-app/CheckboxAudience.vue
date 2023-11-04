@@ -2,12 +2,12 @@
     <div class="flex items-center justify-between">
         <!-- checkbox and profile -->
         <div class="flex items-center">
-            <label for="audiens-1" class="flex items-center space-x-3">
-                <input type="checkbox" name="audiens-1" id="audiens-1" @change="selectAudiens" />
+            <label :for="id" class="flex items-center space-x-3">
+                <input type="checkbox" name="audiens" :id="id" @change="selectAudiens" :checked="isChecked" />
                 <div class="flex items-center space-x-2">
                     <img src="https://http.dog/200.jpg" alt="Audience" class="w-[50px] h-[50px] rounded-2xl">
                     <div>
-                        <p class="font-semibold">John Doe</p>
+                        <p class="font-semibold">{{ name }}</p>
                         <p class="text-sm text-gray-800">Message</p>
                     </div>
                 </div>
@@ -23,11 +23,22 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps(["id", "imageUrl", "name", "message", "lastUpdate", "unreadMessage"]);
+import { computed } from 'vue';
+
+const props = defineProps(["id", "imageUrl", "name", "message", "lastUpdate", "unreadMessage", "checked"]);
 const emit = defineEmits(["select"]);
 
 function selectAudiens(event: Event): void {
     const check = (event.target as HTMLInputElement).checked;
     emit("select", props.id, check);
 }
+
+const isChecked = computed(() => {
+    if (props.checked) {
+        const index = (props.checked as string[]).findIndex(data => data === props.id);
+        return index > -1;
+    }
+
+    return false;
+})
 </script>
