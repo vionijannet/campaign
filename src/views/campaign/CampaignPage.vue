@@ -9,7 +9,7 @@
         </div>
     </div>
     <div>
-        <TableExpandComponent class="mb-2" :table-header="tableHeader" :table-body="campaignList" :search-criteria="searchCriteria" :total-row="totalRow">
+        <TableExpandComponent class="mb-2" :table-header="tableHeader" :table-body="campaignList" :search-criteria="searchCriteria" :total-row="totalRow" :is-loading="isLoading">
             <template #name="{slotProps}">
                 <div class="flex items-center space-x-2 p-2">
                     <svg @click="slotProps.isExpanded = !slotProps.isExpanded" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 transform transition-all cursor-pointer" :class="slotProps.isExpanded ? 'rotate-90' : ''">
@@ -30,6 +30,10 @@
                     <img src="../../assets/trash.svg" title="Delete" alt="Delete" class="cursor-pointer" @click="deleteCampaign(slotProps.id)" />
                 </div>
             </template>
+            <template #campaign_date="{slotProps}">
+                <p v-if="slotProps.campaign">{{ slotProps.campaign_date }}</p>
+                <p v-else>Not Scheduled</p>
+            </template>
             <template #expand="{slotProps}">
                 <div class="bg-blue-100 p-2 pl-8 mx-2">
                     <div class="grid grid-cols-6 auto-cols-fr text-sm gap-y-1">
@@ -49,9 +53,14 @@ import ButtonBase from '@/components/button/ButtonBase.vue';
 import TableExpandComponent from '@/components/table/TableExpandComponent.vue';
 import Search from '@/components/search/Search.vue';
 import router from "@/router";
-import { ref, type Ref } from 'vue';
+import { inject, onMounted, ref, type Ref } from 'vue';
 import { Campaign } from "@/entity/campaign/Campaign";
 import { SearchCriteria, TableHeader } from '@/components/ComponentEntity';
+import { finalize, Subscription } from 'rxjs';
+import { GetCampaignUseCase } from '@/usecase/campaign/GetCampaignUseCase';
+import { NotificationManager } from '@/util/NotificationManager';
+
+const asyncSubscription: Subscription = new Subscription();
 
 const STATUS_PENDING = "Pending";
 const STATUS_DONE = "Done";
@@ -61,34 +70,34 @@ function redirectToCreate(): void {
 }
 
 const campaignList: Ref<Campaign[]> = ref([
-    {
-        campaign_id: "id-01",
-        campaign_name: "Campaign Name Here",
-        page_id: "p-01",
-        page_name: "Page Name",
-        campaign_status: "Pending",
-        campaign_date: null,
-        pending_amount: 5,
-        failed_amount: 3,
-        success_amount: 2,
-        total_amount: 10,
-        created_at: "28 October 2022, 11:03",
-        isExpanded: false,
-    },
-    {
-        campaign_id: "id-02",
-        campaign_name: "Campaign Name Here 2",
-        page_id: "p-01",
-        page_name: "Page Name",
-        campaign_status: "Done",
-        campaign_date: "30 October 2022, 14:30",
-        pending_amount: 5,
-        failed_amount: 3,
-        success_amount: 2,
-        total_amount: 10,
-        created_at: "18 October 2022, 11:03",
-        isExpanded: false,
-    },
+    // {
+    //     campaign_id: "id-01",
+    //     campaign_name: "Campaign Name Here",
+    //     page_id: "p-01",
+    //     page_name: "Page Name",
+    //     campaign_status: "Pending",
+    //     campaign_date: null,
+    //     pending_amount: 5,
+    //     failed_amount: 3,
+    //     success_amount: 2,
+    //     total_amount: 10,
+    //     created_at: "28 October 2022, 11:03",
+    //     isExpanded: false,
+    // },
+    // {
+    //     campaign_id: "id-02",
+    //     campaign_name: "Campaign Name Here 2",
+    //     page_id: "p-01",
+    //     page_name: "Page Name",
+    //     campaign_status: "Done",
+    //     campaign_date: "30 October 2022, 14:30",
+    //     pending_amount: 5,
+    //     failed_amount: 3,
+    //     success_amount: 2,
+    //     total_amount: 10,
+    //     created_at: "18 October 2022, 11:03",
+    //     isExpanded: false,
+    // },
 ]);
 
 const searchCriteria: Ref<SearchCriteria> = ref({
@@ -99,6 +108,7 @@ const searchCriteria: Ref<SearchCriteria> = ref({
 });
 
 const totalRow: Ref<number> = ref(2);
+const isLoading = ref(false);
 
 const tableHeader: Ref<TableHeader[]> = ref([
     {
@@ -127,7 +137,7 @@ const tableHeader: Ref<TableHeader[]> = ref([
         isSortable: false
     },
     {
-        key: "campaign_status",
+        key: "campaign_date",
         name: "Scheduled",
         isSortable: false
     },
@@ -137,6 +147,8 @@ const tableHeader: Ref<TableHeader[]> = ref([
         isSortable: false
     },
 ] as TableHeader[]);
+
+const getCampaignUseCase: GetCampaignUseCase = inject("getCampaignUseCase")!;
 
 function manualTriggerCampaign(campaignId: string): void {
     console.log("manual trigger campaign", campaignId);
@@ -155,5 +167,40 @@ function percentageDeliver(data: Campaign): string {
         return `${(data.success_amount / data.total_amount) * 100} %`;
     }
     return "0%"
+}
+
+onMounted(() => {
+    loadCampaign();
+})
+
+function loadCampaign(campaign_name="", page_name=""): void {
+    isLoading.value = true;
+
+    asyncSubscription.add(
+        getCampaignUseCase.execute({
+            limit: searchCriteria.value.rowPerPage,
+            page: searchCriteria.value.page-1,
+            sort_by: searchCriteria.value.sortKey.length > 0 ? `${searchCriteria.value.sortKey},${searchCriteria.value.sortOrder}` : "",
+            campaign_name,
+            page_name
+        }).pipe(
+            finalize(() => isLoading.value = false)
+        ).subscribe(
+            {
+                next: (getCampaignResp) => {
+                    if (getCampaignResp.code === 200) {
+                        campaignList.value = getCampaignResp.result.data.content ?? [];
+                        totalRow.value = getCampaignResp.result.data.total_elements ?? 0;
+                    } else {
+                        const message = getCampaignResp.result?.message ?? getCampaignResp.message;
+                        NotificationManager.showMessage("Failed to Load Data", message, "error");
+                    }
+                },
+                error: (error) => {
+                    NotificationManager.showMessage("Network Error", error, "error");
+                }
+            }
+        )
+    )
 }
 </script>

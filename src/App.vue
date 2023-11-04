@@ -11,6 +11,8 @@ import { GetDetailTemplateUseCase, GetDetailTemplateUseCaseImpl } from './usecas
 import { CreateTemplateUseCase, CreateTemplateUseCaseImpl } from './usecase/template/CreateTemplateUseCase';
 import { UpdateTemplateUseCase, UpdateTemplateUseCaseImpl } from './usecase/template/UpdateTemplateUseCase';
 import { DeleteTemplateUseCase, DeleteTemplateUseCaseImpl } from './usecase/template/DeleteTemplateUseCase';
+import { CampaignService, CampaignServiceImpl } from './service/CampaignService';
+import { GetCampaignUseCase, GetCampaignUseCaseImpl } from './usecase/campaign/GetCampaignUseCase';
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: "http://127.0.0.1:8080",
@@ -28,4 +30,8 @@ const updateTemplate: UpdateTemplateUseCase = new UpdateTemplateUseCaseImpl(temp
 provide("updateTemplateUseCase", updateTemplate);
 const deleteTemplate: DeleteTemplateUseCase = new DeleteTemplateUseCaseImpl(templateService);
 provide("deleteTemplateUseCase", deleteTemplate);
+
+const campaignService: CampaignService = new CampaignServiceImpl(axiosInstance);
+const getCampaign: GetCampaignUseCase = new GetCampaignUseCaseImpl(campaignService);
+provide("getCampaignUseCase", getCampaign);
 </script>

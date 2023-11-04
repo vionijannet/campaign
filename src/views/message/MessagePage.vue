@@ -40,7 +40,7 @@ import DetailMessageTemplate from "./DetailMessageTemplate.vue";
 import ButtonBase from '@/components/button/ButtonBase.vue';
 import TableExpandComponent from '@/components/table/TableExpandComponent.vue';
 import router from "@/router";
-import {inject, onMounted, onUnmounted, ref, type Ref} from 'vue';
+import { inject, onMounted, onUnmounted, ref, type Ref } from 'vue';
 import { SearchCriteria, TableHeader } from '@/components/ComponentEntity';
 import { TemplateMessage } from "@/entity/message/TemplateMessage";
 import Search from '@/components/search/Search.vue';
