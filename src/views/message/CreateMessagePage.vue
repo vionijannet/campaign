@@ -9,9 +9,20 @@
         </ButtonBase>
     </div>
     <div class="bg-white w-full rounded-2xl p-6 space-y-6">
-        <InputText label-for="message-name" label-text="Message Name" placeholder="Type your message name"></InputText>
 
-        <InputText label-for="template-name" label-text="Template" placeholder="Type your template name" @type="setTemplateName" :value="templateName"></InputText>
+        <InputText label-for="message-name" label-text="Message" placeholder="Type your message name" @type="setTemplateName" :value="templateName"></InputText>
+      <div class="w-full">
+        <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
+          <div class="flex items-center justify-start space-x-8">
+            <p class="cursor-pointer font-semibold" @click="indexActiveGreeting = index"
+               :class="{ 'text-blue-primary': indexActiveGreeting === index, 'text-gray-700': indexActiveGreeting !== index }" v-for="g, index in greetingList.length" :key="index">Greeting {{ g }}</p>
+          </div>
+          <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addGreeting">Add Message</ButtonBase>
+        </div>
+        <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
+          <textarea v-if="greetingList.length > 0" class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message_content"></textarea>
+        </div>
+      </div>
 
         <div class="w-full">
             <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
@@ -26,20 +37,8 @@
             </div>
         </div>
 
-        <InputText label-for="greeting-name" label-text="Greeting" placeholder="Type your greeting"></InputText>
+<!--        <InputText label-for="greeting-name" label-text="Greeting" placeholder="Type your greeting"></InputText>-->
 
-        <div class="w-full">
-            <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
-                <div class="flex items-center justify-start space-x-8">
-                    <p class="cursor-pointer font-semibold" @click="indexActiveGreeting = index"
-                        :class="{ 'text-blue-primary': indexActiveGreeting === index, 'text-gray-700': indexActiveGreeting !== index }" v-for="g, index in greetingList.length" :key="index">Greeting {{ g }}</p>
-                </div>
-                <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addGreeting">Add Message</ButtonBase>
-            </div>
-            <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
-                <textarea v-if="greetingList.length > 0" class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message_content"></textarea>
-            </div>
-        </div>
 
         <div class="w-full">
             <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
