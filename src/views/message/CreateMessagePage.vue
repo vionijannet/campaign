@@ -9,7 +9,7 @@
         </ButtonBase>
     </div>
     <div class="bg-white w-full rounded-2xl p-6 space-y-6">
-        <InputText label-for="message-name" label-text="Message" placeholder="Type your message name" @type="setTemplateName" :value="templateName" />
+        <InputText label-for="message-name" label-text="Message" placeholder="Type your message name" @type="setTemplateName" :validation="templateValidation" :value="templateName" />
         <div class="w-full" id="greeting">
             <div class="border p-4 rounded-2xl rounded-b-none flex items-center justify-between" :class="messageList.length > 0 ? 'border-b-0' : ''">
                 <div class="flex items-center justify-start space-x-8">
@@ -100,6 +100,7 @@
 import ButtonBase from '@/components/button/ButtonBase.vue';
 import InputText from '@/components/input/InputText.vue';
 import LoadingScreen from '@/components/loading/LoadingScreen.vue';
+import { FieldError } from '@/entity/BaseResp';
 import { CreateTemplateReq } from '@/entity/message/CreateTemplateReq';
 import { Message, MessageAttachment } from '@/entity/message/TemplateMessage';
 import router from '@/router';
@@ -134,6 +135,8 @@ const greetingList: Ref<Message[]> = ref([
 
 const attachmentList: Ref<MessageAttachment[]> = ref([]);
 const isLoading = ref(false);
+
+const templateValidation = ref("");
 
 function backToList(): void {
     router.push("/message");
@@ -181,40 +184,45 @@ function removeAttachment(index: number): void {
 }
 
 function createTemplate(): void {
-    isLoading.value = true;
-
     const createReq: CreateTemplateReq = {
         message_list: messageList.value.filter(h => h.message_content.trim().length > 0)
-            .concat(greetingList.value.filter(h => h.message_content.trim().length > 0))
-            .map(v => {
-                return {
-                    message: v.message_content,
-                    message_order: v.message_order,
-                    message_type: v.message_type
-                }
-            }),
+        .concat(greetingList.value.filter(h => h.message_content.trim().length > 0))
+        .map(v => {
+            return {
+                message: v.message_content,
+                message_order: v.message_order,
+                message_type: v.message_type
+            }
+        }),
         template_name: templateName.value
     };
 
-    createTemplateUseCase.execute(createReq)
-        .pipe(
-            finalize(() => isLoading.value = false)
-        )
-        .subscribe(
-            {
-                next: (resp) => {
-                    if (resp.code === 200) {
-                        backToList();
-                    } else {
-                        const message = resp.result?.message ?? resp.message;
-                        NotificationManager.showMessage("Failed to Create Data", message, "error");
+    const errorList = createTemplateUseCase.validate(createReq);
+    if (errorList.length < 1) {
+        isLoading.value = true;
+    
+        createTemplateUseCase.execute(createReq)
+            .pipe(
+                finalize(() => isLoading.value = false)
+            )
+            .subscribe(
+                {
+                    next: (resp) => {
+                        if (resp.code === 200) {
+                            backToList();
+                        } else {
+                            const message = resp.result?.message ?? resp.message;
+                            NotificationManager.showMessage("Failed to Create Data", message, "error");
+                        }
+                    },
+                    error: (error) => {
+                        NotificationManager.showMessage("Failed to Create Data", error, "error");
                     }
-                },
-                error: (error) => {
-                    NotificationManager.showMessage("Failed to Create Data", error, "error");
                 }
-            }
-        )
+            )
+    } else {
+        validateTemplate(errorList);
+    }
 }
 
 function deleteMessage(): void {
@@ -229,5 +237,11 @@ function deleteGreeting(): void {
     if (indexActiveGreeting.value > greetingList.value.length) {
         indexActiveGreeting.value = greetingList.value.length - 1;
     }
+}
+
+function validateTemplate(error: FieldError[]): void {
+    const filteredError = error.filter(data => data.field === "template_name");
+    templateValidation.value = filteredError.length > 0 ?
+        filteredError[0].message[0] : "";
 }
 </script>

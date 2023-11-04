@@ -9,7 +9,7 @@
         </ButtonBase>
     </div>
     <div class="bg-white w-full rounded-2xl p-6 space-y-6">
-        <InputText label-for="message-name" label-text="Message Name" placeholder="Type your message name" :value="templateName" @type="setTemplateName"></InputText>
+        <InputText label-for="message-name" label-text="Message Name" placeholder="Type your message name" :value="templateName" @type="setTemplateName" :validation="templateValidation"></InputText>
 
         <div class="w-full" id="greeting">
             <div class="border p-4 rounded-2xl rounded-b-none flex items-center justify-between" :class="{ 'border-b-0' : filteredGreetingList.length > 0 }">
@@ -97,6 +97,7 @@
 import ButtonBase from '@/components/button/ButtonBase.vue';
 import InputText from '@/components/input/InputText.vue';
 import LoadingScreen from '@/components/loading/LoadingScreen.vue';
+import { FieldError } from '@/entity/BaseResp';
 import { Message, MessageAttachment } from '@/entity/message/TemplateMessage';
 import { UpdateTemplateReq } from '@/entity/message/UpdateTemplateReq';
 import router from '@/router';
@@ -110,6 +111,7 @@ import { useRoute } from "vue-router";
 const templateId: string = useRoute().params["templateId"] as string;
 const templateName = ref("");
 const isLoading = ref(false);
+const templateValidation = ref("");
 
 const updateTemplateUseCase: UpdateTemplateUseCase = inject("updateTemplateUseCase")!;
 const getDetailTemplateUseCase: GetDetailTemplateUseCase = inject("getDetailTemplateUseCase")!;
@@ -218,7 +220,6 @@ function loadData(): void {
 }
 
 function updateTemplate(): void {
-    isLoading.value = true;
 
     const updateReq: UpdateTemplateReq = {
         template_id: templateId,
@@ -235,23 +236,30 @@ function updateTemplate(): void {
             })
     };
 
-    updateTemplateUseCase.execute(updateReq).pipe(
-        finalize(() => isLoading.value = false)
-    ).subscribe(
-        {
-            next: (resp) => {
-                if (resp.code === 200) {
-                    backToList();
-                } else {
-                    const message = resp.result?.message ?? resp.message;
-                    NotificationManager.showMessage("Failed to Update Data", message, "error");
+    const errorList = updateTemplateUseCase.validate(updateReq);
+    if (errorList.length < 1) {
+        isLoading.value = true;
+
+        updateTemplateUseCase.execute(updateReq).pipe(
+            finalize(() => isLoading.value = false)
+        ).subscribe(
+            {
+                next: (resp) => {
+                    if (resp.code === 200) {
+                        backToList();
+                    } else {
+                        const message = resp.result?.message ?? resp.message;
+                        NotificationManager.showMessage("Failed to Update Data", message, "error");
+                    }
+                },
+                error: (error) => {
+                    NotificationManager.showMessage("Failed to Update Data", error, "error");
                 }
-            },
-            error: (error) => {
-                NotificationManager.showMessage("Failed to Update Data", error, "error");
             }
-        }
-    )
+        )
+    } else {
+        validateTemplate(errorList);
+    }
 }
 
 function deleteMessage(): void {
@@ -292,5 +300,11 @@ function updateGreetingListFromFilteredData(event: Event): void {
 
     // Set data to message list
     greetingList.value[trueIndex].message_content = value;
+}
+
+function validateTemplate(error: FieldError[]): void {
+    const filteredError = error.filter(data => data.field === "template_name");
+    templateValidation.value = filteredError.length > 0 ?
+        filteredError[0].message[0] : "";
 }
 </script>
