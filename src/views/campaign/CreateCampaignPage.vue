@@ -116,7 +116,7 @@
         <SelectMessageTemplate @cancel="isPopupTemplateOpen=false"></SelectMessageTemplate>
     </ModalComponent>
 
-    <ModalComponent v-if="isPopupCreateOpen">
+    <ModalComponent v-if="isPopupCreateOpen" @close="backToList">
         <SelectPage @continue="continueCreateCampaign" @cancel="backToList"></SelectPage>
     </ModalComponent>
 

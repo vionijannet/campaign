@@ -3,7 +3,7 @@
         <p class="text-2xl font-bold">Select Page</p>
         <div class="grid grid-cols-2 gap-x-4">
             <div class="space-y-4">
-                <div class="space-y-2">
+                <div class="space-y-2 max-h-96 overflow-y-auto">
                     <CheckboxGeneral v-for="page in pageOptionList" :id="page.key"
                         :key="page.key" :text="page.value" group="page" @select="setSelectedPage">
                     </CheckboxGeneral>
@@ -74,7 +74,7 @@ function loadPage(): void {
             {
                 next: (getPageResp) => {
                     if (getPageResp.code === 200) {
-                        pageList.value = getPageResp.result.data.content ?? [];
+                        pageList.value = getPageResp.result.data.content.page_list ?? [];
                     }
                 }
             }

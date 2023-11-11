@@ -7,7 +7,9 @@ export interface GetPageResp extends BaseResp {
 
 interface ResultPage extends ResultResp {
     data: {
-        content: Page[];
+        content: {
+            page_list: Page[];
+        }
         total_elements: number;
     }
 }
