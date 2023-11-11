@@ -37,6 +37,10 @@
             <template #expand="{slotProps}">
                 <div class="bg-blue-100 p-2 pl-8 mx-2">
                     <div class="grid grid-cols-6 auto-cols-fr text-sm gap-y-1">
+                        <p>Success</p>
+                        <p class="col-span-5">{{ slotProps.success_amount }}</p>
+                        <p>Failed</p>
+                        <p class="col-span-5">{{ slotProps.failed_amount }}</p>
                         <p>Created at</p>
                         <p class="col-span-5">{{ slotProps.created_at }}</p>
                         <p>Delivered(%)</p>
@@ -97,16 +101,6 @@ const tableHeader: Ref<TableHeader[]> = ref([
         key: "status",
         name: "Status",
         isSortable: true
-    },
-    {
-        key: "success_amount",
-        name: "Sent",
-        isSortable: false
-    },
-    {
-        key: "failed_amount",
-        name: "Failed",
-        isSortable: false
     },
     {
         key: "campaign_date",
