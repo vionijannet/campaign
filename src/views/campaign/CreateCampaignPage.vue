@@ -117,7 +117,7 @@
     </ModalComponent>
 
     <ModalComponent v-if="isPopupCreateOpen">
-        <SelectPage @continue="continueCreateCampaign"></SelectPage>
+        <SelectPage @continue="continueCreateCampaign" @cancel="backToList"></SelectPage>
     </ModalComponent>
 
     <LoadingScreen v-if="false"></LoadingScreen>

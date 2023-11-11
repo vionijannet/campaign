@@ -5,10 +5,12 @@ import { GetCampaignReq } from "@/entity/campaign/GetCampaignReq";
 import { GetCampaignResp } from "@/entity/campaign/GetCampaignResp";
 import { GetDetailCampaignReq } from "@/entity/campaign/GetDetailCampaignReq";
 import { BaseResp } from "@/entity/BaseResp";
+import { CreateCampaignReq } from "@/entity/campaign/CreateCampaignReq";
 
 export interface CampaignService {
     getCampaign(campaign: GetCampaignReq): Observable<GetCampaignResp>;
     deleteCampaign(campaign: GetDetailCampaignReq): Observable<BaseResp>;
+    createCampaign(campaign: CreateCampaignReq): Observable<BaseResp>;
 }
 
 export class CampaignServiceImpl extends BaseService implements CampaignService {
@@ -48,6 +50,13 @@ export class CampaignServiceImpl extends BaseService implements CampaignService 
 
     deleteCampaign(campaign: GetDetailCampaignReq): Observable<BaseResp> {
         return this.httpDelete(`${this.API_ENDPOINT}/${campaign.campaign_id}`)
+            .pipe(
+                map((response) => JSON.parse(JSON.stringify(response.data as string)))
+            )
+    }
+
+    createCampaign(campaign: CreateCampaignReq): Observable<BaseResp> {
+        return this.httpPost(this.API_ENDPOINT, campaign)
             .pipe(
                 map((response) => JSON.parse(JSON.stringify(response.data as string)))
             )
