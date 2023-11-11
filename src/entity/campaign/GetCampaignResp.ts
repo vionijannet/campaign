@@ -7,7 +7,9 @@ export interface GetCampaignResp extends BaseResp {
 
 interface ResultCampaign extends ResultResp {
     data: {
-        content: Campaign[];
+        content: {
+            campaign_list: Campaign[];
+        }
         total_elements: number;
     }
 }

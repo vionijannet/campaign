@@ -70,36 +70,7 @@ function redirectToCreate(): void {
     router.push("/campaign/create");
 }
 
-const campaignList: Ref<Campaign[]> = ref([
-    // {
-    //     campaign_id: "id-01",
-    //     campaign_name: "Campaign Name Here",
-    //     page_id: "p-01",
-    //     page_name: "Page Name",
-    //     campaign_status: "Pending",
-    //     campaign_date: null,
-    //     pending_amount: 5,
-    //     failed_amount: 3,
-    //     success_amount: 2,
-    //     total_amount: 10,
-    //     created_at: "28 October 2022, 11:03",
-    //     isExpanded: false,
-    // },
-    // {
-    //     campaign_id: "id-02",
-    //     campaign_name: "Campaign Name Here 2",
-    //     page_id: "p-01",
-    //     page_name: "Page Name",
-    //     campaign_status: "Done",
-    //     campaign_date: "30 October 2022, 14:30",
-    //     pending_amount: 5,
-    //     failed_amount: 3,
-    //     success_amount: 2,
-    //     total_amount: 10,
-    //     created_at: "18 October 2022, 11:03",
-    //     isExpanded: false,
-    // },
-]);
+const campaignList: Ref<Campaign[]> = ref([]);
 
 const searchCriteria: Ref<SearchCriteria> = ref({
     page: 1,
@@ -211,7 +182,7 @@ function loadCampaign(campaign_name="", page_name=""): void {
             {
                 next: (getCampaignResp) => {
                     if (getCampaignResp.code === 200) {
-                        campaignList.value = getCampaignResp.result.data.content ?? [];
+                        campaignList.value = getCampaignResp.result.data.content.campaign_list ?? [];
                         totalRow.value = getCampaignResp.result.data.total_elements ?? 0;
                     } else {
                         const message = getCampaignResp.result?.message ?? getCampaignResp.message;
