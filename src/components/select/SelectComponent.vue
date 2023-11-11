@@ -1,5 +1,5 @@
 <template>
-    <select class="outline-none" @change="setData($event)">
+    <select class="outline-none" @change="setData($event)" :name="id">
         <option v-for="op in optionList" :value="op.key" :selected="op.key === selected">{{ op.value }}</option>
     </select>
 </template>
@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import { OptionEntity } from '../ComponentEntity';
 
-const props = defineProps(["selected", "optionList"])
+const props = defineProps(["selected", "optionList", "id"])
 const emit = defineEmits(["change"])
 
 function setData(event: Event): void {

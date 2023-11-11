@@ -73,7 +73,7 @@
                             </div>
                             <div class="flex items-center space-x-2">
                                 <p>Rows per page: </p>
-                                <SelectComponent :optionList="rowPerPage" :selected="props.searchCriteria.rowPerPage" @change="changeRowPerPage($event)"></SelectComponent>
+                                <SelectComponent id="row-per-page" :optionList="rowPerPage" :selected="props.searchCriteria.rowPerPage" @change="changeRowPerPage($event)"></SelectComponent>
                                 <p>of {{ totalRow }} data</p>
                             </div>
                         </div>
