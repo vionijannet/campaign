@@ -8,7 +8,9 @@ export interface GetTemplateResp extends BaseResp {
 
 interface ResultTemplate extends ResultResp {
     data: {
-        content: TemplateMessage[];
+        content: {
+            template_list: TemplateMessage[];
+        }
         total_elements: number;
     }
 }

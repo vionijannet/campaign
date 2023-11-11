@@ -150,7 +150,7 @@ function loadTemplate(template_name: string): void {
             {
                 next: (getTemplateResp) => {
                     if (getTemplateResp.code === 200) {
-                        templateList.value = getTemplateResp.result.data.content ?? [];
+                        templateList.value = getTemplateResp.result.data.content.template_list ?? [];
                         totalRow.value = getTemplateResp.result.data.total_elements ?? 0;
                     } else {
                         const message = getTemplateResp.result?.message ?? getTemplateResp.message;
