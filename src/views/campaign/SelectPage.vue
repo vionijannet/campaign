@@ -44,7 +44,7 @@ const pageList: Ref<Page[]> = ref([]);
 
 const pageOptionList: Ref<OptionEntity[]> = computed(() => {
     return pageList.value.map((data) => {
-        return { key: data.page_id, value: data.page_name}
+        return { key: data.page_id, value: data.page_name }
     });
 });
 

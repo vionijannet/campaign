@@ -3,7 +3,7 @@ export interface CreateTemplateReq {
     message_list: NewMessage[];
 }
 
-interface NewMessage {
+export interface NewMessage {
     message: string;
     message_type: string;
     message_order: string;

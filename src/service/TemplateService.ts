@@ -8,6 +8,7 @@ import { GetDetailTemplateResp } from "@/entity/message/GetDetailTemplateResp";
 import { CreateTemplateReq } from "@/entity/message/CreateTemplateReq";
 import { BaseResp } from "@/entity/BaseResp";
 import { UpdateTemplateReq } from "@/entity/message/UpdateTemplateReq";
+import { TextFormatter } from "@/util/TextFormatter";
 
 export interface TemplateService {
     getTemplate(template: GetTemplateReq): Observable<GetTemplateResp>;
@@ -62,14 +63,14 @@ export class TemplateServiceImpl extends BaseService implements TemplateService 
     }
     
     createTemplate(template: CreateTemplateReq): Observable<BaseResp> {
-        return this.httpPost(this.API_ENDPOINT, template)
+        return this.httpPost(this.API_ENDPOINT, TextFormatter.convertEmptyPropertyToNull(template))
             .pipe(
                 map((response) => JSON.parse(JSON.stringify(response.data as string)))
             )
     }
     
     updateTemplate(template: UpdateTemplateReq): Observable<BaseResp> {
-        return this.httpPut(this.API_ENDPOINT, template)
+        return this.httpPut(this.API_ENDPOINT, TextFormatter.convertEmptyPropertyToNull(template))
             .pipe(
                 map((response) => JSON.parse(JSON.stringify(response.data as string)))
             )

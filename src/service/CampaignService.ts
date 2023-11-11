@@ -6,6 +6,7 @@ import { GetCampaignResp } from "@/entity/campaign/GetCampaignResp";
 import { GetDetailCampaignReq } from "@/entity/campaign/GetDetailCampaignReq";
 import { BaseResp } from "@/entity/BaseResp";
 import { CreateCampaignReq } from "@/entity/campaign/CreateCampaignReq";
+import { TextFormatter } from "@/util/TextFormatter";
 
 export interface CampaignService {
     getCampaign(campaign: GetCampaignReq): Observable<GetCampaignResp>;
@@ -56,7 +57,7 @@ export class CampaignServiceImpl extends BaseService implements CampaignService 
     }
 
     createCampaign(campaign: CreateCampaignReq): Observable<BaseResp> {
-        return this.httpPost(this.API_ENDPOINT, campaign)
+        return this.httpPost(this.API_ENDPOINT, TextFormatter.convertEmptyPropertyToNull(campaign))
             .pipe(
                 map((response) => JSON.parse(JSON.stringify(response.data as string)))
             )
