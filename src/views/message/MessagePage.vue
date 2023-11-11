@@ -9,7 +9,8 @@
         </div>
     </div>
     <div>
-        <TableExpandComponent :is-loading="isLoading" class="mb-2" :table-header="tableHeader" :table-body="templateList" :search-criteria="searchCriteria" :total-row="totalRow">
+        <TableExpandComponent :is-loading="isLoading" class="mb-2" :table-header="tableHeader" :table-body="templateList" :search-criteria="searchCriteria"
+            :total-row="totalRow" @table-changed="loadTemplate">
             <template #name="{slotProps}">
                 <div class="p-2">
                     {{ slotProps.template_name }}
@@ -135,7 +136,7 @@ onUnmounted(() => {
     asyncSubscription.unsubscribe();
 })
 
-function loadTemplate(template_name: string): void {
+function loadTemplate(template_name = ""): void {
     isLoading.value = true;
 
     asyncSubscription.add(

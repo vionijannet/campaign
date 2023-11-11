@@ -89,13 +89,13 @@ import { computed } from 'vue';
 import SelectComponent from "../select/SelectComponent.vue";
 import { OptionEntity } from '../ComponentEntity';
 
+const emit = defineEmits(["table-changed"])
 const props = defineProps(["tableHeader", "tableBody", "searchCriteria", "totalRow", "isLoading"])
 const totalPage = computed(() => {
     if (!props.totalRow || props.totalRow < 1) {
         return 1;
     }
     return Math.ceil(props.totalRow / props.searchCriteria.rowPerPage);
-
 });
 
 function changeSort(sortKey: string): void {
@@ -110,6 +110,8 @@ function changeSort(sortKey: string): void {
 
     props.searchCriteria.sortOrder = tempSortOrder;
     props.searchCriteria.sortKey = tempSortOrder.length > 0 ? sortKey : "";
+
+    emit("table-changed");
 }
 
 const rowPerPage: OptionEntity[] = [
@@ -134,7 +136,7 @@ const rowPerPage: OptionEntity[] = [
 const selectedPage = computed(() => props.searchCriteria.page);
 
 function changePage(page: string): void {
-    if (page !== "...")
+    if (page !== "...") {
         if (page === "prev") {
             if (selectedPage.value - 1 > 0)
                 props.searchCriteria.page = props.searchCriteria.page - 1;
@@ -145,10 +147,15 @@ function changePage(page: string): void {
         }
         else
             props.searchCriteria.page = parseInt(page);
+
+        emit("table-changed");
+    }
+        
 }
 
 function changeRowPerPage(op: OptionEntity): void {
     props.searchCriteria.rowPerPage = parseInt(op.key);
+    emit("table-changed");
 }
 
 const shownPage = computed(() => {
