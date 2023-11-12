@@ -4,6 +4,7 @@ import { AxiosInstance } from "axios";
 import { GetCampaignReq } from "@/entity/campaign/GetCampaignReq";
 import { GetCampaignResp } from "@/entity/campaign/GetCampaignResp";
 import { GetDetailCampaignReq } from "@/entity/campaign/GetDetailCampaignReq";
+import { GetDetailCampaignResp } from "@/entity/campaign/GetDetailCampaignResp";
 import { BaseResp } from "@/entity/BaseResp";
 import { CreateCampaignReq } from "@/entity/campaign/CreateCampaignReq";
 import { TextFormatter } from "@/util/TextFormatter";
@@ -12,6 +13,7 @@ export interface CampaignService {
     getCampaign(campaign: GetCampaignReq): Observable<GetCampaignResp>;
     deleteCampaign(campaign: GetDetailCampaignReq): Observable<BaseResp>;
     createCampaign(campaign: CreateCampaignReq): Observable<BaseResp>;
+    getDetailCampaign(campaign: GetDetailCampaignReq): Observable<GetDetailCampaignResp>;
 }
 
 export class CampaignServiceImpl extends BaseService implements CampaignService {
@@ -58,6 +60,13 @@ export class CampaignServiceImpl extends BaseService implements CampaignService 
 
     createCampaign(campaign: CreateCampaignReq): Observable<BaseResp> {
         return this.httpPost(this.API_ENDPOINT, TextFormatter.convertEmptyPropertyToNull(campaign))
+            .pipe(
+                map((response) => JSON.parse(JSON.stringify(response.data as string)))
+            )
+    }
+
+    getDetailCampaign(campaign: GetDetailCampaignReq): Observable<GetDetailCampaignResp> {
+        return this.httpGet(`${this.API_ENDPOINT}/${campaign.campaign_id}`)
             .pipe(
                 map((response) => JSON.parse(JSON.stringify(response.data as string)))
             )

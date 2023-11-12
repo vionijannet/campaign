@@ -1,3 +1,5 @@
+import {Message} from "@/entity/message/TemplateMessage";
+
 export interface Campaign {
     campaign_id: string;
     campaign_name: string;
@@ -13,4 +15,18 @@ export interface Campaign {
     isExpanded: boolean;
     clicked?: string;
     read?: string;
+}
+
+export interface DetailCampaign {
+    campaign_name: string;
+    campaign_status: string;
+    page_name: string;
+    is_scheduled: boolean;
+    scheduled_date: string;
+    interval_min: number;
+    interval_max: number;
+    audience_list: string[];
+    message_list: Message[];
+    template_id: string;
+    template_name: string;
 }

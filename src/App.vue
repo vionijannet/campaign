@@ -17,6 +17,7 @@ import { PageService, PageServiceImpl } from './service/PageService';
 import { GetPageUseCase, GetPageUseCaseImpl } from './usecase/page/GetPageUseCase';
 import { DeleteCampaignUseCase, DeleteCampaignUseCaseImpl } from './usecase/campaign/DeleteCampaignUseCase';
 import { CreateCampaignUseCase, CreateCampaignUseCaseImpl } from './usecase/campaign/CreateCampaignUseCase';
+import {GetDetailCampaignUseCase, GetDetailCampaignUseCaseImpl} from "@/usecase/campaign/GetDetailCampaignUseCase";
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: "http://127.0.0.1:8080",
@@ -42,6 +43,8 @@ const deleteCampaign: DeleteCampaignUseCase = new DeleteCampaignUseCaseImpl(camp
 provide("deleteCampaignUseCase", deleteCampaign);
 const createCampaign: CreateCampaignUseCase = new CreateCampaignUseCaseImpl(campaignService);
 provide("createCampaignUseCase", createCampaign);
+const getDetailCampaign: GetDetailCampaignUseCase = new GetDetailCampaignUseCaseImpl(campaignService);
+provide("getDetailCampaignUseCase", getDetailCampaign);
 
 const pageService: PageService = new PageServiceImpl(axiosInstance);
 const getPage: GetPageUseCase = new GetPageUseCaseImpl(pageService);
