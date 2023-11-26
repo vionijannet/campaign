@@ -23,7 +23,7 @@
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100" v-if="greetingList.length > 0">
                 <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message"></textarea>
-                <p class="text-right underline pt-2 px-1 text-red-500 font-semibold cursor-pointer" @click="deleteGreeting">Delete</p>
+                <p v-if="greetingList.length > 1" class="text-right underline pt-2 px-1 text-red-500 font-semibold cursor-pointer" @click="deleteGreeting">Delete</p>
             </div>
         </div>
 
@@ -40,7 +40,7 @@
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100" v-if="messageList.length > 0">
                 <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="messageList[indexActiveMessage].message"></textarea>
-                <p class="text-right underline pt-2 px-1 text-red-500 font-semibold cursor-pointer" @click="deleteMessage">Delete</p>
+                <p v-if="messageList.length > 1" class="text-right underline pt-2 px-1 text-red-500 font-semibold cursor-pointer" @click="deleteMessage">Delete</p>
             </div>
         </div>
 
@@ -227,14 +227,15 @@ function createTemplate(): void {
 
 function deleteMessage(): void {
     messageList.value.splice(indexActiveMessage.value, 1);
-    if (indexActiveMessage.value > messageList.value.length) {
+    if (indexActiveMessage.value >= messageList.value.length) {
         indexActiveMessage.value = messageList.value.length - 1;
     }
 }
 
 function deleteGreeting(): void {
     greetingList.value.splice(indexActiveGreeting.value, 1);
-    if (indexActiveGreeting.value > greetingList.value.length) {
+
+    if (indexActiveGreeting.value >= greetingList.value.length) {
         indexActiveGreeting.value = greetingList.value.length - 1;
     }
 }

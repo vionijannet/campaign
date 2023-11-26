@@ -23,7 +23,7 @@
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100" v-if="filteredGreetingList.length > 0">
                 <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" :value="filteredGreetingList[indexActiveGreeting].message" @input="updateGreetingListFromFilteredData($event)"></textarea>
-                <p class="text-right underline pt-2 px-1 text-red-500 font-semibold cursor-pointer" @click="deleteGreeting">Delete</p>
+                <p v-if="filteredGreetingList.length > 1" class="text-right underline pt-2 px-1 text-red-500 font-semibold cursor-pointer" @click="deleteGreeting">Delete</p>
             </div>
         </div>
 
@@ -39,7 +39,7 @@
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100" v-if="filteredMessageList.length > 0">
                 <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" :value="filteredMessageList[indexActiveMessage].message" @input="updateMessageListFromFilteredData($event)"></textarea>
-                <p class="text-right underline pt-2 px-1 text-red-500 font-semibold cursor-pointer" @click="deleteMessage">Delete</p>
+                <p v-if="filteredMessageList.length > 1" class="text-right underline pt-2 px-1 text-red-500 font-semibold cursor-pointer" @click="deleteMessage">Delete</p>
             </div>
         </div>
 
@@ -266,7 +266,7 @@ function deleteMessage(): void {
     const indexToUpdate = filteredMessageList.value[indexActiveMessage.value].index;
     messageList.value[indexToUpdate].flag_delete = true;
 
-    if (indexActiveMessage.value > filteredMessageList.value.length) {
+    if (indexActiveMessage.value >= filteredMessageList.value.length) {
         indexActiveMessage.value = filteredMessageList.value.length - 1;
     }
 }
@@ -275,7 +275,7 @@ function deleteGreeting(): void {
     const indexToUpdate = filteredGreetingList.value[indexActiveGreeting.value].index;
     greetingList.value[indexToUpdate].flag_delete = true;
 
-    if (indexActiveGreeting.value > filteredGreetingList.value.length) {
+    if (indexActiveGreeting.value >= filteredGreetingList.value.length) {
         indexActiveGreeting.value = filteredGreetingList.value.length - 1;
     }
 }
