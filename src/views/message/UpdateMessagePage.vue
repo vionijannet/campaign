@@ -46,19 +46,19 @@
         <div class="w-full" id="upload-attachment">
             <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
                 <div class="flex-col">
-                    <p class="font-medium">Upload Image</p>
-                    <p class="font-light text-sm text-gray-700">You can upload multiple image at one time</p>
+                    <p class="font-medium">Upload PDF</p>
+                    <p class="font-light text-sm text-gray-700">You can only upload one file</p>
                 </div>
                 <div>
-                    <label for="upload-image" class="flex items-center cursor-pointer border bg-white hover:bg-gray-100 border-blue-primary text-blue-primary p-2 px-4 rounded-lg font-semibold">Browse Image</label>
-                    <input @change="uploadFile($event)" type="file" multiple name="image" id="upload-image" class="hidden">
+                    <label v-if="attachmentList.length < 1" for="upload-file" class="flex items-center cursor-pointer border bg-white hover:bg-gray-100 border-blue-primary text-blue-primary p-2 px-4 rounded-lg font-semibold">Browse Image</label>
+                    <input @change="uploadFile($event)" type="file" name="image" id="upload-file" class="hidden" ref="upload">
                 </div>
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
                 <div v-if="attachmentList.length < 1">
-                    <label for="upload-image" class="flex text-center items-center flex-col space-y-4 p-8">
+                    <label for="upload-file" class="flex text-center items-center flex-col space-y-4 p-8">
                         <img src="@/assets/upload.svg" alt="Upload">
-                        <p class="text-stone-500">Select Image to Upload</p>
+                        <p class="text-stone-500">Select File to Upload</p>
                     </label>
                 </div>
                 <div v-else class="grid lg:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -104,6 +104,7 @@ import router from '@/router';
 import { GetDetailTemplateUseCase } from '@/usecase/template/GetDetailTemplateUseCase';
 import { UpdateTemplateUseCase } from '@/usecase/template/UpdateTemplateUseCase';
 import { NotificationManager } from '@/util/NotificationManager';
+import { TextFormatter } from '@/util/TextFormatter';
 import { finalize } from 'rxjs';
 import { computed, inject, onMounted, ref, type Ref } from 'vue';
 import { useRoute } from "vue-router";
@@ -112,6 +113,7 @@ const templateId: string = useRoute().params["templateId"] as string;
 const templateName = ref("");
 const isLoading = ref(false);
 const templateValidation = ref("");
+const upload: Ref<HTMLFormElement | null> = ref(null);
 
 const updateTemplateUseCase: UpdateTemplateUseCase = inject("updateTemplateUseCase")!;
 const getDetailTemplateUseCase: GetDetailTemplateUseCase = inject("getDetailTemplateUseCase")!;
@@ -175,11 +177,29 @@ function uploadFile(event: Event): void {
     const fileList = (event.target as HTMLInputElement).files;
     if (fileList) {
         for (let i = 0; i < fileList.length; i++) {
-            attachmentList.value.push({
-                filename: fileList[i].name,
-                checksum: "",
-                message_attachment: fileList[i]
-            });
+            // Validate type
+            if ("application/pdf" !== fileList[i].type.trim()) {
+                NotificationManager.showMessage("Failed to Upload PDF", "Invalid file type!", "error");
+                (upload.value as HTMLFormElement).value = null;
+            } else {
+                TextFormatter.generateFileChecksum(fileList[0])
+                    .pipe(
+                        finalize(() => (upload.value as HTMLFormElement).value = null)
+                    )
+                    .subscribe({
+                        next: (checksum) => {
+                            attachmentList.value = [];
+                            attachmentList.value.push({
+                                filename: fileList[i].name,
+                                checksum,
+                                message_attachment: fileList[i]
+                            });
+                        },
+                        error: (e) => {
+                            NotificationManager.showMessage("Failed to Upload PDF", e, "error");
+                        }
+                    });
+            }
         }
     }
 }
