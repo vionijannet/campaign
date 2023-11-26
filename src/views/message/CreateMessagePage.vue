@@ -9,7 +9,9 @@
         </ButtonBase>
     </div>
     <div class="bg-white w-full rounded-2xl p-6 space-y-6">
-        <InputText label-for="message-name" label-text="Message" placeholder="Type your message name" @type="setTemplateName" :validation="templateValidation" :value="templateName" />
+        <InputText label-for="message-name" label-text="Message" placeholder="Type your message name" @type="setTemplateName"
+            :validation="templateValidation" :value="templateName" :maxlength="100" />
+        
         <div class="w-full" id="greeting">
             <div class="border p-4 rounded-2xl rounded-b-none flex items-center justify-between" :class="messageList.length > 0 ? 'border-b-0' : ''">
                 <div class="flex items-center justify-start space-x-8">

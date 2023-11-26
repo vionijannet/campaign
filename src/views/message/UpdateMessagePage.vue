@@ -9,7 +9,8 @@
         </ButtonBase>
     </div>
     <div class="bg-white w-full rounded-2xl p-6 space-y-6">
-        <InputText label-for="message-name" label-text="Message Name" placeholder="Type your message name" :value="templateName" @type="setTemplateName" :validation="templateValidation"></InputText>
+        <InputText label-for="message-name" label-text="Message Name" placeholder="Type your message name" :value="templateName"
+            @type="setTemplateName" :validation="templateValidation" :maxlength="100" />
 
         <div class="w-full" id="greeting">
             <div class="border p-4 rounded-2xl rounded-b-none flex items-center justify-between" :class="{ 'border-b-0' : filteredGreetingList.length > 0 }">
