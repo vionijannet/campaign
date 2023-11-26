@@ -172,7 +172,7 @@ function uploadFile(event: Event): void {
         for (let i = 0; i < fileList.length; i++) {
             // Validate type
             if ("application/pdf" !== fileList[i].type.trim()) {
-                NotificationManager.showMessage("Failed to Upload PDF", "Invalid file type!", "error");
+                NotificationManager.showMessage("Failed to Upload PDF", "Invalid file type", "error");
                 (upload.value as HTMLFormElement).value = null;
             } else {
                 TextFormatter.generateFileChecksum(fileList[0])

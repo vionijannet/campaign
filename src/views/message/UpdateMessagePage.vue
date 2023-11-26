@@ -51,8 +51,8 @@
                     <p class="font-light text-sm text-gray-700">You can only upload one file</p>
                 </div>
                 <div>
-                    <label v-if="attachmentList.length < 1" for="upload-file" class="flex items-center cursor-pointer border bg-white hover:bg-gray-100 border-blue-primary text-blue-primary p-2 px-4 rounded-lg font-semibold">Browse Image</label>
-                    <input @change="uploadFile($event)" type="file" name="image" id="upload-file" class="hidden" ref="upload">
+                    <label v-if="attachmentList.length < 1" for="upload-file" class="flex items-center cursor-pointer border bg-white hover:bg-gray-100 border-blue-primary text-blue-primary p-2 px-4 rounded-lg font-semibold">Browse PDF</label>
+                    <input @change="uploadFile($event)" type="file" name="image" id="upload-file" class="hidden" ref="upload" accept="application/pdf">
                 </div>
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
@@ -180,7 +180,7 @@ function uploadFile(event: Event): void {
         for (let i = 0; i < fileList.length; i++) {
             // Validate type
             if ("application/pdf" !== fileList[i].type.trim()) {
-                NotificationManager.showMessage("Failed to Upload PDF", "Invalid file type!", "error");
+                NotificationManager.showMessage("Failed to Upload PDF", "Invalid file type", "error");
                 (upload.value as HTMLFormElement).value = null;
             } else {
                 TextFormatter.generateFileChecksum(fileList[0])
