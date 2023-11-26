@@ -68,7 +68,7 @@ const totalRow: Ref<number> = ref(2);
 const tableHeader: Ref<TableHeader[]> = ref([
     {
         key: "category",
-        name: "Category Name",
+        name: "Audience List",
         isSortable: true
     },
     {
