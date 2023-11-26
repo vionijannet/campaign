@@ -19,7 +19,7 @@
                         Greeting {{ g }}
                     </p>
                 </div>
-                <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addGreeting">Add Greeting</ButtonBase>
+                <ButtonBase v-if="filteredGreetingList.length < 10" type="secondary" class="!w-36 !py-2 !px-4" @click="addGreeting">Add Greeting</ButtonBase>
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100" v-if="filteredGreetingList.length > 0">
                 <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" :value="filteredGreetingList[indexActiveGreeting].message" @input="updateGreetingListFromFilteredData($event)"></textarea>
@@ -35,7 +35,7 @@
                         Message {{ m }}
                     </p>
                 </div>
-                <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addMessage">Add Message</ButtonBase>
+                <ButtonBase v-if="filteredMessageList.length < 10" type="secondary" class="!w-36 !py-2 !px-4" @click="addMessage">Add Message</ButtonBase>
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100" v-if="filteredMessageList.length > 0">
                 <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" :value="filteredMessageList[indexActiveMessage].message" @input="updateMessageListFromFilteredData($event)"></textarea>

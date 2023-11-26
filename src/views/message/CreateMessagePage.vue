@@ -19,7 +19,7 @@
                         Greeting {{ g }}
                     </p>
                 </div>
-                <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addGreeting">Add Greeting</ButtonBase>
+                <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addGreeting" v-if="greetingList.length < 10">Add Greeting</ButtonBase>
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100" v-if="greetingList.length > 0">
                 <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="greetingList[indexActiveGreeting].message"></textarea>
@@ -36,7 +36,7 @@
                         Message {{ m }}
                     </p>
                 </div>
-                <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addMessage">Add Message</ButtonBase>
+                <ButtonBase type="secondary" class="!w-36 !py-2 !px-4" @click="addMessage" v-if="messageList.length < 10">Add Message</ButtonBase>
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100" v-if="messageList.length > 0">
                 <textarea class="w-full border rounded-2xl outline-none p-4" rows="4" placeholder="Type your message" v-model="messageList[indexActiveMessage].message"></textarea>
