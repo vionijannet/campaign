@@ -22,3 +22,6 @@ app.use(DatePicker)
 app.use(VueSweetalert2)
 
 app.mount("#app")
+
+// TODO: untuk keycloak
+// https://github.com/baloise/vue-keycloak
