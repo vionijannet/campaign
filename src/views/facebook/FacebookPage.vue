@@ -2,17 +2,17 @@
     <div class="absolute -top-2 right-0 my-6 mx-8">
         <div class="flex space-x-4">
             <Search />
-            <ButtonBase class="flex !w-fit" @click="redirectToCreate">
+            <ButtonBase class="flex !w-fit">
                 <img src="../../assets/icon-create.svg" alt="Create">
                 <span class="ml-2">Add Account</span>
             </ButtonBase>
         </div>
     </div>
     <div>
-        <TableExpandComponent class="mb-2" :table-header="tableHeader" :table-body="templateList" :search-criteria="searchCriteria" :total-row="totalRow">
+        <TableExpandComponent class="mb-2" :table-header="tableHeader" :table-body="linkedList" :search-criteria="searchCriteria" :total-row="totalRow">
             <template #name="{slotProps}">
                 <div class="p-2">
-                    {{ slotProps.accountName }}
+                    {{ slotProps.facebook_linked_name }}
                 </div>
             </template>
             <template #action="{slotProps}">
@@ -33,31 +33,15 @@
 import ButtonBase from '@/components/button/ButtonBase.vue';
 import TableExpandComponent from '@/components/table/TableExpandComponent.vue';
 import router from "@/router";
-import { ref, type Ref } from 'vue';
-import { Facebook } from "@/entity/facebook/Facebook";
+import { inject, onMounted, ref, type Ref } from 'vue';
 import { SearchCriteria, TableHeader } from '@/components/ComponentEntity';
 import Search from '@/components/search/Search.vue';
+import { FacebookLinked } from '@/entity/facebook/FacebookLinked';
+import { GetFacebookLinkedUseCase } from '@/usecase/facebook/GetFacebookLinkedUseCase';
+import { finalize, Subscription } from 'rxjs';
+import { NotificationManager } from '@/util/NotificationManager';
 
-function redirectToCreate(): void {
-    router.push("/message/create");
-}
-
-const templateList: Ref<Facebook[]> = ref([
-    {
-        accountId: "fb-01",
-        accountName: "Darlene Robertson",
-        accountImage: "",
-        totalPageConnect: 5,
-        lastAdded: "30 October 2023, 14:30",
-    },
-    {
-        accountId: "fb-02",
-        accountName: "Darell Steward",
-        accountImage: "",
-        totalPageConnect: 2,
-        lastAdded: "30 October 2021, 14:30",
-    }
-]);
+const asyncSubscription: Subscription = new Subscription();
 
 const searchCriteria: Ref<SearchCriteria> = ref({
     page: 1,
@@ -65,8 +49,6 @@ const searchCriteria: Ref<SearchCriteria> = ref({
     sortKey: "name",
     sortOrder: "asc"
 });
-
-const totalRow: Ref<number> = ref(2);
 
 const tableHeader: Ref<TableHeader[]> = ref([
     {
@@ -80,7 +62,7 @@ const tableHeader: Ref<TableHeader[]> = ref([
         isSortable: true
     },
     {
-        key: "lastAdded",
+        key: "created_at",
         name: "Added",
         isSortable: true
     },
@@ -90,6 +72,46 @@ const tableHeader: Ref<TableHeader[]> = ref([
         isSortable: false
     },
 ] as TableHeader[]);
+const linkedList: Ref<FacebookLinked[]> = ref([]);
+const totalRow: Ref<number> = ref(2);
+
+const isLoading = ref(false);
+
+const getFacebookLinkedUseCase: GetFacebookLinkedUseCase = inject("getFacebookLinkedUseCase")!;
+
+function loadData(name=""): void {
+    isLoading.value = true;
+
+    asyncSubscription.add(
+        getFacebookLinkedUseCase.execute({
+            facebook_linked_name: name,
+            limit: searchCriteria.value.rowPerPage,
+            page: searchCriteria.value.page-1,
+            sort_by: searchCriteria.value.sortKey.length > 0 ? `${searchCriteria.value.sortKey},${searchCriteria.value.sortOrder}` : "",
+        }).pipe(
+            finalize(() => isLoading.value = false)
+        ).subscribe(
+            {
+                next: (getFacebookResp) => {
+                    if (getFacebookResp.code === 200) {
+                        linkedList.value = getFacebookResp.result.data.content.facebook_linked_list ?? [];
+                        totalRow.value = getFacebookResp.result.data.total_elements ?? 0;
+                    } else {
+                        const message = getFacebookResp.result?.message ?? getFacebookResp.message;
+                        NotificationManager.showMessage("Failed to Load Data", message, "error");
+                    }
+                },
+                error: (error) => {
+                    NotificationManager.showMessage("Network Error", error, "error");
+                }
+            }
+        )
+    )
+}
+
+onMounted(() => {
+    loadData();
+})
 
 function previewAccount(accId: string): void {
     console.log("preview account", accId);
