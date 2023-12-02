@@ -8,29 +8,29 @@
             <span class="ml-2">Back</span>
         </ButtonBase>
     </div>
-    <div class="bg-white w-full rounded-2xl p-6 space-y-6">
-        <InputText :value="campaignId" disabled="true" label-for="page-name" label-text="Page Name" placeholder="Page Name Goes Here"></InputText>
-        <InputText label-for="campaign-name" label-text="Campaign Name" placeholder="Type your campaign name"></InputText>
+    <div class="bg-white w-full rounded-2xl p-6 space-y-6" id="section-form">
+        <InputText :value="pageName" disabled="true" label-for="page-name" label-text="Page Name" placeholder="Page Name Goes Here"></InputText>
+        <InputText label-for="campaign-name" label-text="Campaign Name" placeholder="Type your campaign name" :value="updateCampaignReq.campaign_name" @type="setCampaignName($event)"></InputText>
         <div>
             <p class="font-semibold text-lg">Scheduler</p>
             <div class="flex justify-between items-center">
                 <p>Turning on to set schedule to your campaign</p>
                 
-                <label for="scheduler" tabindex="0" :aria-checked="isSchedulerOn" class="peer relative inline-flex flex-shrink-0 cursor-pointer transition-colors ease-in-out duration-200 border-2 border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 rounded-full" :class="{'bg-blue-primary': isSchedulerOn, 'bg-gray-100': !isSchedulerOn}">
-                    <input type="checkbox" id="scheduler" class="hidden" v-model="isSchedulerOn" />
+                <label for="scheduler" tabindex="0" :aria-checked="updateCampaignReq.is_scheduled" class="peer relative inline-flex flex-shrink-0 cursor-pointer transition-colors ease-in-out duration-200 border-2 border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 rounded-full" :class="{'bg-blue-primary': updateCampaignReq.is_scheduled, 'bg-gray-100': !updateCampaignReq.is_scheduled}">
+                    <input type="checkbox" name="scheduler" id="scheduler" class="hidden" v-model="updateCampaignReq.is_scheduled" />
                     <span aria-hidden="true" class="rounded-full w-5 h-5 flex items-center justify-center text-gray-400 text-xs"></span>
                     <span aria-hidden="true" class="rounded-full w-5 h-5 flex items-center justify-center text-gray-400 text-xs"></span>
-                    <span aria-hidden="true" class="absolute transform transition ease-in-out duration-200 h-5 w-5 rounded-full bg-white shadow flex items-center justify-center text-xs" :class="{'translate-x-full text-blue-primary': isSchedulerOn, 'translate-x-0 text-gray-400': !isSchedulerOn}"></span>
+                    <span aria-hidden="true" class="absolute transform transition ease-in-out duration-200 h-5 w-5 rounded-full bg-white shadow flex items-center justify-center text-xs" :class="{'translate-x-full text-blue-primary': updateCampaignReq.is_scheduled, 'translate-x-0 text-gray-400': !updateCampaignReq.is_scheduled}"></span>
                 </label>
             </div>
-            <div class="flex justify-between space-x-4 my-2 transform transition ease-in-out duration-200 overflow-hidden" :class="{ 'h-full': isSchedulerOn, 'h-0': !isSchedulerOn }">
+            <div class="flex justify-between space-x-4 my-2 transform transition ease-in-out duration-200 overflow-hidden" :class="{ 'h-full': updateCampaignReq.is_scheduled, 'h-0': !updateCampaignReq.is_scheduled }">
                 <div class="bg-gray-100 flex items-center rounded-lg border w-full">
                     <span class="mx-4">Date</span>
-                    <DatePicker class="!w-full !border-none"></DatePicker>
+                    <DatePicker class="!w-full !border-none" v-model:value="selectedDate" :editable="false" value-type="DD/MM/YYYY" format="DD MMM YYYY" placeholder="Select date"></DatePicker>
                 </div>
                 <div class="bg-gray-100 flex items-center rounded-lg border w-full">
                     <span class="mx-4">Time</span>
-                    <DatePicker class="!w-full !border-none">
+                    <DatePicker class="!w-full !border-none" type="time" v-model:value="selectedTime" :editable="false" value-type="format" format="hh:mm" placeholder="Select time">
                         <template #icon-calendar>
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M5.665 1.5C3.135 1.5 1.5 3.233 1.5 5.916V14.084C1.5 16.767 3.135 18.5 5.665 18.5H14.333C16.864 18.5 18.5 16.767 18.5 14.084V5.916C18.5 3.233 16.865 1.5 14.334 1.5H5.665ZM14.333 20H5.665C2.276 20 0 17.622 0 14.084V5.916C0 2.378 2.276 0 5.665 0H14.334C17.723 0 20 2.378 20 5.916V14.084C20 17.622 17.723 20 14.333 20Z" fill="currentColor"/>
@@ -41,23 +41,31 @@
                 </div>
             </div>
         </div>
-        <div>
+        <div id="section-interval">
             <p class="font-semibold text-lg">Interval</p>
             <div class="flex justify-between space-x-4 my-2">
                 <div class="bg-gray-100 flex items-center rounded-lg border w-full">
-                    <span class="mx-4">Minimal</span>
-                    <input type="text" class="relative inline-block w-full rounded-lg h-12 rounded-l-none outline-none py-[6px] px-[30px] pl-[10px]">
+                    <label for="min" class="mx-4">Minimal</label>
+                    <input type="number" class="relative inline-block w-full rounded-lg h-12 rounded-l-none outline-none py-[6px] px-[30px] pl-[10px]"
+                        @input="filterNumber($event)" @keypress="checkNumber($event)" v-model.number="updateCampaignReq.interval_min" name="min"
+                        id="min" placeholder="Set minimal interval" min="0" />
                 </div>
                 <div class="bg-gray-100 flex items-center rounded-lg border w-full">
-                    <span class="mx-4">Maximal</span>
-                    <input type="text" class="relative inline-block w-full rounded-lg h-12 rounded-l-none outline-none py-[6px] px-[30px] pl-[10px]">
+                    <label for="max" class="mx-4">Maximal</label>
+                    <input type="number" class="relative inline-block w-full rounded-lg h-12 rounded-l-none outline-none py-[6px] px-[30px] pl-[10px]"
+                        @input="filterNumber($event)" @keypress="checkNumber($event)" v-model.number="updateCampaignReq.interval_max" name="max"
+                        id="max" placeholder="Set maximal interval" min="0">
                 </div>
             </div>
         </div>
-        <div class="w-full space-y-2">
+        <div class="w-full space-y-2" id="section-audience">
             <span for="labelFor" class="font-semibold text-lg">Audience</span>
             <div class="flex items-center justify-between bg-gray-100 p-4 w-full rounded-lg text-lg">
-                <span class="text-lg text-gray-400">Select audiens</span>
+                <span class="text-lg text-gray-400" v-if="updateCampaignReq.audience_list.length < 1">Select audiens</span>
+                <span v-else class="text-base bg-blue-primary p-1 rounded-lg text-gray-50 px-2" v-for="(a, index) in updateCampaignReq.audience_list" :key=index>
+                    <span class="pr-2 border-r">{{ getAudienceNameFromId(a) }}</span>
+                    <span class="ml-2 cursor-pointer text-white" @click="removeAudience(index)">&#x2715;</span>
+                </span>
                 <button @click="isPopupAudiensOpen=true">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -65,77 +73,60 @@
                 </button>
             </div>
         </div>
-        <div>
+        <div id="section-message">
             <div class="flex justify-between">
                 <p class="font-semibold text-lg">Message</p>
-                <p class="font-semibold text-blue-primary underline cursor-pointer" @click="isPopupTemplateOpen=true">Use Template</p>
+                <p class="font-semibold text-blue-primary underline cursor-pointer" @click="isPopupTemplateOpen=true" v-if="!isMessageBodyEmpty">Use Template</p>
             </div>
-            <div class="w-full border rounded-lg p-4 my-2 space-y-1">
-                <div class="flex items-center">
-                    <input type="text" placeholder="Select image" disabled class="w-full h-12 border border-r-none rounded-r-none rounded-lg outline-none p-4" />
-                    <label for="upload-image" class="flex items-center cursor-pointer border border-blue-primary text-blue-primary rounded-lg h-12 p-2 px-4 rounded-l-none">Browse</label>
-                    <input type="file" name="image" id="upload-image" class="hidden">
-                </div>
-                <textarea rows="5" class="w-full outline-none border rounded-lg p-4" placeholder="Type your message"></textarea>
-            </div>
-            <div class="w-full border rounded-lg p-4 my-2 flex items-start space-x-2" v-for="m, i in messageList">
-                <div class="w-full space-y-1">
-                    <div class="flex items-center">
-                        <input type="text" placeholder="Select image" disabled class="w-full h-12 border border-r-none rounded-r-none rounded-lg outline-none p-4" />
-                        <label for="upload-image" class="flex items-center cursor-pointer border border-blue-primary text-blue-primary rounded-lg h-12 p-2 px-4 rounded-l-none">Browse</label>
-                        <input type="file" name="image" id="upload-image" class="hidden">
-                    </div>
-                    <textarea rows="5" class="w-full outline-none border rounded-lg p-4" placeholder="Type your message"></textarea>
-                </div>
-                <button class="flex-1" @click="removeMessage(i)">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#d93517" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+            <div class="relative" v-if="!isMessageBodyEmpty">
+                <InputText :value="templateName" disabled="true" label-for="template-name" label-text="Template Name" placeholder="Template Name Goes Here" class="py-4" />
+                <button @click="removeTemplate" class="absolute right-4 top-16 transform rotate-45" v-if="updateCampaignReq.template_id.length > 0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
                 </button>
             </div>
-            <ButtonBase class="my-2 !w-auto" @click="addMessage">Add Message</ButtonBase>
+            <div v-if="!isMessageTemplateSelected">
+                <div class="w-full border rounded-lg p-4 my-2 space-y-2">
+                    <InputDropdown :placeholder="'Select message type'" :selected="updateCampaignReq.message_list[0].message_type"
+                        :id="'type-0'" @change="updateCampaignReq.message_list[0].message_type = $event.key" :option-list="messageTypeList">
+                    </InputDropdown>
+                    <textarea rows="5" class="w-full outline-none border rounded-lg p-4" placeholder="Type your message" v-model="updateCampaignReq.message_list[0].message"></textarea>
+                </div>
+                <div class="w-full border rounded-lg p-4 my-2 flex items-start space-x-2" v-for="m, i in updateCampaignReq.message_list.filter((_v, i) => i > 0)">
+                    <div class="w-full space-y-1">
+                        <InputDropdown :placeholder="'Select message type'" :selected="updateCampaignReq.message_list[i+1].message_type"
+                            :id="`type-${i+1}`" @change="updateCampaignReq.message_list[i+1].message_type = $event.key" :option-list="messageTypeList"> 
+                        </InputDropdown>
+                        <textarea rows="5" class="w-full outline-none border rounded-lg p-4" placeholder="Type your message" v-model="updateCampaignReq.message_list[i+1].message"></textarea>
+                    </div>
+                    <button class="flex-1 pt-3" @click="removeMessage(i+1)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#d93517" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                        </svg>
+                    </button>
+                </div>
+                <ButtonBase class="my-2 !w-auto" @click="addMessage">Add Message</ButtonBase>
+            </div>
         </div>
         <hr />
         <div class="w-full flex justify-end items-center space-x-4">
             <ButtonBase type="error" class="!w-32" @click="backToList">Cancel</ButtonBase>
-            <ButtonBase class="!w-32">Save</ButtonBase>
+            <ButtonBase class="!w-32" @click="saveCampaign">Save</ButtonBase>
         </div>
     </div>
 
     <ModalComponent v-if="isPopupAudiensOpen" @close="isPopupAudiensOpen=false" :custom-class="'!max-w-xl'">
-        <div class="relative space-y-2">
-            <div class="flex items-center pb-2">
-                <label for="audiens" class="flex items-center space-x-3">
-                    <input type="checkbox" name="audiens" id="audiens" />
-                    <span class="font-semibold">Select Audience</span>
-                </label>
-            </div>
-            <div class="pb-4 space-y-2">
-                <p class="font-semibold">Filter Flag</p>
-                <div class="flex space-x-2">
-                    <div class="w-9 h-9 rounded bg-green-500" title="Filter 1"></div>
-                    <div class="w-9 h-9 rounded bg-blue-500" title="Filter 2"></div>
-                    <div class="w-9 h-9 rounded bg-teal-500" title="Filter 3"></div>
-                    <div class="w-9 h-9 rounded bg-emerald-500" title="Filter 4"></div>
-                </div>
-            </div>
-            <CheckboxAudiens></CheckboxAudiens>
-            <CheckboxAudiens></CheckboxAudiens>
-            <CheckboxAudiens></CheckboxAudiens>
-            <CheckboxAudiens></CheckboxAudiens>
-            <CheckboxAudiens></CheckboxAudiens>
-        </div>
-        <div class="pt-8 flex justify-center space-x-8">
-            <ButtonBase type="error" class="w-32" @click="isPopupAudiensOpen=false">Cancel</ButtonBase>
-            <ButtonBase class="w-32">Done</ButtonBase>
-        </div>
+        <SelectAudience :audience_list="audienceList" :checked-audience="updateCampaignReq.audience_list"
+            @cancel="isPopupAudiensOpen = false" @continue="setCheckedAudience">
+        </SelectAudience>
     </ModalComponent>
 
     <ModalComponent v-if="isPopupTemplateOpen" @close="isPopupTemplateOpen=false">
-        <SelectMessageTemplate @cancel="isPopupTemplateOpen=false"></SelectMessageTemplate>
+        <SelectMessageTemplate @cancel="isPopupTemplateOpen=false" @selected="onSelectedTemplate"></SelectMessageTemplate>
     </ModalComponent>
 
-    <LoadingScreen v-if="false"></LoadingScreen>
+    <LoadingScreen v-if="isLoading"></LoadingScreen>
 </template>
 
 <script setup lang="ts">
@@ -143,31 +134,191 @@ import ButtonBase from '@/components/button/ButtonBase.vue';
 import InputText from '@/components/input/InputText.vue';
 import ModalComponent from '@/components/modal/ModalComponent.vue';
 import LoadingScreen from '@/components/loading/LoadingScreen.vue';
-import CheckboxAudiens from '@/components/in-app/CheckboxAudience.vue';
 import SelectMessageTemplate from '@/views/campaign/SelectMessageTemplate.vue';
 import router from '@/router';
-import { ref, type Ref } from 'vue';
+import { computed, inject, onMounted, ref, type Ref } from 'vue';
 import DatePicker from 'vue-datepicker-next';
-import { useRoute } from "vue-router";
+import { AudiencePage, Page } from '@/entity/page/Page';
+import SelectAudience from './SelectAudience.vue';
+import { OptionEntity } from '@/components/ComponentEntity';
+import { TemplateMessage } from '@/entity/message/TemplateMessage';
+import InputDropdown from '@/components/input/InputDropdown.vue';
+import { finalize } from 'rxjs';
+import { NotificationManager } from '@/util/NotificationManager';
+import { UpdateCampaignReq } from '@/entity/campaign/UpdateCampaignReq';
+import { GetDetailCampaignUseCase } from '@/usecase/campaign/GetDetailCampaignUseCase';
+import { useRoute } from 'vue-router';
 
 const route = useRoute();
-const isSchedulerOn = ref(false);
+
+const getDetailCampaignUseCase: GetDetailCampaignUseCase = inject("getDetailCampaignUseCase")!;
+
 const isPopupAudiensOpen = ref(false);
 const isPopupTemplateOpen = ref(false);
-const campaignId = route.params.campaignId;
+const isLoading = ref(false);
 
-const messageList: Ref<any[]> = ref([]);
+const selectedDate: Ref<string | null> = ref(null);
+const selectedTime: Ref<string | null> = ref(null);
+
+const messageTypeList: OptionEntity[] = [
+    {
+        key: "Message",
+        value: "Message",
+    },
+    {
+        key: "Greeting",
+        value: "Greeting",
+    },
+];
+const audienceList: Ref<AudiencePage[]> = ref([]); 
+
+const campaignId = route.params.campaignId;
+const pageName = ref("");
+const updateCampaignReq: Ref<UpdateCampaignReq> = ref({
+    campaign_id: campaignId as string,
+    campaign_name: "",
+    is_scheduled: false,
+    scheduled_date: "",
+    message_list: [{
+        message_id: "",
+        message: "",
+        message_type: "Message",
+        message_order: "1",
+        flag_delete: false,
+    }],
+    template_id: "",
+    interval_min: 0,
+    interval_max: 0,
+    audience_list: [],
+})
+const filteredMessageList = computed(() =>
+    updateCampaignReq.value.message_list.filter(data => data.flag_delete === false)
+);
+const templateName = ref("");
+
+const isMessageTemplateSelected = computed(() => updateCampaignReq.value.template_id.length > 0);
+const isMessageBodyEmpty = computed(() => updateCampaignReq.value.message_list.length > 1 || updateCampaignReq.value.message_list[0].message.trim().length > 0);
 
 function backToList(): void {
     router.push("/campaign");
 }
 
 function addMessage(): void {
-    messageList.value.push({});
+    updateCampaignReq.value.message_list.push({
+        flag_delete: false,
+        message: "",
+        message_type: "",
+        message_order: (updateCampaignReq.value.message_list.length + 1).toString(),
+        message_id: "",
+    });
 }
 
 function removeMessage(index: number): void {
-    messageList.value.splice(index, 1);
+    updateCampaignReq.value.message_list.splice(index, 1);
+}
+
+function setCheckedAudience(data: string[]): void {
+    updateCampaignReq.value.audience_list = data;
+    isPopupAudiensOpen.value = false;
+}
+
+function getAudienceNameFromId(id: string): string {
+    return audienceList.value.filter(data => data.audience_id === id)[0].audience_name;
+}
+
+function removeAudience(index: number): void {
+    updateCampaignReq.value.audience_list.splice(index, 1);
+}
+
+function saveCampaign(): void {
+    setMessageOrder();
+
+    console.log("save campaign");
+}
+
+function setMessageOrder(): void {
+    const messageList = updateCampaignReq.value.message_list.filter(data => data.message_type === "Message")
+        .map((data, index) => {
+            return { ...data, message_order: (index+1).toString() }
+        });
+    const greetingList = updateCampaignReq.value.message_list.filter(data => data.message_type === "Greeting")
+        .map((data, index) => {
+            return { ...data, message_order: (index+1).toString() }
+        });
+    updateCampaignReq.value.message_list = messageList.concat(greetingList);
+}
+
+function setCampaignName(name: string): void {
+    updateCampaignReq.value.campaign_name = name;
+}
+
+function checkNumber(evt: KeyboardEvent): void {
+    const keysAllowed: string[] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const keyPressed: string = evt.key;
+    
+    if (!keysAllowed.includes(keyPressed)) {
+        evt.preventDefault()
+    } else {
+        return;
+    }
+}
+
+function filterNumber(evt: Event): void {
+    (evt.target as HTMLInputElement).value = (evt.target as HTMLInputElement).value.replace(/[^0-9]+/g, '');
+}
+
+function onSelectedTemplate(template: TemplateMessage): void {
+    updateCampaignReq.value.template_id = template.template_id;
+    templateName.value = template.template_name;
+
+    isPopupTemplateOpen.value = false;
+}
+
+function removeTemplate(): void {
+    updateCampaignReq.value.template_id = "";
+    templateName.value = "";
+}
+
+onMounted(() => {
+    loadData();
+})
+
+function loadData(): void {
+    isLoading.value = true;
+    getDetailCampaignUseCase.execute({
+        campaign_id: campaignId as string
+    }).pipe(
+        finalize(() => isLoading.value = false)
+    ).subscribe(
+        {
+            next: (resp) => {
+                if (resp.code === 200) {
+                    updateCampaignReq.value = {
+                        audience_list: resp.result.data.audience_list,
+                        campaign_id: campaignId as string,
+                        campaign_name: resp.result.data.campaign_name,
+                        interval_max: resp.result.data.interval_max,
+                        interval_min: resp.result.data.interval_min,
+                        is_scheduled: resp.result.data.is_scheduled,
+                        message_list: resp.result.data.message_list.map(data => {
+                            return {
+                                ...data,
+                                flag_delete: false
+                            }
+                        }),
+                        scheduled_date: resp.result.data.scheduled_date,
+                        template_id: resp.result.data.template_id,
+                    }
+                } else {
+                    const message = resp.result?.message ?? resp.message;
+                    NotificationManager.showMessage("Failed to Get Data", message, "error");
+                }
+            },
+            error: (error) => {
+                NotificationManager.showMessage("Failed to Get Data", error, "error");
+            }
+        }
+    )
 }
 </script>
 
@@ -181,5 +332,17 @@ function removeMessage(index: number): void {
     border-bottom-left-radius: 0px;
     box-shadow: none;
     height: 3rem/* 48px */;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
 }
 </style>

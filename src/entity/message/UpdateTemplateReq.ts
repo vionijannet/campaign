@@ -5,7 +5,7 @@ export interface UpdateTemplateReq extends GetDetailTemplateReq {
     message_list: UpdatedMessage[];
 }
 
-interface UpdatedMessage {
+export interface UpdatedMessage {
     message_id: string;
     message: string;
     message_type: string;

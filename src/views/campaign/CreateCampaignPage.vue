@@ -130,7 +130,7 @@
         <SelectPage @continue="continueCreateCampaign" @cancel="backToList"></SelectPage>
     </ModalComponent>
 
-    <LoadingScreen v-if="false"></LoadingScreen>
+    <LoadingScreen v-if="isLoading"></LoadingScreen>
 </template>
 
 <script setup lang="ts">
@@ -140,7 +140,7 @@ import ModalComponent from '@/components/modal/ModalComponent.vue';
 import LoadingScreen from '@/components/loading/LoadingScreen.vue';
 import SelectMessageTemplate from '@/views/campaign/SelectMessageTemplate.vue';
 import router from '@/router';
-import { computed, inject, onBeforeMount, onMounted, ref, type Ref } from 'vue';
+import { computed, inject, ref, type Ref } from 'vue';
 import DatePicker from 'vue-datepicker-next';
 import SelectPage from './SelectPage.vue';
 import { Page } from '@/entity/page/Page';

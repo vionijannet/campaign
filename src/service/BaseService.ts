@@ -9,23 +9,30 @@ export class BaseService {
         protected axiosInstance: AxiosInstance,
     ) { }
 
-    // private initializeHttpHeader(): void {
-    //     this.axiosInstance.interceptors.request.use(
-    //         (config) => {
-    //             const token = this.sessionManager.getJwtToken();
+    private initializeHttpHeader(): void {
+        this.axiosInstance.interceptors.request.use(
+            (config) => {
+                config.headers = {
+                    "username": "johndoe",
+                    "password": "root",
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "GET, OPTIONS, POST, PUT",
+                    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
+                };
+                // const token = this.sessionManager.getJwtToken();
 
-    //             if (token) {
-    //                 config.headers = {
-    //                     Authorization: `Bearer ${token}`
-    //                 };
-    //             }
+                // if (token) {
+                //     config.headers = {
+                //         Authorization: `Bearer ${token}`
+                //     };
+                // }
 
-    //             return config;
-    //         }, (error) => {
-    //             return Promise.reject(error);
-    //         }
-    //     );
-    // }
+                return config;
+            }, (error) => {
+                return Promise.reject(error);
+            }
+        );
+    }
 
     /**
      * Send HTTP GET using Axios
@@ -37,7 +44,7 @@ export class BaseService {
         url: string,
         config?: AxiosRequestConfig | undefined
     ): Observable<AxiosResponse<any>> {
-        // this.initializeHttpHeader();
+        this.initializeHttpHeader();
 
         return defer(() => from(this.axiosInstance.get(this.BASE_API_ENDPOINT + url, config))
             .pipe(
@@ -66,7 +73,7 @@ export class BaseService {
         data?: any,
         config?: AxiosRequestConfig
     ): Observable<AxiosResponse<any>> {
-        // this.initializeHttpHeader();
+        this.initializeHttpHeader();
 
         return defer(() => from(this.axiosInstance.post(this.BASE_API_ENDPOINT + url, data, config))
             .pipe(
@@ -94,7 +101,7 @@ export class BaseService {
         data?: any,
         config?: AxiosRequestConfig | undefined
     ): Observable<AxiosResponse<any>> {
-        // this.initializeHttpHeader();
+        this.initializeHttpHeader();
 
         return defer(() => from(this.axiosInstance.put(this.BASE_API_ENDPOINT + url, data, config))
             .pipe(
@@ -120,7 +127,7 @@ export class BaseService {
         url: string,
         config?: AxiosRequestConfig | undefined
     ): Observable<AxiosResponse<any>> {
-        // this.initializeHttpHeader();
+        this.initializeHttpHeader();
 
         return defer(() => from(this.axiosInstance.delete(this.BASE_API_ENDPOINT + url, config))
             .pipe(
