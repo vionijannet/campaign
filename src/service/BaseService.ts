@@ -12,20 +12,10 @@ export class BaseService {
     private initializeHttpHeader(): void {
         this.axiosInstance.interceptors.request.use(
             (config) => {
-                config.headers = {
-                    "username": "johndoe",
-                    "password": "root",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET, OPTIONS, POST, PUT",
-                    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
-                };
-                // const token = this.sessionManager.getJwtToken();
-
-                // if (token) {
-                //     config.headers = {
-                //         Authorization: `Bearer ${token}`
-                //     };
-                // }
+                config.headers.setContentType("application/json");
+                config.headers.setAuthorization("");
+                config.headers["Username"] = "johndoe";
+                config.headers["Password"] = "root";
 
                 return config;
             }, (error) => {
