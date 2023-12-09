@@ -41,7 +41,7 @@ export class BaseService {
                 catchError((error) => {
                     if (error.response?.data) {
                         const tempResp = error.response.data;
-                        if (tempResp.code) return of(tempResp);
+                        if (tempResp.code) return of(error.response);
                     }
 
                     return throwError(() => new Error(error));
@@ -70,7 +70,7 @@ export class BaseService {
                 catchError((error) => {
                     if (error.response?.data) {
                         const tempResp = error.response.data;
-                        if (tempResp.code) return of(tempResp);
+                        if (tempResp.code) return of(error.response);
                     }
 
                     return throwError(() => new Error(error));
@@ -98,7 +98,7 @@ export class BaseService {
                 catchError((error) => {
                     if (error.response?.data) {
                         const tempResp = error.response.data;
-                        if (tempResp.code) return of(tempResp);
+                        if (tempResp.code) return of(error.response);
                     }
 
                     return throwError(() => new Error(error));
@@ -124,7 +124,7 @@ export class BaseService {
                 catchError((error) => {
                     if (error.response?.data) {
                         const tempResp = error.response.data;
-                        if (tempResp.code) return of(tempResp);
+                        if (tempResp.code) return of(error.response);
                     }
 
                     return throwError(() => new Error(error));
