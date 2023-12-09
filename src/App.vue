@@ -21,6 +21,8 @@ import {GetDetailCampaignUseCase, GetDetailCampaignUseCaseImpl} from "@/usecase/
 import { UpdateCampaignUseCase, UpdateCampaignUseCaseImpl } from './usecase/campaign/UpdateCampaignUseCase';
 import { FacebookService, FacebookServiceImpl } from './service/FacebookService';
 import { GetFacebookLinkedUseCase, GetFacebookLinkedUseCaseImpl } from './usecase/facebook/GetFacebookLinkedUseCase';
+import { UserService, UserServiceImpl } from './service/UserService';
+import { GetLoginHistoryUseCase, GetLoginHistoryUseCaseImpl } from './usecase/user/GetLoginHistoryUseCase';
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: "http://127.0.0.1:8080",
@@ -58,4 +60,8 @@ provide("getPageUseCase", getPage);
 const facebookService: FacebookService = new FacebookServiceImpl(axiosInstance);
 const getFacebookLinked: GetFacebookLinkedUseCase = new GetFacebookLinkedUseCaseImpl(facebookService);
 provide("getFacebookLinkedUseCase", getFacebookLinked);
+
+const userService: UserService = new UserServiceImpl(axiosInstance);
+const getLoginHistory: GetLoginHistoryUseCase = new GetLoginHistoryUseCaseImpl(userService);
+provide("getLoginHistoryUseCase", getLoginHistory);
 </script>

@@ -46,7 +46,8 @@
             <section v-if="selectedData === 'history'" class="p-6 space-y-6">
                 <h1 class="font-bold text-2xl leading-4 pb-4 pt-2">Login History</h1>
                 
-                <TableExpandComponent class="mb-2" :table-header="tableHeader" :table-body="templateList" :search-criteria="searchCriteria" :total-row="totalRow">
+                <TableExpandComponent :table-header="tableHeader" :table-body="historyList" :search-criteria="searchCriteria"
+                    class="mb-2" @table-changed="loadHistoryLog" :total-row="totalRow">
                 </TableExpandComponent>
             </section>
             <section v-else-if="selectedData === 'security'" class="p-6 space-y-6">
@@ -91,10 +92,14 @@
 <script setup lang="ts">
 import { SearchCriteria, TableHeader } from '@/components/ComponentEntity';
 import { useUserStore } from '@/stores/UserStore';
-import { Ref, computed, ref } from 'vue';
+import { Ref, computed, inject, onUnmounted, ref } from 'vue';
 import { LoginHistory } from "@/entity/user/LoginHistory";
 import TableExpandComponent from '@/components/table/TableExpandComponent.vue';
 import ButtonBase from '@/components/button/ButtonBase.vue';
+import { Subscription, finalize } from 'rxjs';
+import _default from 'vue-datepicker-next';
+import { GetLoginHistoryUseCase } from '@/usecase/user/GetLoginHistoryUseCase';
+import { NotificationManager } from '@/util/NotificationManager';
 
 const userStore = useUserStore();
 const name = computed(() => userStore.name);
@@ -108,7 +113,7 @@ const tableHeader: TableHeader[] = [
         isSortable: true
     },
     {
-        key: "ip",
+        key: "login_ip",
         name: "Login IP",
         isSortable: true
     },
@@ -118,31 +123,23 @@ const tableHeader: TableHeader[] = [
         isSortable: true
     },
 ];
-
-const templateList: Ref<LoginHistory[]> = ref([
-    {
-        date: "2020-08-20",
-        ip: "10.70.1.199",
-        browser: "Chrome"
-    },
-    {
-        date: "2020-08-10",
-        ip: "10.70.1.199",
-        browser: "Edge"
-    }
-]);
-
+const historyList: Ref<LoginHistory[]> = ref([]);
 const searchCriteria: Ref<SearchCriteria> = ref({
     page: 1,
     rowPerPage: 10,
-    sortKey: "name",
-    sortOrder: "asc"
+    sortKey: "",
+    sortOrder: ""
 });
 
-const totalRow: Ref<number> = ref(2);
+const asyncSubscription: Subscription = new Subscription();
+
+const isLoading = ref(false);
+const totalRow: Ref<number> = ref(0);
 const lastChanged = ref("Oct 28, 2022");
 
 const selectedData = ref("profil");
+
+const getLoginHistoryUseCase: GetLoginHistoryUseCase = inject("getLoginHistoryUseCase")!;
 
 function isSelectedData(data: string): boolean {
     return selectedData.value === data;
@@ -150,5 +147,53 @@ function isSelectedData(data: string): boolean {
 
 function changeData(data: string): void {
     selectedData.value = data;
+
+    if (selectedData.value === "history") {
+        loadHistoryLog();
+    } else {
+        searchCriteria.value = {
+            page: 1,
+            rowPerPage: 10,
+            sortKey: "",
+            sortOrder: ""
+        };
+    }
 }
+
+function loadHistoryLog(): void {
+    isLoading.value = true;
+
+    asyncSubscription.add(
+        getLoginHistoryUseCase.execute({
+            browser: "",
+            date: "",
+            limit: searchCriteria.value.rowPerPage,
+            login_ip: "",
+            page: searchCriteria.value.page - 1,
+            sort_by: searchCriteria.value.sortKey.length > 0 ? `${searchCriteria.value.sortKey},${searchCriteria.value.sortOrder}` : "",
+            user_id: "e8b00796-cc8d-4a56-b9a2-654503e22067" // TODO: jangan dihardcode
+        }).pipe(
+            finalize(() => isLoading.value = false)
+        ).subscribe(
+            {
+                next: (getTemplateResp) => {
+                    if (getTemplateResp.code === 200) {
+                        historyList.value = getTemplateResp.result.data.content.user_list ?? [];
+                        totalRow.value = getTemplateResp.result.data.total_elements ?? 0;
+                    } else {
+                        const message = getTemplateResp.result?.message ?? getTemplateResp.message;
+                        NotificationManager.showMessage("Failed to Load Data", message, "error");
+                    }
+                },
+                error: (error) => {
+                    NotificationManager.showMessage("Network Error", error, "error");
+                }
+            }
+        )
+    )
+}
+
+onUnmounted(() => {
+    asyncSubscription.unsubscribe();
+})
 </script>
