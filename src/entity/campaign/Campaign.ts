@@ -1,4 +1,5 @@
 import {Message} from "@/entity/message/TemplateMessage";
+import { Audience } from "../audience/Audience";
 
 export interface Campaign {
     campaign_id: string;
@@ -25,7 +26,7 @@ export interface DetailCampaign {
     scheduled_date: string;
     interval_min: number;
     interval_max: number;
-    audience_list: string[];
+    audience_list: Audience[];
     message_list: Message[];
     template_id: string;
     template_name: string;

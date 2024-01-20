@@ -148,6 +148,7 @@ import { NotificationManager } from '@/util/NotificationManager';
 import { UpdateCampaignReq } from '@/entity/campaign/UpdateCampaignReq';
 import { GetDetailCampaignUseCase } from '@/usecase/campaign/GetDetailCampaignUseCase';
 import { useRoute } from 'vue-router';
+import { Audience } from '@/entity/audience/Audience';
 
 const route = useRoute();
 
@@ -170,7 +171,14 @@ const messageTypeList: OptionEntity[] = [
         value: "Greeting",
     },
 ];
+/**
+ * All audience list from selected page
+ */
 const audienceList: Ref<AudiencePage[]> = ref([]); 
+/**
+ * Temp selected audience
+ */
+const selectedAudience: Ref<Audience[]> = ref([]);
 
 const campaignId = route.params.campaignId;
 const pageName = ref("");
@@ -197,7 +205,7 @@ const filteredMessageList = computed(() =>
 const templateName = ref("");
 
 const isMessageTemplateSelected = computed(() => updateCampaignReq.value.template_id.length > 0);
-const isMessageBodyEmpty = computed(() => updateCampaignReq.value.message_list.length > 1 || updateCampaignReq.value.message_list[0].message.trim().length > 0);
+const isMessageBodyEmpty = computed(() => updateCampaignReq.value.message_list.length > 1 || (updateCampaignReq.value.message_list.length > 0 && updateCampaignReq.value.message_list[0].message.trim().length > 0));
 
 function backToList(): void {
     router.push("/campaign");
@@ -223,7 +231,8 @@ function setCheckedAudience(data: string[]): void {
 }
 
 function getAudienceNameFromId(id: string): string {
-    return audienceList.value.filter(data => data.audience_id === id)[0].audience_name;
+    return audienceList.value.filter(data => data.audience_id === id).length > 0 ? 
+        audienceList.value.filter(data => data.audience_id === id)[0].audience_name : "-";
 }
 
 function removeAudience(index: number): void {
@@ -287,14 +296,12 @@ function loadData(): void {
     isLoading.value = true;
     getDetailCampaignUseCase.execute({
         campaign_id: campaignId as string
-    }).pipe(
-        finalize(() => isLoading.value = false)
-    ).subscribe(
+    }).subscribe(
         {
             next: (resp) => {
                 if (resp.code === 200) {
                     updateCampaignReq.value = {
-                        audience_list: resp.result.data.audience_list,
+                        audience_list: [],
                         campaign_id: campaignId as string,
                         campaign_name: resp.result.data.campaign_name,
                         interval_max: resp.result.data.interval_max,
@@ -309,16 +316,28 @@ function loadData(): void {
                         scheduled_date: resp.result.data.scheduled_date,
                         template_id: resp.result.data.template_id,
                     }
+
+                    selectedAudience.value = resp.result.data.audience_list;
+
+                    loadPage();
                 } else {
                     const message = resp.result?.message ?? resp.message;
                     NotificationManager.showMessage("Failed to Get Data", message, "error");
+
+                    isLoading.value = false;
                 }
             },
             error: (error) => {
                 NotificationManager.showMessage("Failed to Get Data", error, "error");
+                isLoading.value = false;
             }
         }
     )
+}
+
+function loadPage(): void {
+    console.log("buat load page");
+    isLoading.value = false;
 }
 </script>
 
