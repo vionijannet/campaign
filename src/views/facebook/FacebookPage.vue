@@ -16,7 +16,7 @@
                 </div>
             </template>
             <template #action="{slotProps}">
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-4" v-if="slotProps.is_deleted !== null && slotProps.is_deleted === false">
                     <img src="../../assets/preview.svg" title="Preview" alt="Preview" class="cursor-pointer" @click="previewAccount(slotProps.accountId)" />
                     <img src="../../assets/trash.svg" title="Delete" alt="Delete" class="cursor-pointer" @click="deleteAccount(slotProps.accountId)" />
                     <img src="../../assets/update.svg" title="Update" alt="Update" class="cursor-pointer" @click="redirectToUpdateAccount(slotProps.accountId)" />
