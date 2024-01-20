@@ -1,5 +1,4 @@
 export interface Audience {
-    status: string;
     created_at: string;
     audience_id: string;
     audience_name: string;
