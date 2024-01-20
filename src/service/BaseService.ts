@@ -14,8 +14,8 @@ export class BaseService {
             (config) => {
                 config.headers.setContentType("application/json");
                 config.headers.setAuthorization("");
-                config.headers["Username"] = "johndoe";
-                config.headers["Password"] = "root";
+                config.headers["Username"] = "user_one";
+                config.headers["Password"] = "6e824d43504ae0934548679a50ec8123";
 
                 return config;
             }, (error) => {
