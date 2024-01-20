@@ -29,7 +29,7 @@ export class UserServiceImpl extends BaseService implements UserService {
             params["sort-by"] = history.sort_by;
         }
 
-        return this.httpGet(`${this.API_ENDPOINT}/history-log/${history.user_id}`, { params })
+        return this.httpGet(`${this.API_ENDPOINT}/history-log`, { params })
             .pipe(
                 map((response) => {
                     return JSON.parse(JSON.stringify(response.data as string))
