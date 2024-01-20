@@ -242,6 +242,11 @@ function removeAudience(index: number): void {
 function saveCampaign(): void {
     setMessageOrder();
 
+    // Reset message list if template id
+    if (createCampaignReq.value.template_id.trim().length > 0) {
+        createCampaignReq.value.message_list = [];
+    }
+
     //TODO: set validation
     isLoading.value = true;
     createCampaignUseCase.execute(createCampaignReq.value)
