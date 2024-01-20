@@ -30,10 +30,15 @@
 import ButtonBase from '@/components/button/ButtonBase.vue';
 import TableExpandComponent from '@/components/table/TableExpandComponent.vue';
 import router from "@/router";
-import { ref, type Ref } from 'vue';
+import { inject, onMounted, onUnmounted, ref, type Ref } from 'vue';
 import { SearchCriteria, TableHeader } from '@/components/ComponentEntity';
 import Search from '@/components/search/Search.vue';
 import { Group } from '@/entity/audience/Group';
+import { GetGroupUseCase } from '@/usecase/audience/GetGroupUseCase';
+import { finalize, Subscription } from 'rxjs';
+import { NotificationManager } from '@/util/NotificationManager';
+
+const asyncSubscription: Subscription = new Subscription();
 
 function redirectToCreate(): void {
     console.log("pop up to create category");
@@ -63,11 +68,6 @@ const tableHeader: Ref<TableHeader[]> = ref([
         isSortable: true
     },
     {
-        key: "status",
-        name: "Status",
-        isSortable: true
-    },
-    {
         key: "created_at",
         name: "Created At",
         isSortable: true
@@ -90,4 +90,48 @@ function redirectToUpdateGroup(accId: string): void {
 function deleteGroup(accId: string): void {
     console.log("delete", accId);
 }
+
+const isLoading = ref(false);
+
+const getGroupUseCase: GetGroupUseCase = inject("getGroupUseCase")!;
+
+onMounted(() => {
+    loadData();
+})
+
+function loadData(): void {
+    isLoading.value = true;
+
+    asyncSubscription.add(
+        getGroupUseCase.execute({
+            group_name: "",
+            limit: searchCriteria.value.rowPerPage,
+            page: searchCriteria.value.page - 1,
+            page_id: "",
+            page_name: "",
+            sort_by: searchCriteria.value.sortKey.length > 0 ? `${searchCriteria.value.sortKey},${searchCriteria.value.sortOrder}` : "",
+        }).pipe(
+            finalize(() => isLoading.value = false)
+        ).subscribe(
+            {
+                next: (getGroupResp) => {
+                    if (getGroupResp.code === 200) {
+                        groupList.value = getGroupResp.result.data.content.group_list ?? [];
+                        totalRow.value = getGroupResp.result.data.total_elements ?? 0;
+                    } else {
+                        const message = getGroupResp.result?.message ?? getGroupResp.message;
+                        NotificationManager.showMessage("Failed to Load Data", message, "error");
+                    }
+                },
+                error: (error) => {
+                    NotificationManager.showMessage("Network Error", error, "error");
+                }
+            }
+        )
+    )
+}
+
+onUnmounted(() => {
+    asyncSubscription.unsubscribe();
+})
 </script>

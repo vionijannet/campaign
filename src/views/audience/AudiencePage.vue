@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import TableExpandComponent from '@/components/table/TableExpandComponent.vue';
-import { inject, onMounted, ref, type Ref } from 'vue';
+import { inject, onMounted, onUnmounted, ref, type Ref } from 'vue';
 import { Audience } from "@/entity/audience/Audience";
 import { SearchCriteria, TableHeader } from '@/components/ComponentEntity';
 import Search from '@/components/search/Search.vue';
@@ -95,4 +95,8 @@ function loadData(): void {
         )
     )
 }
+
+onUnmounted(() => {
+    asyncSubscription.unsubscribe();
+})
 </script>
