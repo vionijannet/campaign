@@ -60,7 +60,7 @@
         </div>
         <div class="w-full space-y-2" id="section-audience">
             <span for="labelFor" class="font-semibold text-lg">Audience</span>
-            <div class="flex items-center justify-between bg-gray-100 p-4 w-full rounded-lg text-lg">
+            <div class="flex items-center justify-between bg-gray-100 p-3 w-full rounded-lg text-lg">
                 <span class="text-lg text-gray-400" v-if="updateCampaignReq.audience_list.length < 1">Select audiens</span>
                 <span v-else class="text-base bg-blue-primary p-1 rounded-lg text-gray-50 px-2" v-for="(a, index) in updateCampaignReq.audience_list" :key=index>
                     <span class="pr-2 border-r">{{ getAudienceNameFromId(a) }}</span>

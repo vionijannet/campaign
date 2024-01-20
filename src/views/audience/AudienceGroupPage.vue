@@ -24,6 +24,10 @@
             </template>
         </TableExpandComponent>
     </div>
+
+    <ModalComponent v-if="isPopupCreateOpen" @close="isPopupCreateOpen=false" :custom-class="'!max-w-xl'">
+        <AddAudienceGroup @cancel="isPopupCreateOpen=false"></AddAudienceGroup>
+    </ModalComponent>
 </template>
 
 <script setup lang="ts">
@@ -37,12 +41,13 @@ import { Group } from '@/entity/audience/Group';
 import { GetGroupUseCase } from '@/usecase/audience/GetGroupUseCase';
 import { finalize, Subscription } from 'rxjs';
 import { NotificationManager } from '@/util/NotificationManager';
+import AddAudienceGroup from './AddAudienceGroup.vue';
+import ModalComponent from '@/components/modal/ModalComponent.vue';
 
 const asyncSubscription: Subscription = new Subscription();
 
 function redirectToCreate(): void {
-    console.log("pop up to create category");
-    // router.push("/message/create");
+    isPopupCreateOpen.value = true;
 }
 
 const groupList: Ref<Group[]> = ref([]);
@@ -55,7 +60,6 @@ const searchCriteria: Ref<SearchCriteria> = ref({
 });
 
 const totalRow: Ref<number> = ref(2);
-
 const tableHeader: Ref<TableHeader[]> = ref([
     {
         key: "group_name",
@@ -92,6 +96,7 @@ function deleteGroup(accId: string): void {
 }
 
 const isLoading = ref(false);
+const isPopupCreateOpen = ref(false);
 
 const getGroupUseCase: GetGroupUseCase = inject("getGroupUseCase")!;
 
