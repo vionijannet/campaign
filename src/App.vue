@@ -27,6 +27,7 @@ import { GetDashboardUseCase, GetDashboardUseCaseImpl } from './usecase/user/Get
 import { AudienceService, AudienceServiceImpl } from './service/AudienceService';
 import { GetAudienceUseCase, GetAudienceUseCaseImpl } from './usecase/audience/GetAudienceUseCase';
 import { GetGroupUseCase, GetGroupUseCaseImpl } from './usecase/audience/GetGroupUseCase';
+import { GetPageDetailUseCase, GetPageDetailUseCaseImpl } from './usecase/page/GetPageDetailUseCase';
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: "http://127.0.0.1:8080",
@@ -60,6 +61,8 @@ provide("updateCampaignUseCase", updateCampaign);
 const pageService: PageService = new PageServiceImpl(axiosInstance);
 const getPage: GetPageUseCase = new GetPageUseCaseImpl(pageService);
 provide("getPageUseCase", getPage);
+const getPageDetail: GetPageDetailUseCase = new GetPageDetailUseCaseImpl(pageService);
+provide("getPageDetailUseCase", getPageDetail);
 
 const facebookService: FacebookService = new FacebookServiceImpl(axiosInstance);
 const getFacebookLinked: GetFacebookLinkedUseCase = new GetFacebookLinkedUseCaseImpl(facebookService);

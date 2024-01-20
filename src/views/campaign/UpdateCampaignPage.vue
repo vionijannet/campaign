@@ -181,6 +181,7 @@ const audienceList: Ref<AudiencePage[]> = ref([]);
 const selectedAudience: Ref<Audience[]> = ref([]);
 
 const campaignId = route.params.campaignId;
+const pageId = ref("");
 const pageName = ref("");
 const updateCampaignReq: Ref<UpdateCampaignReq> = ref({
     campaign_id: campaignId as string,
@@ -316,10 +317,14 @@ function loadData(): void {
                         scheduled_date: resp.result.data.scheduled_date,
                         template_id: resp.result.data.template_id,
                     }
+                    pageName.value = resp.result.data.page_name ?? "";
+                    pageId.value = resp.result.data.page_id ?? "";
 
                     selectedAudience.value = resp.result.data.audience_list;
 
-                    loadPage();
+                    if (pageId.value) {
+                        loadPage();
+                    }
                 } else {
                     const message = resp.result?.message ?? resp.message;
                     NotificationManager.showMessage("Failed to Get Data", message, "error");
@@ -336,7 +341,6 @@ function loadData(): void {
 }
 
 function loadPage(): void {
-    console.log("buat load page");
     isLoading.value = false;
 }
 </script>

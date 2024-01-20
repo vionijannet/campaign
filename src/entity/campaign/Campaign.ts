@@ -19,14 +19,15 @@ export interface Campaign {
 }
 
 export interface DetailCampaign {
+    audience_list: Audience[];
     campaign_name: string;
     campaign_status: string;
+    page_id: string;
     page_name: string;
     is_scheduled: boolean;
     scheduled_date: string;
     interval_min: number;
     interval_max: number;
-    audience_list: Audience[];
     message_list: Message[];
     template_id: string;
     template_name: string;

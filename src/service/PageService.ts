@@ -3,9 +3,11 @@ import { BaseService } from "./BaseService";
 import { AxiosInstance } from "axios";
 import { GetPageReq } from "@/entity/page/GetPageReq";
 import { GetPageResp } from "@/entity/page/GetPageResp";
+import { GetPageDetailResp } from "@/entity/page/GetPageDetailResp";
 
 export interface PageService {
-    getPage(template: GetPageReq): Observable<GetPageResp>;
+    getPage(page: GetPageReq): Observable<GetPageResp>;
+    getPageDetail(page: string): Observable<GetPageDetailResp>;
 }
 
 export class PageServiceImpl extends BaseService implements PageService {
@@ -36,6 +38,15 @@ export class PageServiceImpl extends BaseService implements PageService {
         }
 
         return this.httpGet(this.API_ENDPOINT, { params })
+            .pipe(
+                map((response) => {
+                    return JSON.parse(JSON.stringify(response.data as string))
+                })
+            )
+    }
+
+    getPageDetail(pageId: string): Observable<GetPageDetailResp> {
+        return this.httpGet(`${this.API_ENDPOINT}/${pageId}`)
             .pipe(
                 map((response) => {
                     return JSON.parse(JSON.stringify(response.data as string))
