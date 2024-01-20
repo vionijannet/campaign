@@ -144,7 +144,7 @@ const filteredMessageList = computed(() => {
 
 const filteredGreetingList = computed(() => {
     return greetingList.value.map((data, index) => {
-        return { ...data, index }
+        return { ...data, flag_delete: data.flag_delete ?? false, index }
     }).filter(data => data.flag_delete === false);
 });
 
@@ -241,7 +241,6 @@ function loadData(): void {
 }
 
 function updateTemplate(): void {
-
     const updateReq: UpdateTemplateReq = {
         template_id: templateId,
         template_name: templateName.value,
