@@ -26,7 +26,7 @@
                 <img src="../../assets/dashboard-cuate.png" alt="Dashboard" class="h-full">
             </div>
             <div class="flex-1 ml-2">
-                <p class="text-2xl font-bold">2700</p>
+                <p class="text-2xl font-bold">{{ totalCampaign }}</p>
                 <p class="text-gray-600">Total Campaign</p>
 
                 <ButtonBase class="font-semibold px-4 my-8 w-auto !text-base">View Campaign</ButtonBase>
@@ -35,11 +35,11 @@
 
                 <div class="grid grid-cols-2 my-2">
                     <div>
-                        <p class="text-xl font-bold">2000</p>
+                        <p class="text-xl font-bold">{{ totalSuccess }}</p>
                         <p class="text-green-500">Successfully Sent</p>
                     </div>
                     <div>
-                        <p class="text-xl font-bold">150</p>
+                        <p class="text-xl font-bold">{{ totalFailed }}</p>
                         <p class="text-red-500">Failed to Send</p>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                 <img src="../../assets/facebook-connect.png" alt="Facebook Connect" class="w-14 h-14">
                 <div class="flex justify-between items-end space-y-12 w-full">
                     <div>
-                        <p class="text-xl font-bold">100</p>
+                        <p class="text-xl font-bold">{{ facebookConnect }}</p>
                         <p class="text-gray-600">Facebook Connect</p>
                     </div>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -88,7 +88,7 @@
                 <img src="../../assets/page-connect.png" alt="Page Connect" class="w-14 h-14">
                 <div class="flex justify-between items-end space-y-12 w-full">
                     <div>
-                        <p class="text-xl font-bold">150</p>
+                        <p class="text-xl font-bold">{{ pageConnect }}</p>
                         <p class="text-gray-600">Page Connect</p>
                     </div>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -101,7 +101,7 @@
                 <div class="flex items-center">
                     <img src="../../assets/total-template.png" alt="Total Template">
                     <div class="ml-4">
-                        <p class="text-xl font-bold">50</p>
+                        <p class="text-xl font-bold">{{ totalTemplate }}</p>
                         <p class="text-gray-600">Total Template</p>
                     </div>
                 </div>
@@ -123,25 +123,34 @@ import { GetLoginHistoryUseCase } from "@/usecase/user/GetLoginHistoryUseCase";
 import { Subscription, finalize } from 'rxjs';
 import { NotificationManager } from "@/util/NotificationManager";
 import { LoginHistory } from "@/entity/user/LoginHistory";
+import { GetDashboardUseCase } from "@/usecase/user/GetDashboardUseCase";
 
 const asyncSubscription: Subscription = new Subscription();
 
 const date = ref(new Date());
-const isLoading = ref(false);
+const isLogLoading = ref(false);
+const isDashboardLoading = ref(false);
 
 const shownDate = computed(() => DateConverter.convertDateObjectToDateString(date.value));
 const shownTime = computed(() => DateConverter.convertDateObjectToTimeString(date.value));
 
 const historyList: Ref<LoginHistory[]> = ref([]);
+const totalCampaign = ref(0);
+const totalSuccess = ref(0);
+const totalFailed = ref(0);
+const facebookConnect = ref(0);
+const pageConnect = ref(0);
+const totalTemplate = ref(0);
 
 const getLoginHistoryUseCase: GetLoginHistoryUseCase = inject("getLoginHistoryUseCase")!;
+const getDashboardUseCase: GetDashboardUseCase = inject("getDashboardUseCase")!;
 
 interval(1000).subscribe(() => {
     date.value = new Date();
 })
 
 function loadHistoryLog(): void {
-    isLoading.value = true;
+    isLogLoading.value = true;
 
     asyncSubscription.add(
         getLoginHistoryUseCase.execute({
@@ -153,7 +162,7 @@ function loadHistoryLog(): void {
             sort_by: "",
             user_id: "a28032d0-e17c-4d36-94d1-7b40f7470ae8" // TODO: jangan dihardcode
         }).pipe(
-            finalize(() => isLoading.value = false)
+            finalize(() => isLogLoading.value = false)
         ).subscribe(
             {
                 next: (getTemplateResp) => {
@@ -172,7 +181,37 @@ function loadHistoryLog(): void {
     )
 }
 
+function loadDashboard(): void {
+    isDashboardLoading.value = true;
+
+    asyncSubscription.add(
+        getDashboardUseCase.execute().pipe(
+            finalize(() => isDashboardLoading.value = false)
+        ).subscribe(
+            {
+                next: (resp) => {
+                    if (resp.code === 200) {
+                        totalCampaign.value = resp.result.data.total_campaign ?? 0;
+                        totalSuccess.value = resp.result.data.total_success ?? 0;
+                        totalFailed.value = resp.result.data.total_failed ?? 0;
+                        facebookConnect.value = resp.result.data.total_facebook_connect ?? 0;
+                        pageConnect.value = resp.result.data.total_page_connect ?? 0;
+                        totalTemplate.value = resp.result.data.total_template ?? 0;
+                    } else {
+                        const message = resp.result?.message ?? resp.message;
+                        NotificationManager.showMessage("Failed to Load Data", message, "error");
+                    }
+                },
+                error: (error) => {
+                    NotificationManager.showMessage("Network Error", error, "error");
+                }
+            }
+        )
+    )
+}
+
 onMounted(() => {
     loadHistoryLog();
+    loadDashboard();
 })
 </script>

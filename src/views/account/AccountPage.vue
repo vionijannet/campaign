@@ -171,7 +171,7 @@ function loadHistoryLog(): void {
             login_ip: "",
             page: searchCriteria.value.page - 1,
             sort_by: searchCriteria.value.sortKey.length > 0 ? `${searchCriteria.value.sortKey},${searchCriteria.value.sortOrder}` : "",
-            user_id: "e8b00796-cc8d-4a56-b9a2-654503e22067" // TODO: jangan dihardcode
+            user_id: "a28032d0-e17c-4d36-94d1-7b40f7470ae8" // TODO: jangan dihardcode
         }).pipe(
             finalize(() => isLoading.value = false)
         ).subscribe(

@@ -3,9 +3,11 @@ import { GetLoginHistoryResp } from "@/entity/user/GetLoginHistoryResp";
 import { Observable, map } from "rxjs";
 import { BaseService } from "./BaseService";
 import { AxiosInstance } from "axios";
+import { GetDashboardResp } from "@/entity/user/GetDashboardResp";
 
 export interface UserService {
     getLoginHistory(history: GetLoginHistoryReq): Observable<GetLoginHistoryResp>;
+    getDashboard(): Observable<GetDashboardResp>;
 }
 
 export class UserServiceImpl extends BaseService implements UserService {
@@ -28,6 +30,15 @@ export class UserServiceImpl extends BaseService implements UserService {
         }
 
         return this.httpGet(`${this.API_ENDPOINT}/history-log/${history.user_id}`, { params })
+            .pipe(
+                map((response) => {
+                    return JSON.parse(JSON.stringify(response.data as string))
+                })
+            )
+    }
+
+    getDashboard(): Observable<GetDashboardResp> {
+        return this.httpGet(`${this.API_ENDPOINT}/dashboard`)
             .pipe(
                 map((response) => {
                     return JSON.parse(JSON.stringify(response.data as string))

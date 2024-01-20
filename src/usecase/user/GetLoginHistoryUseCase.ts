@@ -4,13 +4,13 @@ import { UserService } from "@/service/UserService";
 import { Observable } from "rxjs";
 
 export interface GetLoginHistoryUseCase {
-    execute(template: GetLoginHistoryReq): Observable<GetLoginHistoryResp>
+    execute(req: GetLoginHistoryReq): Observable<GetLoginHistoryResp>
 }
 
 export class GetLoginHistoryUseCaseImpl implements GetLoginHistoryUseCase {
     constructor(private userService: UserService) {}
 
-    execute(template: GetLoginHistoryReq): Observable<GetLoginHistoryResp> {
-        return this.userService.getLoginHistory(template);
+    execute(req: GetLoginHistoryReq): Observable<GetLoginHistoryResp> {
+        return this.userService.getLoginHistory(req);
     }
 }
