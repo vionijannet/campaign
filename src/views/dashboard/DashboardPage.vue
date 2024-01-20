@@ -49,157 +49,8 @@
             <p class="text-2xl font-bold">Log History</p>
 
             <ol class="ml-4 mt-4 border-l border-gray-200 space-y-4">
-                <li class="flex -ml-3 space-x-2 items-center">
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex flex-col">
-                        <p class="text-xs font-semibold">Campaign RepliEm</p>
-                        <p class="text-xs font-light">09/04/2023 11:00:00 • Created Campaign</p>
-                    </div>
-                </li>
-                <li class="flex -ml-3 space-x-2 items-center">
-                    <div class="w-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="!w-6 !h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex flex-col overflow-clip">
-                        <p class="text-xs font-semibold">New Account</p>
-                        <p class="text-xs font-light">09/04/2023 11:00:00 • Adding New Account Haddyanazzi</p>
-                    </div>
-                </li>
-                <li class="flex -ml-3 space-x-2 items-center">
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex flex-col">
-                        <p class="text-xs font-semibold">Campaign RepliEm</p>
-                        <p class="text-xs font-light">09/04/2023 11:00:00 • Created Campaign</p>
-                    </div>
-                </li>
-                <li class="flex -ml-3 space-x-2 items-center">
-                    <div class="w-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="!w-6 !h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex flex-col overflow-clip">
-                        <p class="text-xs font-semibold">New Account</p>
-                        <p class="text-xs font-light">09/04/2023 11:00:00 • Adding New Account Haddyanazzi</p>
-                    </div>
-                </li><li class="flex -ml-3 space-x-2 items-center">
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex flex-col">
-                        <p class="text-xs font-semibold">Campaign RepliEm</p>
-                        <p class="text-xs font-light">09/04/2023 11:00:00 • Created Campaign</p>
-                    </div>
-                </li>
-                <li class="flex -ml-3 space-x-2 items-center">
-                    <div class="w-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="!w-6 !h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex flex-col overflow-clip">
-                        <p class="text-xs font-semibold">New Account</p>
-                        <p class="text-xs font-light">09/04/2023 11:00:00 • Adding New Account Haddyanazzi</p>
-                    </div>
-                </li><li class="flex -ml-3 space-x-2 items-center">
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex flex-col">
-                        <p class="text-xs font-semibold">Campaign RepliEm</p>
-                        <p class="text-xs font-light">09/04/2023 11:00:00 • Created Campaign</p>
-                    </div>
-                </li>
-                <li class="flex -ml-3 space-x-2 items-center">
-                    <div class="w-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="!w-6 !h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex flex-col overflow-clip">
-                        <p class="text-xs font-semibold">New Account</p>
-                        <p class="text-xs font-light">09/04/2023 11:00:00 • Adding New Account Haddyanazzi</p>
-                    </div>
-                </li><li class="flex -ml-3 space-x-2 items-center">
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex flex-col">
-                        <p class="text-xs font-semibold">Campaign RepliEm</p>
-                        <p class="text-xs font-light">09/04/2023 11:00:00 • Created Campaign</p>
-                    </div>
-                </li>
-                <li class="flex -ml-3 space-x-2 items-center">
-                    <div class="w-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="!w-6 !h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex flex-col overflow-clip">
-                        <p class="text-xs font-semibold">New Account</p>
-                        <p class="text-xs font-light">09/04/2023 11:00:00 • Adding New Account Haddyanazzi</p>
-                    </div>
-                </li><li class="flex -ml-3 space-x-2 items-center">
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex flex-col">
-                        <p class="text-xs font-semibold">Campaign RepliEm</p>
-                        <p class="text-xs font-light">09/04/2023 11:00:00 • Created Campaign</p>
-                    </div>
-                </li>
-                <li class="flex -ml-3 space-x-2 items-center">
-                    <div class="w-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="!w-6 !h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex flex-col overflow-clip">
-                        <p class="text-xs font-semibold">New Account</p>
-                        <p class="text-xs font-light">09/04/2023 11:00:00 • Adding New Account Haddyanazzi</p>
-                    </div>
-                </li><li class="flex -ml-3 space-x-2 items-center">
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex flex-col">
-                        <p class="text-xs font-semibold">Campaign RepliEm</p>
-                        <p class="text-xs font-light">09/04/2023 11:00:00 • Created Campaign</p>
-                    </div>
-                </li>
-                <li class="flex -ml-3 space-x-2 items-center">
-                    <div class="w-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="!w-6 !h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex flex-col overflow-clip">
-                        <p class="text-xs font-semibold">New Account</p>
-                        <p class="text-xs font-light">09/04/2023 11:00:00 • Adding New Account Haddyanazzi</p>
-                    </div>
-                </li>
-                <li class="flex -ml-[11px] space-x-2 items-center">
-                    <div class="w-6">
+                <li class="flex space-x-2 items-center" :class="index === historyList.length - 1 ? '-ml-[11px]' : '-ml-3'" v-for="history, index in historyList" :key="index">
+                    <div class="w-6" v-if="index === historyList.length - 1">
                         <div class="rounded-full border-2 border-black w-5 h-5 bg-white flex items-center justify-center">
                             <div class="border rounded-full border-black bg-black w-2 h-2    "></div>
                         </div>
@@ -207,9 +58,14 @@
                             <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm6-2.438c0-.724.588-1.312 1.313-1.312h4.874c.725 0 1.313.588 1.313 1.313v4.874c0 .725-.588 1.313-1.313 1.313H9.564a1.312 1.312 0 01-1.313-1.313V9.564z" clip-rule="white" />
                         </svg> -->
                     </div>
+                    <div v-else>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
                     <div class="flex flex-col overflow-clip">
-                        <p class="text-xs font-semibold">Delete Campaign</p>
-                        <p class="text-xs font-light">09/04/2023 11:00:00 • Delete Campaign RepliEm</p>
+                        <p class="text-xs font-semibold">{{ history.menu_name }}</p>
+                        <p class="text-xs font-light">{{ history.date }} • {{ history.action }} {{ history.menu_name }}</p>
                     </div>
                 </li>
             </ol>
@@ -260,16 +116,63 @@
 
 <script setup lang="ts">
 import { interval, timer } from "rxjs";
-import { computed, ref } from "vue";
+import { Ref, computed, inject, onMounted, ref } from "vue";
 import { DateConverter } from "@/util/DateConverter";
 import ButtonBase from "@/components/button/ButtonBase.vue";
+import { GetLoginHistoryUseCase } from "@/usecase/user/GetLoginHistoryUseCase";
+import { Subscription, finalize } from 'rxjs';
+import { NotificationManager } from "@/util/NotificationManager";
+import { LoginHistory } from "@/entity/user/LoginHistory";
+
+const asyncSubscription: Subscription = new Subscription();
 
 const date = ref(new Date());
+const isLoading = ref(false);
 
 const shownDate = computed(() => DateConverter.convertDateObjectToDateString(date.value));
 const shownTime = computed(() => DateConverter.convertDateObjectToTimeString(date.value));
 
+const historyList: Ref<LoginHistory[]> = ref([]);
+
+const getLoginHistoryUseCase: GetLoginHistoryUseCase = inject("getLoginHistoryUseCase")!;
+
 interval(1000).subscribe(() => {
     date.value = new Date();
+})
+
+function loadHistoryLog(): void {
+    isLoading.value = true;
+
+    asyncSubscription.add(
+        getLoginHistoryUseCase.execute({
+            browser: "",
+            date: "",
+            limit: 0,
+            login_ip: "",
+            page: 0,
+            sort_by: "",
+            user_id: "a28032d0-e17c-4d36-94d1-7b40f7470ae8" // TODO: jangan dihardcode
+        }).pipe(
+            finalize(() => isLoading.value = false)
+        ).subscribe(
+            {
+                next: (getTemplateResp) => {
+                    if (getTemplateResp.code === 200) {
+                        historyList.value = getTemplateResp.result.data.content.user_list ?? [];
+                    } else {
+                        const message = getTemplateResp.result?.message ?? getTemplateResp.message;
+                        NotificationManager.showMessage("Failed to Load Data", message, "error");
+                    }
+                },
+                error: (error) => {
+                    NotificationManager.showMessage("Network Error", error, "error");
+                }
+            }
+        )
+    )
+}
+
+onMounted(() => {
+    loadHistoryLog();
 })
 </script>
