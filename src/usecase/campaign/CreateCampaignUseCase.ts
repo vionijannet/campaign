@@ -18,6 +18,6 @@ export class CreateCampaignUseCaseImpl implements CreateCampaignUseCase {
     }
 
     execute(template: CreateCampaignReq): Observable<BaseResp> {
-        return this.campaignService.createCampaign(template);
+        return this.campaignService.createCampaign({...template});
     }
 }

@@ -25,6 +25,6 @@ export class UpdateTemplateUseCaseImpl implements UpdateTemplateUseCase {
     }
 
     execute(template: UpdateTemplateReq): Observable<BaseResp> {
-        return this.templateService.updateTemplate(template);
+        return this.templateService.updateTemplate({...template});
     }
 }

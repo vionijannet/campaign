@@ -26,6 +26,6 @@ export class CreateTemplateUseCaseImpl implements CreateTemplateUseCase {
     }
 
     execute(template: CreateTemplateReq): Observable<BaseResp> {
-        return this.templateService.createTemplate(template);
+        return this.templateService.createTemplate({...template});
     }
 }

@@ -18,6 +18,6 @@ export class UpdateCampaignUseCaseImpl implements UpdateCampaignUseCase {
     }
 
     execute(template: UpdateCampaignReq): Observable<BaseResp> {
-        return this.campaignService.updateCampaign(template);
+        return this.campaignService.updateCampaign({...template});
     }
 }
