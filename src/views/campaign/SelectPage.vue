@@ -64,7 +64,7 @@ function loadPage(): void {
     asyncSubscription.add(
         getPageUseCase.execute({
             audience_name: "",
-            limit: 100,
+            limit: 0,
             page: 0,
             page_name: "",
             sort_by: ""
