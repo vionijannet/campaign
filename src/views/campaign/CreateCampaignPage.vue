@@ -61,11 +61,13 @@
         <div class="w-full space-y-2" id="section-audience">
             <span for="labelFor" class="font-semibold text-lg">Audience</span>
             <div class="flex items-center justify-between bg-gray-100 p-3 w-full rounded-lg text-lg">
-                <span class="text-lg text-gray-400" v-if="createCampaignReq.audience_list.length < 1">Select audiens</span>
-                <span v-else class="text-base bg-blue-primary p-1 rounded-lg text-gray-50 px-2" v-for="(a, index) in createCampaignReq.audience_list" :key=index>
-                    <span class="pr-2 border-r">{{ getAudienceNameFromId(a) }}</span>
-                    <span class="ml-2 cursor-pointer text-white" @click="removeAudience(index)">&#x2715;</span>
-                </span>
+                <div class="flex flex-none w-[95%] max-w-[95%] flex-wrap">
+                    <div class="text-lg text-gray-400" v-if="createCampaignReq.audience_list.length < 1">Select audiens</div>
+                    <div v-else class="text-base bg-blue-primary p-1 rounded-lg text-gray-50 px-2 flex flex-none my-1 mx-1" v-for="(a, index) in createCampaignReq.audience_list" :key=index>
+                        <p class="pr-2 border-r inline-block">{{ getAudienceNameFromId(a) }}</p>
+                        <p class="ml-2 cursor-pointer text-white inline-block" @click="removeAudience(index)">&#x2715;</p>
+                    </div>
+                </div>
                 <button @click="isPopupAudiensOpen=true">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -246,6 +248,10 @@ function saveCampaign(): void {
     if (createCampaignReq.value.template_id.trim().length > 0) {
         createCampaignReq.value.message_list = [];
     }
+
+    // Set scheduled time
+    createCampaignReq.value.scheduled_date = createCampaignReq.value.is_scheduled ?
+        `${selectedDate.value} ${selectedTime.value}` : "";
 
     //TODO: set validation
     isLoading.value = true;

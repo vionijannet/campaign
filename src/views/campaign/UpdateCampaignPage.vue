@@ -61,12 +61,14 @@
         <div class="w-full space-y-2" id="section-audience">
             <span for="labelFor" class="font-semibold text-lg">Audience</span>
             <div class="flex items-center justify-between bg-gray-100 p-3 w-full rounded-lg text-lg">
-                <span class="text-lg text-gray-400" v-if="updateCampaignReq.audience_list.length < 1">Select audiens</span>
-                <span v-else class="text-base bg-blue-primary p-1 rounded-lg text-gray-50 px-2" v-for="(a, index) in updateCampaignReq.audience_list" :key=index>
-                    <span class="pr-2 border-r">{{ getAudienceNameFromId(a) }}</span>
-                    <span class="ml-2 cursor-pointer text-white" @click="removeAudience(index)">&#x2715;</span>
-                </span>
-                <button @click="isPopupAudiensOpen=true">
+                <div class="flex flex-none w-[95%] max-w-[95%] flex-wrap">
+                    <div class="text-lg text-gray-400" v-if="selectedAudience.length < 1">Select audiens</div>
+                    <div v-else class="text-base bg-blue-primary p-1 rounded-lg text-gray-50 px-2 flex flex-none my-1 mx-1" v-for="(a, index) in selectedAudience" :key=index>
+                        <p class="pr-2 border-r inline-block">{{ getAudienceNameFromId(a.audience_id) }}</p>
+                        <p class="ml-2 cursor-pointer text-white inline-block" @click="removeAudience(index)">&#x2715;</p>
+                    </div>
+                </div>
+                <button @click="isPopupAudiensOpen=true" class="items-end">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
@@ -149,10 +151,12 @@ import { UpdateCampaignReq } from '@/entity/campaign/UpdateCampaignReq';
 import { GetDetailCampaignUseCase } from '@/usecase/campaign/GetDetailCampaignUseCase';
 import { useRoute } from 'vue-router';
 import { Audience } from '@/entity/audience/Audience';
+import { GetPageDetailUseCase } from '@/usecase/page/GetPageDetailUseCase';
 
 const route = useRoute();
 
 const getDetailCampaignUseCase: GetDetailCampaignUseCase = inject("getDetailCampaignUseCase")!;
+const getPageDetailUseCase: GetPageDetailUseCase = inject("getPageDetailUseCase")!;
 
 const isPopupAudiensOpen = ref(false);
 const isPopupTemplateOpen = ref(false);
@@ -341,7 +345,24 @@ function loadData(): void {
 }
 
 function loadPage(): void {
-    isLoading.value = false;
+    getPageDetailUseCase.execute(pageId.value)
+        .pipe(
+            finalize(() => isLoading.value = false)
+        ).subscribe(
+            {
+                next: (response) => {
+                    if (response.code === 200) {
+                        audienceList.value = response.result.data.audience_list ?? [];
+                    } else {
+                        const message = response.result?.message ?? response.message;
+                        NotificationManager.showMessage("Failed to Get Data", message, "error");
+                    }
+                },
+                error: (error) => {
+                    NotificationManager.showMessage("Failed to Get Data", error, "error");
+                }
+            }
+        )
 }
 </script>
 
