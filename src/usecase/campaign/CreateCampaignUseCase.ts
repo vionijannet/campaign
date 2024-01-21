@@ -71,7 +71,7 @@ export class CreateCampaignUseCaseImpl implements CreateCampaignUseCase {
             });
         }
 
-        if (campaign.template_id.length < 1 && campaign.message_list.length < 1) {
+        if (campaign.template_id.trim().length < 1 && campaign.message_list[0].message.length < 1) {
             error.push({
                 field: "template_id",
                 message: ["Required"]

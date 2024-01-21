@@ -10,7 +10,8 @@
     </div>
     <div class="bg-white w-full rounded-2xl p-6 space-y-6" id="section-form">
         <InputText :value="page.page_name" disabled="true" label-for="page-name" label-text="Page Name" placeholder="Page Name Goes Here"></InputText>
-        <InputText label-for="campaign-name" label-text="Campaign Name" placeholder="Type your campaign name" :value="createCampaignReq.campaign_name" @type="setCampaignName($event)"></InputText>
+        <InputText label-for="campaign-name" label-text="Campaign Name" placeholder="Type your campaign name" :value="createCampaignReq.campaign_name"
+            @type="setCampaignName($event)" :validation="campaignNameValidation"></InputText>
         <div>
             <p class="font-semibold text-lg">Scheduler</p>
             <div class="flex justify-between items-center">
@@ -24,43 +25,55 @@
                 </label>
             </div>
             <div class="flex justify-between space-x-4 my-2 transform transition ease-in-out duration-200 overflow-hidden" :class="{ 'h-full': createCampaignReq.is_scheduled, 'h-0': !createCampaignReq.is_scheduled }">
-                <div class="bg-gray-100 flex items-center rounded-lg border w-full">
-                    <span class="mx-4">Date</span>
-                    <DatePicker class="!w-full !border-none" v-model:value="selectedDate" :editable="false" value-type="DD/MM/YYYY" format="DD MMM YYYY" placeholder="Select date"></DatePicker>
+                <div class="w-full">
+                    <div class="bg-gray-100 flex items-center rounded-lg border w-full" :class="dateValidation.length > 0 ? 'border-red-500' : ''">
+                        <span class="mx-4">Date</span>
+                        <DatePicker class="!w-full !border-none" v-model:value="selectedDate" :editable="false" value-type="DD/MM/YYYY" format="DD MMM YYYY" placeholder="Select date"></DatePicker>
+                    </div>
+                    <p v-if="dateValidation.length > 0" class="my-1 text-sm text-red-500">{{ dateValidation }}</p>
                 </div>
-                <div class="bg-gray-100 flex items-center rounded-lg border w-full">
-                    <span class="mx-4">Time</span>
-                    <DatePicker class="!w-full !border-none" type="time" v-model:value="selectedTime" :editable="false" value-type="format" format="hh:mm" placeholder="Select time">
-                        <template #icon-calendar>
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M5.665 1.5C3.135 1.5 1.5 3.233 1.5 5.916V14.084C1.5 16.767 3.135 18.5 5.665 18.5H14.333C16.864 18.5 18.5 16.767 18.5 14.084V5.916C18.5 3.233 16.865 1.5 14.334 1.5H5.665ZM14.333 20H5.665C2.276 20 0 17.622 0 14.084V5.916C0 2.378 2.276 0 5.665 0H14.334C17.723 0 20 2.378 20 5.916V14.084C20 17.622 17.723 20 14.333 20Z" fill="currentColor"/>
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M13.39 12.7675C13.259 12.7675 13.127 12.7335 13.006 12.6625L9.61502 10.6395C9.38902 10.5035 9.24902 10.2585 9.24902 9.99554V5.63354C9.24902 5.21954 9.58502 4.88354 9.99902 4.88354C10.413 4.88354 10.749 5.21954 10.749 5.63354V9.56954L13.775 11.3725C14.13 11.5855 14.247 12.0455 14.035 12.4015C13.894 12.6365 13.645 12.7675 13.39 12.7675Z" fill="currentColor"/>
-                            </svg>
-                        </template>
-                    </DatePicker>
+                <div class="w-full">
+                    <div class="bg-gray-100 flex items-center rounded-lg border w-full" :class="timeValidation.length > 0 ? 'border-red-500' : ''">
+                        <span class="mx-4">Time</span>
+                        <DatePicker class="!w-full !border-none" type="time" v-model:value="selectedTime" :editable="false" value-type="format" format="hh:mm" placeholder="Select time">
+                            <template #icon-calendar>
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M5.665 1.5C3.135 1.5 1.5 3.233 1.5 5.916V14.084C1.5 16.767 3.135 18.5 5.665 18.5H14.333C16.864 18.5 18.5 16.767 18.5 14.084V5.916C18.5 3.233 16.865 1.5 14.334 1.5H5.665ZM14.333 20H5.665C2.276 20 0 17.622 0 14.084V5.916C0 2.378 2.276 0 5.665 0H14.334C17.723 0 20 2.378 20 5.916V14.084C20 17.622 17.723 20 14.333 20Z" fill="currentColor"/>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M13.39 12.7675C13.259 12.7675 13.127 12.7335 13.006 12.6625L9.61502 10.6395C9.38902 10.5035 9.24902 10.2585 9.24902 9.99554V5.63354C9.24902 5.21954 9.58502 4.88354 9.99902 4.88354C10.413 4.88354 10.749 5.21954 10.749 5.63354V9.56954L13.775 11.3725C14.13 11.5855 14.247 12.0455 14.035 12.4015C13.894 12.6365 13.645 12.7675 13.39 12.7675Z" fill="currentColor"/>
+                                </svg>
+                            </template>
+                        </DatePicker>
+                    </div>
+                    <p v-if="timeValidation.length > 0" class="my-1 text-sm text-red-500">{{ timeValidation }}</p>
                 </div>
             </div>
         </div>
         <div id="section-interval">
             <p class="font-semibold text-lg">Interval</p>
             <div class="flex justify-between space-x-4 my-2">
-                <div class="bg-gray-100 flex items-center rounded-lg border w-full">
-                    <label for="min" class="mx-4">Minimal</label>
-                    <input type="number" class="relative inline-block w-full rounded-lg h-12 rounded-l-none outline-none py-[6px] px-[30px] pl-[10px]"
-                        @input="filterNumber($event)" @keypress="checkNumber($event)" v-model.number="createCampaignReq.interval_min" name="min"
-                        id="min" placeholder="Set minimal interval" min="0" />
+                <div class="w-full">
+                    <div class="bg-gray-100 flex items-center rounded-lg border w-full" :class="intervalMinValidation.length > 0 ? 'border-red-500' : ''">
+                        <label for="min" class="mx-4">Minimal</label>
+                        <input type="number" class="relative inline-block w-full rounded-lg h-12 rounded-l-none outline-none py-[6px] px-[30px] pl-[10px]"
+                            @input="filterNumber($event)" @keypress="checkNumber($event)" v-model.number="createCampaignReq.interval_min" name="min"
+                            id="min" placeholder="Set minimal interval" min="0" />
+                    </div>
+                    <p v-if="intervalMinValidation.length > 0" class="my-1 text-sm text-red-500">{{ intervalMinValidation }}</p>
                 </div>
-                <div class="bg-gray-100 flex items-center rounded-lg border w-full">
-                    <label for="max" class="mx-4">Maximal</label>
-                    <input type="number" class="relative inline-block w-full rounded-lg h-12 rounded-l-none outline-none py-[6px] px-[30px] pl-[10px]"
-                        @input="filterNumber($event)" @keypress="checkNumber($event)" v-model.number="createCampaignReq.interval_max" name="max"
-                        id="max" placeholder="Set maximal interval" min="0">
+                <div class="w-full">
+                    <div class="bg-gray-100 flex items-center rounded-lg border w-full" :class="intervalMaxValidation.length > 0 ? 'border-red-500' : ''">
+                        <label for="max" class="mx-4">Maximal</label>
+                        <input type="number" class="relative inline-block w-full rounded-lg h-12 rounded-l-none outline-none py-[6px] px-[30px] pl-[10px]"
+                            @input="filterNumber($event)" @keypress="checkNumber($event)" v-model.number="createCampaignReq.interval_max" name="max"
+                            id="max" placeholder="Set maximal interval" min="0">
+                    </div>
+                    <p v-if="intervalMaxValidation.length > 0" class="my-1 text-sm text-red-500">{{ intervalMaxValidation }}</p>
                 </div>
             </div>
         </div>
         <div class="w-full space-y-2" id="section-audience">
             <span for="labelFor" class="font-semibold text-lg">Audience</span>
-            <div class="flex items-center justify-between bg-gray-100 p-3 w-full rounded-lg text-lg">
+            <div class="flex items-center justify-between bg-gray-100 p-3 w-full rounded-lg text-lg" :class="audienceValidation.length > 0 ? 'border border-red-500' : ''">
                 <div class="flex flex-none w-[95%] max-w-[95%] flex-wrap">
                     <div class="text-lg text-gray-400" v-if="createCampaignReq.audience_list.length < 1">Select audiens</div>
                     <div v-else class="text-base bg-blue-primary p-1 rounded-lg text-gray-50 px-2 flex flex-none my-1 mx-1" v-for="(a, index) in createCampaignReq.audience_list" :key=index>
@@ -74,6 +87,7 @@
                     </svg>
                 </button>
             </div>
+            <p v-if="audienceValidation.length > 0" class="my-1 text-sm text-red-500">{{ audienceValidation }}</p>
         </div>
         <div id="section-message">
             <div class="flex justify-between">
@@ -81,7 +95,8 @@
                 <p class="font-semibold text-blue-primary underline cursor-pointer" @click="isPopupTemplateOpen=true" v-if="!isMessageBodyNew">Use Template</p>
             </div>
             <div class="relative" v-if="!isMessageBodyNew">
-                <InputText :value="templateName" disabled="true" label-for="template-name" label-text="Template Name" placeholder="Template Name Goes Here" class="py-4" />
+                <InputText :value="templateName" disabled="true" label-for="template-name" label-text="Template Name" placeholder="Template Name Goes Here"
+                    class="py-4" :validation="templateValidation" />
                 <button @click="removeTemplate" class="absolute right-4 top-16 transform rotate-45" v-if="createCampaignReq.template_id.length > 0">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -154,6 +169,7 @@ import InputDropdown from '@/components/input/InputDropdown.vue';
 import { CreateCampaignUseCase } from '@/usecase/campaign/CreateCampaignUseCase';
 import { finalize } from 'rxjs';
 import { NotificationManager } from '@/util/NotificationManager';
+import { FieldError } from '@/entity/BaseResp';
 
 const createCampaignUseCase: CreateCampaignUseCase = inject("createCampaignUseCase")!;
 
@@ -164,6 +180,14 @@ const isLoading = ref(false);
 
 const selectedDate: Ref<string | null> = ref(null);
 const selectedTime: Ref<string | null> = ref(null);
+
+const campaignNameValidation = ref("");
+const dateValidation = ref("");
+const timeValidation = ref("");
+const intervalMinValidation = ref("");
+const intervalMaxValidation = ref("");
+const audienceValidation = ref("");
+const templateValidation = ref("");
 
 const messageTypeList: OptionEntity[] = [
     {
@@ -250,30 +274,38 @@ function saveCampaign(): void {
     }
 
     // Set scheduled time
-    createCampaignReq.value.scheduled_date = createCampaignReq.value.is_scheduled ?
+    createCampaignReq.value.scheduled_date = createCampaignReq.value.is_scheduled && selectedDate.value && selectedTime.value ?
         `${selectedDate.value} ${selectedTime.value}` : "";
 
-    //TODO: set validation
-    isLoading.value = true;
-    createCampaignUseCase.execute(createCampaignReq.value)
-        .pipe(
-            finalize(() => isLoading.value = false)
-        )
-        .subscribe(
-            {
-                next: (resp) => {
-                    if (resp.code === 200) {
-                        backToList();
-                    } else {
-                        const message = resp.result?.message ?? resp.message;
-                        NotificationManager.showMessage("Failed to Create Data", message, "error");
+    const errorList = createCampaignUseCase.validate(createCampaignReq.value);
+    if (errorList.length < 1) {
+        isLoading.value = true;
+        createCampaignUseCase.execute(createCampaignReq.value)
+            .pipe(
+                finalize(() => isLoading.value = false)
+            )
+            .subscribe(
+                {
+                    next: (resp) => {
+                        if (resp.code === 200) {
+                            backToList();
+                        } else {
+                            const message = resp.result?.message ?? resp.message;
+                            NotificationManager.showMessage("Failed to Create Data", message, "error");
+                        }
+                    },
+                    error: (error) => {
+                        NotificationManager.showMessage("Failed to Create Data", error, "error");
                     }
-                },
-                error: (error) => {
-                    NotificationManager.showMessage("Failed to Create Data", error, "error");
                 }
-            }
-        )
+            );
+    } else {
+        validateCampaignName(errorList);
+        validateScheduler(errorList);
+        validateInterval(errorList);
+        validateAudience(errorList);
+        validateTemplate(errorList);
+    }
 }
 
 function setMessageOrder(): void {
@@ -317,6 +349,43 @@ function onSelectedTemplate(template: TemplateMessage): void {
 function removeTemplate(): void {
     createCampaignReq.value.template_id = "";
     templateName.value = "";
+}
+
+function validateCampaignName(error: FieldError[]): void {
+    const filteredError = error.filter(data => data.field === "campaign_name");
+    campaignNameValidation.value = filteredError.length > 0 ?
+        filteredError[0].message[0] : "";
+}
+
+function validateScheduler(error: FieldError[]): void {
+    const filteredDateError = error.filter(data => data.field === "scheduled_date");
+    dateValidation.value = filteredDateError.length > 0 ?
+        filteredDateError[0].message[0] : "";
+    const filteredTimeError = error.filter(data => data.field === "scheduled_time");
+    timeValidation.value = filteredTimeError.length > 0 ?
+        filteredTimeError[0].message[0] : "";
+}
+
+function validateInterval(error: FieldError[]): void {
+    const filteredIntervalMinError = error.filter(data => data.field === "interval_min");
+    intervalMinValidation.value = filteredIntervalMinError.length > 0 ?
+        filteredIntervalMinError[0].message[0] : "";
+    const filteredIntervalMaxError = error.filter(data => data.field === "interval_max");
+    intervalMaxValidation.value = filteredIntervalMaxError.length > 0 ?
+        filteredIntervalMaxError[0].message[0] : "";
+}
+
+function validateAudience(error: FieldError[]): void {
+    const filteredError = error.filter(data => data.field === "audience_list");
+    audienceValidation.value = filteredError.length > 0 ?
+        filteredError[0].message[0] : "";
+}
+
+function validateTemplate(error: FieldError[]): void {
+    const filteredError = error.filter(data => data.field === "template_id");
+    console.log(filteredError);
+    templateValidation.value = filteredError.length > 0 ?
+        filteredError[0].message[0] : "";
 }
 </script>
 
