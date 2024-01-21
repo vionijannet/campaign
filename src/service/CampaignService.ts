@@ -75,7 +75,7 @@ export class CampaignServiceImpl extends BaseService implements CampaignService 
     }
 
     updateCampaign(campaign: UpdateCampaignReq): Observable<BaseResp> {
-        return this.httpPost(`${this.API_ENDPOINT}/${campaign.campaign_id}`, TextFormatter.convertEmptyPropertyToNull(campaign))
+        return this.httpPut(`${this.API_ENDPOINT}/${campaign.campaign_id}`, TextFormatter.convertEmptyPropertyToNull(campaign))
             .pipe(
                 map((response) => JSON.parse(JSON.stringify(response.data as string)))
             )

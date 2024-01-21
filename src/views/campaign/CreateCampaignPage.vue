@@ -10,8 +10,9 @@
     </div>
     <div class="bg-white w-full rounded-2xl p-6 space-y-6" id="section-form">
         <InputText :value="page.page_name" disabled="true" label-for="page-name" label-text="Page Name" placeholder="Page Name Goes Here"></InputText>
-        <InputText label-for="campaign-name" label-text="Campaign Name" placeholder="Type your campaign name" :value="createCampaignReq.campaign_name"
-            @type="setCampaignName($event)" :validation="campaignNameValidation"></InputText>
+        <InputText label-for="campaign-name" placeholder="Type your campaign name" :value="createCampaignReq.campaign_name"
+            label-text="Campaign Name" @type="setCampaignName($event)" :validation="campaignNameValidation">
+        </InputText>
         <div>
             <p class="font-semibold text-lg">Scheduler</p>
             <div class="flex justify-between items-center">
@@ -28,14 +29,14 @@
                 <div class="w-full">
                     <div class="bg-gray-100 flex items-center rounded-lg border w-full" :class="dateValidation.length > 0 ? 'border-red-500' : ''">
                         <span class="mx-4">Date</span>
-                        <DatePicker class="!w-full !border-none" v-model:value="selectedDate" :editable="false" value-type="DD/MM/YYYY" format="DD MMM YYYY" placeholder="Select date"></DatePicker>
+                        <DatePicker class="!w-full !border-none" v-model:value="selectedDate" :editable="false" value-type="YYYY-MM-DD" format="DD MMM YYYY" placeholder="Select date"></DatePicker>
                     </div>
                     <p v-if="dateValidation.length > 0" class="my-1 text-sm text-red-500">{{ dateValidation }}</p>
                 </div>
                 <div class="w-full">
                     <div class="bg-gray-100 flex items-center rounded-lg border w-full" :class="timeValidation.length > 0 ? 'border-red-500' : ''">
                         <span class="mx-4">Time</span>
-                        <DatePicker class="!w-full !border-none" type="time" v-model:value="selectedTime" :editable="false" value-type="format" format="hh:mm" placeholder="Select time">
+                        <DatePicker class="!w-full !border-none" type="time" v-model:value="selectedTime" :editable="false" value-type="format" format="hh:mm:ss" placeholder="Select time">
                             <template #icon-calendar>
                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M5.665 1.5C3.135 1.5 1.5 3.233 1.5 5.916V14.084C1.5 16.767 3.135 18.5 5.665 18.5H14.333C16.864 18.5 18.5 16.767 18.5 14.084V5.916C18.5 3.233 16.865 1.5 14.334 1.5H5.665ZM14.333 20H5.665C2.276 20 0 17.622 0 14.084V5.916C0 2.378 2.276 0 5.665 0H14.334C17.723 0 20 2.378 20 5.916V14.084C20 17.622 17.723 20 14.333 20Z" fill="currentColor"/>
@@ -95,8 +96,8 @@
                 <p class="font-semibold text-blue-primary underline cursor-pointer" @click="isPopupTemplateOpen=true" v-if="!isMessageBodyNew">Use Template</p>
             </div>
             <div class="relative" v-if="!isMessageBodyNew">
-                <InputText :value="templateName" disabled="true" label-for="template-name" label-text="Template Name" placeholder="Template Name Goes Here"
-                    class="py-4" :validation="templateValidation" />
+                <InputText :value="templateName" disabled="true" label-for="template-name" label-text="Template Name"
+                    placeholder="Template Name Goes Here" class="py-4" :validation="templateValidation" />
                 <button @click="removeTemplate" class="absolute right-4 top-16 transform rotate-45" v-if="createCampaignReq.template_id.length > 0">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -383,7 +384,6 @@ function validateAudience(error: FieldError[]): void {
 
 function validateTemplate(error: FieldError[]): void {
     const filteredError = error.filter(data => data.field === "template_id");
-    console.log(filteredError);
     templateValidation.value = filteredError.length > 0 ?
         filteredError[0].message[0] : "";
 }
