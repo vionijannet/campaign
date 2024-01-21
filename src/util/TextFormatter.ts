@@ -29,6 +29,10 @@ export class TextFormatter {
         const generator = new FileChecksumGenerator();
         return generator.execute(file);
     }
+
+    public static isTextNumberOnly(text: string): boolean {
+        return /^\d+$/.test(text);
+    }
 }
 
 class FileChecksumGenerator {

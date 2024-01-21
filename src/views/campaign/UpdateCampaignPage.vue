@@ -82,7 +82,7 @@
             </div>
             <div class="relative" v-if="!isMessageBodyEmpty">
                 <InputText :value="templateName" disabled="true" label-for="template-name" label-text="Template Name" placeholder="Template Name Goes Here" class="py-4" />
-                <button @click="removeTemplate" class="absolute right-4 top-16 transform rotate-45" v-if="updateCampaignReq.template_id.length > 0">
+                <button @click="removeTemplate" class="absolute right-4 top-[60px] transform rotate-45" v-if="updateCampaignReq.template_id.length > 0">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
@@ -90,19 +90,19 @@
             </div>
             <div v-if="!isMessageTemplateSelected">
                 <div class="w-full border rounded-lg p-4 my-2 space-y-2">
-                    <InputDropdown :placeholder="'Select message type'" :selected="updateCampaignReq.message_list[0].message_type"
-                        :id="'type-0'" @change="updateCampaignReq.message_list[0].message_type = $event.key" :option-list="messageTypeList">
+                    <InputDropdown :placeholder="'Select message type'" :selected="filteredMessageList[0].message_type" name="type-0"
+                        :id="'type-0'" @change="setMessageTypeAtIndex(0, $event.key)" :option-list="messageTypeList">
                     </InputDropdown>
-                    <textarea rows="5" class="w-full outline-none border rounded-lg p-4" placeholder="Type your message" v-model="updateCampaignReq.message_list[0].message"></textarea>
+                    <textarea rows="5" class="w-full outline-none border rounded-lg p-4" placeholder="Type your message" @input="setMessageAtIndex(0, $event)"></textarea>
                 </div>
-                <div class="w-full border rounded-lg p-4 my-2 flex items-start space-x-2" v-for="m, i in updateCampaignReq.message_list.filter((_v, i) => i > 0)">
+                <div class="w-full border rounded-lg p-4 my-2 flex items-start space-x-2" v-for="m, i in filteredMessageList.filter((_v, i) => i > 0)" :key="i">
                     <div class="w-full space-y-1">
-                        <InputDropdown :placeholder="'Select message type'" :selected="updateCampaignReq.message_list[i+1].message_type"
-                            :id="`type-${i+1}`" @change="updateCampaignReq.message_list[i+1].message_type = $event.key" :option-list="messageTypeList"> 
+                        <InputDropdown :placeholder="'Select message type'" :selected="filteredMessageList[i+1].message_type" :name="`type-${i+1}`"
+                            :id="`type-${i+1}`" @change="setMessageTypeAtIndex(i+1, $event.key)" :option-list="messageTypeList"> 
                         </InputDropdown>
-                        <textarea rows="5" class="w-full outline-none border rounded-lg p-4" placeholder="Type your message" v-model="updateCampaignReq.message_list[i+1].message"></textarea>
+                        <textarea rows="5" class="w-full outline-none border rounded-lg p-4" placeholder="Type your message" @input="setMessageAtIndex(i+1, $event)"></textarea>
                     </div>
-                    <button class="flex-1 pt-3" @click="removeMessage(i+1)">
+                    <button class="flex-1 pt-3" @click="removeMessageAtIndex(i)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#d93517" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                         </svg>
@@ -140,7 +140,7 @@ import SelectMessageTemplate from '@/views/campaign/SelectMessageTemplate.vue';
 import router from '@/router';
 import { computed, inject, onMounted, ref, type Ref } from 'vue';
 import DatePicker from 'vue-datepicker-next';
-import { AudiencePage, Page } from '@/entity/page/Page';
+import { AudiencePage } from '@/entity/page/Page';
 import SelectAudience from './SelectAudience.vue';
 import { OptionEntity } from '@/components/ComponentEntity';
 import { TemplateMessage } from '@/entity/message/TemplateMessage';
@@ -152,6 +152,7 @@ import { GetDetailCampaignUseCase } from '@/usecase/campaign/GetDetailCampaignUs
 import { useRoute } from 'vue-router';
 import { Audience } from '@/entity/audience/Audience';
 import { GetPageDetailUseCase } from '@/usecase/page/GetPageDetailUseCase';
+import { TextFormatter } from '@/util/TextFormatter';
 
 const route = useRoute();
 
@@ -210,7 +211,7 @@ const filteredMessageList = computed(() =>
 const templateName = ref("");
 
 const isMessageTemplateSelected = computed(() => updateCampaignReq.value.template_id.length > 0);
-const isMessageBodyEmpty = computed(() => updateCampaignReq.value.message_list.length > 1 || (updateCampaignReq.value.message_list.length > 0 && updateCampaignReq.value.message_list[0].message.trim().length > 0));
+const isMessageBodyEmpty = computed(() => filteredMessageList.value.length > 1 || (filteredMessageList.value.length > 0 && filteredMessageList.value[0].message.trim().length > 0));
 
 function backToList(): void {
     router.push("/campaign");
@@ -222,12 +223,42 @@ function addMessage(): void {
         message: "",
         message_type: "",
         message_order: (updateCampaignReq.value.message_list.length + 1).toString(),
-        message_id: "",
+        message_id: (updateCampaignReq.value.message_list.length + 1).toString(),
     });
 }
 
-function removeMessage(index: number): void {
-    updateCampaignReq.value.message_list.splice(index, 1);
+function setMessageTypeAtIndex(index: number, type: string): void {
+    // Get message id from filteredMessageList
+    const id = filteredMessageList.value[index].message_id;
+    // Get index from req
+    const indexFromReq = updateCampaignReq.value.message_list.findIndex(data => data.message_id === id);
+    // Set type to req
+    updateCampaignReq.value.message_list[indexFromReq].message_type = type;
+}
+
+function setMessageAtIndex(index: number, event: Event): void {
+    const target = event.target as HTMLTextAreaElement;
+    const message = target.value;
+
+    // Get message id from filteredMessageList
+    const id = filteredMessageList.value[index].message_id;
+    // Get index from req
+    const indexFromReq = updateCampaignReq.value.message_list.findIndex(data => data.message_id === id);
+    // Set type to req
+    updateCampaignReq.value.message_list[indexFromReq].message = message;
+}
+
+function removeMessageAtIndex(index: number): void {
+    // Get message id from filteredMessageList
+    const id = filteredMessageList.value[index].message_id;
+    // Get index from req
+    const indexFromReq = updateCampaignReq.value.message_list.findIndex(data => data.message_id === id);
+    // Check id, if number splice data
+    if (TextFormatter.isTextNumberOnly(id)) {
+        updateCampaignReq.value.message_list[indexFromReq].flag_delete = true;
+    } else {
+        updateCampaignReq.value.message_list.splice(indexFromReq, 1);
+    }
 }
 
 function setCheckedAudience(data: string[]): void {
@@ -285,12 +316,24 @@ function onSelectedTemplate(template: TemplateMessage): void {
     updateCampaignReq.value.template_id = template.template_id;
     templateName.value = template.template_name;
 
+    updateCampaignReq.value.message_list.forEach((data, index) => {
+        if (TextFormatter.isTextNumberOnly(data.message_id)) {
+            updateCampaignReq.value.message_list.splice(index, 1);
+        } else {
+            data.flag_delete = true;
+        }
+    });
+
     isPopupTemplateOpen.value = false;
 }
 
 function removeTemplate(): void {
     updateCampaignReq.value.template_id = "";
     templateName.value = "";
+
+    if (filteredMessageList.value.length < 1) {
+        addMessage();
+    }
 }
 
 onMounted(() => {
@@ -323,6 +366,8 @@ function loadData(): void {
                     }
                     pageName.value = resp.result.data.page_name ?? "";
                     pageId.value = resp.result.data.page_id ?? "";
+
+                    templateName.value = resp.result.data.template_name;
 
                     selectedAudience.value = resp.result.data.audience_list;
 
