@@ -1,7 +1,7 @@
 <template>
     <div class="absolute -top-2 right-0 my-6 mx-8">
         <div class="flex space-x-4">
-            <Search />
+            <Search @enter="searchAudience" />
         </div>
     </div>
     <div>
@@ -64,12 +64,12 @@ onMounted(() => {
     loadData();
 })
 
-function loadData(): void {
+function loadData(audience_name=""): void {
     isLoading.value = true;
 
     asyncSubscription.add(
         getAudienceUseCase.execute({
-            audience_name: "",
+            audience_name,
             limit: searchCriteria.value.rowPerPage,
             page: searchCriteria.value.page - 1,
             page_id: "",
@@ -106,4 +106,8 @@ function handleImageError(event: Event): void {
 onUnmounted(() => {
     asyncSubscription.unsubscribe();
 })
+
+function searchAudience(audience: string): void {
+    loadData(audience);
+}
 </script>
