@@ -8,7 +8,7 @@
         <TableExpandComponent class="mb-2" :table-header="tableHeader" :table-body="audiensList" :search-criteria="searchCriteria" :total-row="totalRow">
             <template #audience_name="{slotProps}">
                 <div class="p-2 flex space-x-2 items-center">
-                    <img :src="slotProps.audience_photo" :alt="`Picture of ${slotProps.audience_name}`">
+                    <img :src="slotProps.audience_photo" :alt="`Picture of ${slotProps.audience_name}`" @error="handleImageError">
                     <p>{{ slotProps.audience_name }}</p>
                 </div>
             </template>
@@ -94,6 +94,13 @@ function loadData(): void {
             }
         )
     )
+}
+
+function handleImageError(event: Event): void {
+    const imageElement = event.target as HTMLImageElement;
+    imageElement.src = "https://http.cat/images/415.jpg";
+    imageElement.width = 100;
+    imageElement.height = 100;
 }
 
 onUnmounted(() => {
