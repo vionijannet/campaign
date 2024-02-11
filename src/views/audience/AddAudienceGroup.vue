@@ -4,7 +4,7 @@
     </h1>
     <hr class="w-full" />
     <div class="pt-4 pb-2 space-y-4 px-4">
-        <InputText :value="groupName" label-for="group-name" label-text="Group Name" placeholder="Group Name Goes Here" />
+        <InputText :value="groupName" label-for="group-name" label-text="Group Name" placeholder="Group Name Goes Here" @type="setGroupName" />
         <div class="space-y-1">
             <label for="page" class="font-semibold text-base">Page</label>
             <InputDropdown :placeholder="'Select page'" :selected="selectedPage"
@@ -13,7 +13,7 @@
         </div>
         <div class="space-y-1">
             <label for="audience" class="font-semibold text-base">Audience</label>
-            <Multiselect :options="audienceList" mode="tags" v-model="selectedAudience" placeholder="Select audience"
+            <Multiselect :options="audienceList" mode="tags" v-model="selectedAudience" placeholder="Select audience" :disabled="selectedPage.length < 1"
                 :classes="{
                     container: 'relative mx-auto w-full flex items-center justify-end box-border cursor-pointer border border-gray-300 rounded-lg bg-white text-base leading-snug outline-none py-1',
                     containerDisabled: 'cursor-default bg-gray-100',
@@ -69,7 +69,7 @@
                     spacer: 'h-9 py-px box-content'
                 }"
             ></Multiselect>
-            <!-- <InputDropdown :placeholder="'Select audience'" :selected="selectedAudience" :disabled="selectedPage.length < 1"
+            <!-- <InputDropdown :placeholder="'Select audience'" :selected="selectedAudience" :
                 :id="'audience'" @change="onChangeAudience" :option-list="audienceList">
             </InputDropdown> -->
         </div>
@@ -135,19 +135,35 @@ const selectedPage = ref("");
 const selectedAudience: Ref<string[]> = ref([]);
 const selectedColor = ref("#000000");
 
-const emit = defineEmits(["cancel"]);
+const emit = defineEmits(["cancel", "success", "error"]);
 
 function onChangePage(pageId: string): void {
     selectedPage.value = pageId;
     selectedAudience.value = [];
 }
 
-function onChangeAudience(): void {
-    console.log("set audience");
-}
-
 function createGroup(): void {
-    console.log("create group");
+    isLoading.value = true;
+
+    addGroupUseCase.execute({
+        audience_list: selectedAudience.value,
+        group_color_hex: selectedColor.value,
+        group_name: groupName.value,
+        page_id: selectedPage.value
+    }).subscribe(
+        {
+            next: (baseResp) => {
+                if (baseResp.code === 200) {
+                    emit("success");
+                } else {
+                    emit("error", baseResp);
+                }
+            }, 
+            error: (e) => {
+                emit("error", e);
+            }
+        }
+    )
 }
 
 function backToList(): void {
@@ -179,26 +195,8 @@ function loadPage(): void {
         }
     )
 }
+
+function setGroupName(group: string): void {
+    groupName.value = group;
+}
 </script>
-
-<style>
-.multiselect-tag.is-user {
-    padding: 5px 8px;
-    border-radius: 22px;
-    background: #35495e;
-    margin: 3px 3px 8px;
-}
-
-.multiselect-tag.is-user img {
-    width: 18px;
-    border-radius: 50%;
-    height: 18px;
-    margin-right: 8px;
-    border: 2px solid #ffffffbf;
-}
-
-.multiselect-tag.is-user i:before {
-    color: #ffffff;
-    border-radius: 50%;;
-}
-</style>

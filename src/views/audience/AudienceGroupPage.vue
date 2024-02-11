@@ -26,7 +26,7 @@
     </div>
 
     <ModalComponent v-if="isPopupCreateOpen" @close="isPopupCreateOpen=false" :custom-class="'!max-w-xl'">
-        <AddAudienceGroup @cancel="isPopupCreateOpen=false"></AddAudienceGroup>
+        <AddAudienceGroup @cancel="isPopupCreateOpen=false" @success="onSuccessAddGroup"></AddAudienceGroup>
     </ModalComponent>
 </template>
 
@@ -139,4 +139,9 @@ function loadData(): void {
 onUnmounted(() => {
     asyncSubscription.unsubscribe();
 })
+
+function onSuccessAddGroup(): void {
+    isPopupCreateOpen.value = false;
+    loadData();
+}
 </script>
