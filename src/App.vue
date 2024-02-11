@@ -28,6 +28,7 @@ import { AudienceService, AudienceServiceImpl } from './service/AudienceService'
 import { GetAudienceUseCase, GetAudienceUseCaseImpl } from './usecase/audience/GetAudienceUseCase';
 import { GetGroupUseCase, GetGroupUseCaseImpl } from './usecase/audience/GetGroupUseCase';
 import { GetPageDetailUseCase, GetPageDetailUseCaseImpl } from './usecase/page/GetPageDetailUseCase';
+import { AddGroupUseCase, AddGroupUseCaseImpl } from './usecase/audience/AddGroupUseCase';
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: "http://127.0.0.1:8080",
@@ -73,6 +74,8 @@ const getAudience: GetAudienceUseCase = new GetAudienceUseCaseImpl(audienceServi
 provide("getAudienceUseCase", getAudience);
 const getGroup: GetGroupUseCase = new GetGroupUseCaseImpl(audienceService);
 provide("getGroupUseCase", getGroup);
+const addGroup: AddGroupUseCase = new AddGroupUseCaseImpl(audienceService);
+provide("addGroupUseCase", addGroup);
 
 const userService: UserService = new UserServiceImpl(axiosInstance);
 const getLoginHistory: GetLoginHistoryUseCase = new GetLoginHistoryUseCaseImpl(userService);

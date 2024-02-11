@@ -13,7 +13,7 @@
         </div>
         <div class="space-y-1">
             <label for="audience" class="font-semibold text-base">Audience</label>
-            <InputDropdown :placeholder="'Select audience'" :selected="selectedAudience"
+            <InputDropdown :placeholder="'Select audience'" :selected="selectedAudience" :disabled="selectedPage.length < 1"
                 :id="'audience'" @change="onChangeAudience" :option-list="audienceList">
             </InputDropdown>
         </div>
@@ -44,11 +44,13 @@ import ButtonBase from '@/components/button/ButtonBase.vue';
 import InputDropdown from '@/components/input/InputDropdown.vue';
 import InputText from '@/components/input/InputText.vue';
 import { Page } from '@/entity/page/Page';
+import { AddGroupUseCase } from '@/usecase/audience/AddGroupUseCase';
 import { GetPageUseCase } from '@/usecase/page/GetPageUseCase';
 import { finalize } from 'rxjs';
 import { Ref, computed, inject, onMounted, ref } from 'vue';
 
 const getPageUseCase: GetPageUseCase = inject("getPageUseCase")!;
+const addGroupUseCase: AddGroupUseCase = inject("addGroupUseCase")!;
 
 const pageList: Ref<Page[]> = ref([]);
 
