@@ -18,3 +18,8 @@ export interface OptionEntity {
     key: string;
     value: string;
 }
+
+export interface MultiselectEntity {
+    value: string;
+    label: string;
+}
