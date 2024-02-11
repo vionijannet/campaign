@@ -43,6 +43,7 @@ export class AudienceServiceImpl extends BaseService implements AudienceService 
         const params: any = {
             page: group.page,
             limit: group.limit,
+            "group-name": group.group_name,
         };
 
         return this.httpGet(this.GROUP_API_ENDPOINT, { params })

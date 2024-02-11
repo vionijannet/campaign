@@ -1,7 +1,7 @@
 <template>
     <div class="absolute -top-2 right-0 my-6 mx-8">
         <div class="flex space-x-4">
-            <Search />
+            <Search @enter="loadData($event)" />
             <ButtonBase class="flex !w-fit" @click="redirectToCreate">
                 <img src="../../assets/icon-create.svg" alt="Create">
                 <span class="ml-2">Add Category</span>
@@ -104,12 +104,12 @@ onMounted(() => {
     loadData();
 })
 
-function loadData(): void {
+function loadData(group_name=""): void {
     isLoading.value = true;
 
     asyncSubscription.add(
         getGroupUseCase.execute({
-            group_name: "",
+            group_name,
             limit: searchCriteria.value.rowPerPage,
             page: searchCriteria.value.page - 1,
             page_id: "",

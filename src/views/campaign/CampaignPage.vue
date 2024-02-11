@@ -1,7 +1,7 @@
 <template>
     <div class="absolute -top-2 right-0 my-6 mx-8">
         <div class="flex space-x-4">
-            <Search />
+            <Search @enter="loadCampaign($event)" />
             <ButtonBase class="flex !w-fit" @click="redirectToCreate">
                 <img src="../../assets/icon-create.svg" alt="Create">
                 <span class="ml-2">Create</span>
