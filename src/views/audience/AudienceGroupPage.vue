@@ -17,9 +17,9 @@
             </template>
             <template #action="{slotProps}">
                 <div class="flex items-center space-x-4">
-                    <img src="../../assets/preview.svg" title="Preview" alt="Preview" class="cursor-pointer" @click="previewGroup(slotProps.accountId)" />
-                    <img src="../../assets/trash.svg" title="Delete" alt="Delete" class="cursor-pointer" @click="deleteGroup(slotProps.accountId)" />
-                    <img src="../../assets/update.svg" title="Update" alt="Update" class="cursor-pointer" @click="redirectToUpdateGroup(slotProps.accountId)" />
+                    <img src="../../assets/preview.svg" title="Preview" alt="Preview" class="cursor-pointer" @click="previewGroup(slotProps.group_id)" />
+                    <img src="../../assets/trash.svg" title="Delete" alt="Delete" class="cursor-pointer" @click="deleteGroup(slotProps.group_id)" />
+                    <img src="../../assets/update.svg" title="Update" alt="Update" class="cursor-pointer" @click="redirectToUpdateGroup(slotProps.group_id)" />
                 </div>
             </template>
         </TableExpandComponent>
@@ -43,6 +43,7 @@ import { finalize, Subscription } from 'rxjs';
 import { NotificationManager } from '@/util/NotificationManager';
 import AddAudienceGroup from './AddAudienceGroup.vue';
 import ModalComponent from '@/components/modal/ModalComponent.vue';
+import { DeleteGroupUseCase } from '@/usecase/audience/DeleteGroupUseCase';
 
 const asyncSubscription: Subscription = new Subscription();
 
@@ -91,14 +92,37 @@ function redirectToUpdateGroup(accId: string): void {
     console.log("update", accId);
 }
 
-function deleteGroup(accId: string): void {
-    console.log("delete", accId);
+function deleteGroup(groupId: string): void {
+    isLoading.value = true;
+
+    asyncSubscription.add(
+        deleteGroupUseCase.execute({ groupId })
+            .subscribe(
+                {
+                    next: (baseResp) => {
+                        if (baseResp.code === 200) {
+                            loadData();
+                        } else {
+                            const message = baseResp.result?.message ?? baseResp.message;
+                            NotificationManager.showMessage("Failed to Load Data", message, "error");
+
+                            isLoading.value = false;
+                        }
+                    },
+                    error: (error) => {
+                        NotificationManager.showMessage("Network Error", error, "error");
+                        isLoading.value = false;
+                    }
+                }
+            )
+    )
 }
 
 const isLoading = ref(false);
 const isPopupCreateOpen = ref(false);
 
 const getGroupUseCase: GetGroupUseCase = inject("getGroupUseCase")!;
+const deleteGroupUseCase: DeleteGroupUseCase = inject("deleteGroupUseCase")!;
 
 onMounted(() => {
     loadData();

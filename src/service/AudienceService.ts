@@ -8,12 +8,14 @@ import { GetGroupResp } from "@/entity/audience/GetGroupResp";
 import { AddGroupReq } from "@/entity/audience/AddGroupReq";
 import { BaseResp } from "@/entity/BaseResp";
 import { TextFormatter } from "@/util/TextFormatter";
+import { GetDetailGroupReq } from "@/entity/audience/GetDetailGroupReq";
 
 export interface AudienceService {
     getAudience(audience: GetAudienceReq): Observable<GetAudienceResp>;
 
     getGroup(group: GetGroupReq): Observable<GetGroupResp>;
     addGroup(group: AddGroupReq): Observable<BaseResp>;
+    deleteGroup(group: GetDetailGroupReq): Observable<BaseResp>;
 }
 
 export class AudienceServiceImpl extends BaseService implements AudienceService {
@@ -57,5 +59,12 @@ export class AudienceServiceImpl extends BaseService implements AudienceService 
             .pipe(
                 map((response) => JSON.parse(JSON.stringify(response.data as string)))
             );
+    }
+
+    deleteGroup(group: GetDetailGroupReq): Observable<BaseResp> {
+        return this.httpDelete(`${this.GROUP_API_ENDPOINT}/${group.groupId}`)
+            .pipe(
+                map((response) => JSON.parse(JSON.stringify(response.data as string)))
+            )
     }
 }
