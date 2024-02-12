@@ -1,6 +1,6 @@
 <template>
     <h1 class="font-bold text-3xl pt-2 pb-4 px-4">
-        Add Category Audiens
+        {{ title }}
     </h1>
     <hr class="w-full" />
     <div class="pt-4 pb-2 space-y-4 px-4">
@@ -73,11 +73,11 @@
                 :id="'audience'" @change="onChangeAudience" :option-list="audienceList">
             </InputDropdown> -->
         </div>
-        <div class="space-y-1 flex flex-col">
+        <div class="space-y-1 flex flex-col pb-2">
             <label for="color" class="font-semibold text-base">Color</label>
             <input type="color" id="color" name="color" class="h-12" v-model="selectedColor" />
         </div>
-        <div class="flex space-x-2 items-center py-2">
+        <!-- <div class="flex space-x-2 items-center py-2">
             <label for="publish" tabindex="0" :aria-checked="isPublish" class="peer relative inline-flex flex-shrink-0 cursor-pointer transition-colors ease-in-out duration-200 border-2 border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 rounded-full" :class="{'bg-blue-primary': isPublish, 'bg-gray-100': !isPublish}">
                 <input type="checkbox" name="publish" id="publish" class="hidden" v-model="isPublish" />
                 <span aria-hidden="true" class="rounded-full w-5 h-5 flex items-center justify-center text-gray-400 text-xs"></span>
@@ -85,9 +85,9 @@
                 <span aria-hidden="true" class="absolute transform transition ease-in-out duration-200 h-5 w-5 rounded-full bg-white shadow flex items-center justify-center text-xs" :class="{'translate-x-full text-blue-primary': isPublish, 'translate-x-0 text-gray-400': !isPublish}"></span>
             </label>
             <span>Publish</span>
-        </div>
+        </div> -->
     </div>
-    <hr />
+    <hr class="pt-2" />
     <div class="w-full flex justify-end items-center space-x-4 pt-6 pb-3 pr-4">
         <ButtonBase type="error" class="!w-32" @click="backToList">Back</ButtonBase>
         <ButtonBase class="!w-32" @click="createGroup">Save</ButtonBase>
@@ -105,6 +105,29 @@ import { GetPageUseCase } from '@/usecase/page/GetPageUseCase';
 import { finalize } from 'rxjs';
 import { Ref, computed, inject, onMounted, ref } from 'vue';
 import Multiselect from '@vueform/multiselect';
+
+const props = defineProps({
+    type: {
+        type: String,
+        default: "create",
+    },
+    group_id: {
+        type: String,
+        default: "",
+    }
+})
+
+const title = computed(() => {
+    let result = "Category Audiens";
+
+    if (props.type === "create") {
+        result = `Add ${result}`;
+    } else if (props.type === "update") {
+        result = `Update ${result}`;
+    }
+    
+    return result;
+})
 
 const getPageUseCase: GetPageUseCase = inject("getPageUseCase")!;
 const addGroupUseCase: AddGroupUseCase = inject("addGroupUseCase")!;
@@ -172,7 +195,15 @@ function backToList(): void {
 
 onMounted(() => {
     loadPage();
+
+    if (props.type === "update" && props.group_id.length > 0) {
+        loadDetailGroup();
+    }
 });
+
+function loadDetailGroup(): void {
+    console.log("load detail group");
+}
 
 function loadPage(): void {
     isLoading.value = true;

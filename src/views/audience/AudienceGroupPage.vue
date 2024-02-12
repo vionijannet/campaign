@@ -25,15 +25,15 @@
         </TableExpandComponent>
     </div>
 
-    <ModalComponent v-if="isPopupCreateOpen" @close="isPopupCreateOpen=false" :custom-class="'!max-w-xl'">
-        <AddAudienceGroup @cancel="isPopupCreateOpen=false" @success="onSuccessAddGroup"></AddAudienceGroup>
+    <ModalComponent v-if="isPopupGroupOpen" @close="isPopupGroupOpen=false" :custom-class="'!max-w-xl'">
+        <PopupAudienceGroup @cancel="isPopupGroupOpen=false" @success="onSuccessAddGroup" :type="typePopup" :group_id="group_id">
+        </PopupAudienceGroup>
     </ModalComponent>
 </template>
 
 <script setup lang="ts">
 import ButtonBase from '@/components/button/ButtonBase.vue';
 import TableExpandComponent from '@/components/table/TableExpandComponent.vue';
-import router from "@/router";
 import { inject, onMounted, onUnmounted, ref, type Ref } from 'vue';
 import { SearchCriteria, TableHeader } from '@/components/ComponentEntity';
 import Search from '@/components/search/Search.vue';
@@ -41,14 +41,17 @@ import { Group } from '@/entity/audience/Group';
 import { GetGroupUseCase } from '@/usecase/audience/GetGroupUseCase';
 import { finalize, Subscription } from 'rxjs';
 import { NotificationManager } from '@/util/NotificationManager';
-import AddAudienceGroup from './AddAudienceGroup.vue';
+import PopupAudienceGroup from './PopupAudienceGroup.vue';
 import ModalComponent from '@/components/modal/ModalComponent.vue';
 import { DeleteGroupUseCase } from '@/usecase/audience/DeleteGroupUseCase';
 
 const asyncSubscription: Subscription = new Subscription();
 
 function redirectToCreate(): void {
-    isPopupCreateOpen.value = true;
+    group_id.value = "";
+    typePopup.value = "create";
+
+    isPopupGroupOpen.value = true;
 }
 
 const groupList: Ref<Group[]> = ref([]);
@@ -85,11 +88,17 @@ const tableHeader: Ref<TableHeader[]> = ref([
 ] as TableHeader[]);
 
 function previewGroup(accId: string): void {
-    console.log("preview account", accId);
+    group_id.value = accId;
+    typePopup.value = "display";
+
+    isPopupGroupOpen.value = true;
 }
 
 function redirectToUpdateGroup(accId: string): void {
-    console.log("update", accId);
+    group_id.value = accId;
+    typePopup.value = "update";
+
+    isPopupGroupOpen.value = true;
 }
 
 function deleteGroup(groupId: string): void {
@@ -118,8 +127,11 @@ function deleteGroup(groupId: string): void {
     )
 }
 
+const group_id = ref("");
+const typePopup = ref("");
+
 const isLoading = ref(false);
-const isPopupCreateOpen = ref(false);
+const isPopupGroupOpen = ref(false);
 
 const getGroupUseCase: GetGroupUseCase = inject("getGroupUseCase")!;
 const deleteGroupUseCase: DeleteGroupUseCase = inject("deleteGroupUseCase")!;
@@ -165,7 +177,11 @@ onUnmounted(() => {
 })
 
 function onSuccessAddGroup(): void {
-    isPopupCreateOpen.value = false;
+    group_id.value = "";
+    typePopup.value = "";
+
+    isPopupGroupOpen.value = false;
+    
     loadData();
 }
 </script>
