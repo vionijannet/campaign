@@ -4,17 +4,18 @@
     </h1>
     <hr class="w-full" />
     <div class="pt-4 pb-2 space-y-4 px-4">
-        <InputText :disabled="props.type === 'display'" :value="groupName" label-for="group-name" label-text="Group Name" placeholder="Group Name Goes Here" @type="setGroupName" />
+        <InputText :disabled="props.type === 'display'" :value="groupName" label-for="group-name" label-text="Group Name"
+            placeholder="Group Name Goes Here" @type="setGroupName" :validation="groupNameValidation" />
         <div class="space-y-1">
             <label for="page" class="font-semibold text-base">Page</label>
             <InputDropdown :placeholder="'Select page'" :selected="selectedPage" :disabled="props.type === 'display'"
-                :id="'page'" @change="onChangePage($event.key)" :option-list="pageOptionList">
+                :id="'page'" @change="onChangePage($event.key)" :option-list="pageOptionList" :validation="pageValidation">
             </InputDropdown>
         </div>
         <div class="space-y-1">
             <label for="audience" class="font-semibold text-base">Audience</label>
             <Multiselect :options="audienceList" mode="tags" v-model="selectedAudience" placeholder="Select audience" :disabled="selectedPage.length < 1 || props.type === 'display'"
-                :class="selectedPage.length < 1 || props.type === 'display' ? '!cursor-not-allowed' : '!cursor-pointer'"
+                :class="[selectedPage.length < 1 || props.type === 'display' ? '!cursor-not-allowed' : '!cursor-pointer', audienceValidation.length > 0 ? 'border-red-500' : '']"
                 :classes="{
                     container: 'relative mx-auto w-full flex items-center justify-end box-border border border-gray-300 rounded-lg bg-white text-base leading-snug outline-none py-1',
                     containerDisabled: 'cursor-not-allowed bg-gray-100 opacity-50',
@@ -70,6 +71,7 @@
                     spacer: 'h-9 py-px box-content'
                 }"
             ></Multiselect>
+            <p class="text-sm text-red-500" v-if="audienceValidation.length > 0">{{ audienceValidation }}</p>
             <!-- <InputDropdown :placeholder="'Select audience'" :selected="selectedAudience" :
                 :id="'audience'" @change="onChangeAudience" :option-list="audienceList">
             </InputDropdown> -->
@@ -91,7 +93,7 @@
     <hr class="pt-2" v-if="props.type !== 'display'" />
     <div class="w-full flex justify-end items-center space-x-4 pt-6 pb-3 pr-4" v-if="props.type !== 'display'">
         <ButtonBase type="error" class="!w-32" @click="backToList">Back</ButtonBase>
-        <ButtonBase class="!w-32" @click="createGroup">Save</ButtonBase>
+        <ButtonBase class="!w-32" @click="submitGroup">Save</ButtonBase>
     </div>
 </template>
 
@@ -106,6 +108,8 @@ import { GetPageUseCase } from '@/usecase/page/GetPageUseCase';
 import { finalize } from 'rxjs';
 import { Ref, computed, inject, onMounted, ref } from 'vue';
 import Multiselect from '@vueform/multiselect';
+import { AddGroupReq } from '@/entity/audience/AddGroupReq';
+import { FieldError } from '@/entity/BaseResp';
 
 const props = defineProps({
     type: {
@@ -159,6 +163,10 @@ const selectedPage = ref("");
 const selectedAudience: Ref<string[]> = ref([]);
 const selectedColor = ref("#000000");
 
+const groupNameValidation = ref("");
+const pageValidation = ref("");
+const audienceValidation = ref("");
+
 const emit = defineEmits(["cancel", "success", "error"]);
 
 function onChangePage(pageId: string): void {
@@ -167,27 +175,68 @@ function onChangePage(pageId: string): void {
 }
 
 function createGroup(): void {
-    isLoading.value = true;
-
-    addGroupUseCase.execute({
+    const addGroupReq: AddGroupReq = {
         audience_list: selectedAudience.value,
         group_color_hex: selectedColor.value,
         group_name: groupName.value,
         page_id: selectedPage.value
-    }).subscribe(
-        {
-            next: (baseResp) => {
-                if (baseResp.code === 200) {
-                    emit("success");
-                } else {
-                    emit("error", baseResp);
+    };
+
+    const errorList = addGroupUseCase.validate(addGroupReq);
+
+    if (errorList.length < 1) {
+        isLoading.value = true;
+        
+        addGroupUseCase.execute(addGroupReq).subscribe(
+            {
+                next: (baseResp) => {
+                    if (baseResp.code === 200) {
+                        emit("success");
+                    } else {
+                        emit("error", baseResp);
+                    }
+                }, 
+                error: (e) => {
+                    emit("error", e);
                 }
-            }, 
-            error: (e) => {
-                emit("error", e);
             }
-        }
-    )
+        );
+    } else {
+        validateGroupName(errorList);
+        validatePage(errorList);
+        validateAudience(errorList);
+    }
+}
+
+function validateGroupName(error: FieldError[]): void {
+    const filteredError = error.filter(data => data.field === "group_name");
+    groupNameValidation.value = filteredError.length > 0 ?
+        filteredError[0].message[0] : "";
+}
+
+function validatePage(error: FieldError[]): void {
+    const filteredError = error.filter(data => data.field === "page_id");
+    pageValidation.value = filteredError.length > 0 ?
+        filteredError[0].message[0] : "";
+}
+
+function validateAudience(error: FieldError[]): void {
+    const filteredError = error.filter(data => data.field === "audience_list");
+    audienceValidation.value = filteredError.length > 0 ?
+        filteredError[0].message[0] : "";
+}
+
+function updateGroup(): void {
+    console.log("update");
+    emit("success");
+}
+
+function submitGroup(): void {
+    if (props.type === "create") {
+        createGroup();
+    } else {
+        updateGroup();
+    }
 }
 
 function backToList(): void {
