@@ -53,6 +53,8 @@ import ModalComponent from "@/components/modal/ModalComponent.vue";
 import CreateAccount from "./account/CreateAccount.vue";
 import vueRecaptcha from 'vue3-recaptcha2';
 import { useUserStore } from "@/stores/UserStore";
+import { initFacebook, login, logout } from '@/oauth-fb/FacebookAuth';
+
 
 const isPopupForgotPasswordShown = ref(false);
 const isPopupCreateAccountShown = ref(false);
@@ -86,13 +88,29 @@ function recaptchaError(reason: any): void {
     console.log("e", reason);
 }
 
-function signIn(): void {
+async function signIn(): Promise<void> {
+    // googleAuthCodeLogin().then((response) => {
+    //     console.log("Handle the response", response)
+    //     const userData = decodeCredential(response.code)
+    //     console.log("Handle the userData", userData)
+    // });
     userStore.setName("John Doe");
     userStore.setEmail("johndoe@gmail.com");
     userStore.setRole("Administrator");
     userStore.setPhone("08113276836");
     userStore.setToken("tokenabcdefg");
 
-    router.push('/')
+    const result = await login();
+    if (result) {
+        console.log("api", result);
+    }
+
+    
+
+    // router.push('/')
 }
+
+onMounted(() => {
+    initFacebook("252744180318694")
+})
 </script>
