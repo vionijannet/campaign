@@ -13,7 +13,8 @@ export async function initFacebook(appId: string | undefined): Promise<void> {
     if (!appId) return;
     await Facebook.load();
     return await Facebook.init({
-        appId: appId
+        appId: appId,
+        version: "v19.0"
     });
 }
 
