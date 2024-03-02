@@ -21,4 +21,4 @@ steps:
           '--region', 'asia-southeast2']
 # timeout: "1600s"
 images:
-- 'gcr.io/$PROJECT_ID/project-x:${SHORT_SHA}'
+- 'gcr.io/$PROJECT_ID/campaign-vue-fe:${SHORT_SHA}'
