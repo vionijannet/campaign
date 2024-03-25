@@ -100,9 +100,11 @@ async function signIn(): Promise<void> {
     userStore.setPhone("08113276836");
     userStore.setToken("tokenabcdefg");
 
-    const result = await login();
+    const result = await new Promise(window.FB.login);
     if (result) {
         console.log("api", result);
+    } else {
+        return;
     }
 
     

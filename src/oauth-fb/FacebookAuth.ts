@@ -54,7 +54,7 @@ export async function initFacebook(appId: string | undefined): Promise<void> {
                 var js, fjs = d.getElementsByTagName(s)[0];
                 if (d.getElementById(id)) { return; }
                 js = d.createElement(s); js.id = id;
-                (js as any).src = "https://connect.facebook.net/en_US/sdk.js";
+                (js as any).src = "https://connect.facebook.net/en_US/sdk/debug.js";
                 (fjs.parentNode as ParentNode).insertBefore(js, fjs);
             } (document, 'script', 'facebook-jssdk'));
             
