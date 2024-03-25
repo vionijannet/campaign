@@ -29,7 +29,6 @@ export async function login(): Promise<FaceBookResponse | null> {
     }
     const profile = await Facebook.api(
         `/${response.authResponse.userID}`,
-        'get',
         {
             fields: ['email', 'name', 'picture']
         }
