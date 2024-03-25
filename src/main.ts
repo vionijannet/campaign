@@ -15,7 +15,10 @@ import { initFacebook } from "./oauth-fb/FacebookAuth";
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 
-initFacebook("252744180318694").then(startApp);
+initFacebook("252744180318694").then(() => {
+    console.log("start plis");
+    startApp()
+});
 
 function startApp() {
     const app = createApp(App)

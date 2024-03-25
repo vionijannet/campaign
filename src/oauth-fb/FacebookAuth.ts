@@ -35,6 +35,8 @@ export async function initFacebook(appId: string | undefined): Promise<void> {
                 cookie: true,
                 xfbml: true,
             });
+
+            console.log("ini r berarti");
         })
         console.log("q");
 
