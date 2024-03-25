@@ -15,14 +15,14 @@ import { initFacebook } from "./oauth-fb/FacebookAuth";
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 
-initFacebook("252744180318694").then(() => {
-    console.log("start plis");
-    startApp()
-}).catch(e => {
-    console.log("babi lupa tak cek yang ini", e);
-}).finally(startApp);
+// initFacebook("252744180318694").then(() => {
+//     console.log("start plis");
+//     startApp()
+// }).catch(e => {
+//     console.log("babi lupa tak cek yang ini", e);
+// }).finally(startApp);
 
-function startApp() {
+// function startApp() {
     const app = createApp(App)
     
     app.use(pinia)
@@ -31,4 +31,4 @@ function startApp() {
     app.use(VueSweetalert2)
     
     app.mount("#app")
-}
+// }

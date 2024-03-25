@@ -30,12 +30,14 @@ import { GetGroupUseCase, GetGroupUseCaseImpl } from './usecase/audience/GetGrou
 import { GetPageDetailUseCase, GetPageDetailUseCaseImpl } from './usecase/page/GetPageDetailUseCase';
 import { AddGroupUseCase, AddGroupUseCaseImpl } from './usecase/audience/AddGroupUseCase';
 import { DeleteGroupUseCase, DeleteGroupUseCaseImpl } from './usecase/audience/DeleteGroupUseCase';
+import { initFacebook } from './oauth-fb/FacebookAuth';
 
-const axiosInstance: AxiosInstance = axios.create({
-    
+const axiosInstance: AxiosInstance = axios.create({    
     baseURL: "http://127.0.0.1:8080",
     timeout: 5000
 });
+
+initFacebook("252744180318694");
 
 const templateService: TemplateService = new TemplateServiceImpl(axiosInstance);
 const getTemplate: GetTemplateUseCase = new GetTemplateUseCaseImpl(templateService);
