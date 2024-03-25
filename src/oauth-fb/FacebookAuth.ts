@@ -34,7 +34,7 @@ export async function initFacebook(appId: string | undefined): Promise<void> {
                 appId: appId,
                 cookie: true,
                 xfbml: true,
-                version: 'v8.0'
+                version: "v19.0",
             });
         };
 
