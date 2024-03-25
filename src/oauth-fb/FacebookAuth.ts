@@ -8,6 +8,7 @@ export interface FaceBookResponse {
 declare global {
     interface Window {
         fbAsyncInit: any;
+        FB: any;
     }
 }
 
@@ -27,14 +28,24 @@ export async function initFacebook(appId: string | undefined): Promise<void> {
         // });
 
         console.log("p");
-        // wait for facebook sdk to initialize before starting the vue app
-        Facebook.load().then(() => {
-            Facebook.init({
+        window.fbAsyncInit = function () {
+            const FB = window.FB;
+            FB.init({
                 appId: appId,
-                version: "v19.0",
                 cookie: true,
                 xfbml: true,
+                version: 'v8.0'
             });
+        };
+
+        // // wait for facebook sdk to initialize before starting the vue app
+        // Facebook.load().then(() => {
+        //     Facebook.init({
+        //         appId: appId,
+        //         version: "v19.0",
+        //         cookie: true,
+        //         xfbml: true,
+        //     });
 
             console.log("ini r berarti");
 
@@ -47,9 +58,9 @@ export async function initFacebook(appId: string | undefined): Promise<void> {
                 (fjs.parentNode as ParentNode).insertBefore(js, fjs);
             } (document, 'script', 'facebook-jssdk'));
             
-            console.log("s");
-        })
-        console.log("q");
+        //     console.log("s");
+        // })
+        // console.log("q");
     })
 }
 
