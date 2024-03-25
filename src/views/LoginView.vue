@@ -53,7 +53,7 @@ import ModalComponent from "@/components/modal/ModalComponent.vue";
 import CreateAccount from "./account/CreateAccount.vue";
 import vueRecaptcha from 'vue3-recaptcha2';
 import { useUserStore } from "@/stores/UserStore";
-import { initFacebook, login, logout } from '@/oauth-fb/FacebookAuth';
+import { login } from '@/oauth-fb/FacebookAuth';
 
 
 const isPopupForgotPasswordShown = ref(false);
@@ -109,8 +109,4 @@ async function signIn(): Promise<void> {
 
     // router.push('/')
 }
-
-onMounted(() => {
-    initFacebook("252744180318694")
-})
 </script>
