@@ -24,15 +24,19 @@ export async function login(): Promise<FaceBookResponse | null> {
         return_scopes: true
     });
 
+    console.log("1", response);
+
     if (response.status !== 'connected') {
         return null;
     }
     const profile = await Facebook.api(
         `/${response.authResponse.userID}`,
+        "post",
         {
             fields: ['email', 'name', 'picture']
         }
     );
+    console.log("2", profile);
     const facebookResponse: FaceBookResponse = {
         name: profile.name,
         email: profile.email,
