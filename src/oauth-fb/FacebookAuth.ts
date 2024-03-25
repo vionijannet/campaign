@@ -26,15 +26,16 @@ export async function initFacebook(appId: string | undefined): Promise<void> {
         //     xfbml: true,
         // });
 
+        console.log("p");
         // wait for facebook sdk to initialize before starting the vue app
-        window.fbAsyncInit = function () {
-            Facebook.init({
-                appId: appId,
-                version: "v19.0",
-                cookie: true,
-                xfbml: true,
-            });
-        };
+        Facebook.load();
+        Facebook.init({
+            appId: appId,
+            version: "v19.0",
+            cookie: true,
+            xfbml: true,
+        });
+        console.log("q");
 
         // load facebook sdk script
         (function (d, s, id) {
