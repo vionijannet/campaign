@@ -18,7 +18,9 @@ pinia.use(piniaPluginPersistedstate);
 initFacebook("252744180318694").then(() => {
     console.log("start plis");
     startApp()
-});
+}).catch(e => {
+    console.log("babi lupa tak cek yang ini", e);
+}).finally(startApp);
 
 function startApp() {
     const app = createApp(App)
