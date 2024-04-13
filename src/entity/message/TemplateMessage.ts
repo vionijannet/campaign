@@ -9,7 +9,7 @@ export interface TemplateMessage {
 export interface Message {
     message_id: string;
     message_order: string;
-    message_type: "Greeting" | "Message";
+    message_type: "Greeting" | "Message" | "Attachment";
     message: string;
     flag_delete: boolean;
 }
@@ -17,5 +17,6 @@ export interface Message {
 export interface MessageAttachment {
     message_attachment?: File;
     filename: string;
+    url: string;
     checksum?: string;
 }

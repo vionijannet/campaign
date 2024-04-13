@@ -5,6 +5,6 @@ export interface CreateTemplateReq {
 
 export interface NewMessage {
     message: string;
-    message_type: string;
+    message_type: "Greeting" | "Message" | "Attachment";
     message_order: string;
 }

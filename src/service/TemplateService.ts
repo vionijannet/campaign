@@ -89,9 +89,7 @@ export class TemplateServiceImpl extends BaseService implements TemplateService 
         const attachment = new FormData();
         attachment.append("file", file);
 
-        return this.httpPost("/message/attachment", attachment, {
-            responseType: "blob",
-        })
+        return this.httpPost("/message/attachment", attachment)
             .pipe(
                 map((response) => JSON.parse(JSON.stringify(response.data as string)))
             )

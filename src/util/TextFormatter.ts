@@ -33,6 +33,22 @@ export class TextFormatter {
     public static isTextNumberOnly(text: string): boolean {
         return /^\d+$/.test(text);
     }
+
+    public static isFileTypeImage(file: File): boolean {
+        let validator = new FileValidator();
+        return validator.isImage(file);
+    }
+}
+
+class FileValidator {
+    isImage(file: File): boolean {
+        const imageTypeList = [
+            "image/png",
+            "image/jpeg",
+        ];
+
+        return imageTypeList.includes(file.type);
+    }
 }
 
 class FileChecksumGenerator {

@@ -22,7 +22,7 @@
                 </div>
             </template>
             <template #action="{slotProps}">
-                <div class="flex items-center space-x-4" v-if="slotProps.is_deleted !== null && slotProps.is_deleted === false">
+                <div class="flex items-center space-x-4" v-if="slotProps.is_deleted === null || slotProps.is_deleted === false">
                     <img src="../../assets/preview.svg" title="Preview" alt="Preview" class="cursor-pointer" @click="previewMessage(slotProps.template_id)" />
                     <img src="../../assets/update.svg" title="Update" alt="Update" class="cursor-pointer" @click="redirectToUpdate(slotProps.template_id)" />
                     <img src="../../assets/trash.svg" title="Delete" alt="Delete" class="cursor-pointer" @click="deleteTemplate(slotProps.template_id)" />
