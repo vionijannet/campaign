@@ -12,11 +12,11 @@ export class BaseService {
     private initializeHttpHeader(): void {
         this.axiosInstance.interceptors.request.use(
             (config) => {
-                // config.headers.setContentType("application/json");
-                // config.headers.setAuthorization("");
-                // config.headers["Authorization"] = "";
-                // config.headers["Username"] = "user_one";
-                // config.headers["Password"] = "6e824d43504ae0934548679a50ec8123";
+                if (config.headers) {
+                    config.headers["Authorization"] = "";
+                    config.headers["Username"] = "user_one";
+                    config.headers["Password"] = "6e824d43504ae0934548679a50ec8123";
+                }
 
                 return config;
             }, (error) => {

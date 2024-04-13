@@ -253,7 +253,8 @@ function updateTemplate(): void {
                     message_type: v.message_type,
                     flag_delete: v.flag_delete ?? false,
                 }
-            })
+            }),
+        filename: "",
     };
 
     const errorList = updateTemplateUseCase.validate(updateReq);

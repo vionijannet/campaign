@@ -216,7 +216,8 @@ function createTemplate(): void {
                 message_type: v.message_type
             }
         }),
-        template_name: templateName.value
+        template_name: templateName.value,
+        filename: "",
     };
 
     const errorList = createTemplateUseCase.validate(createReq);
