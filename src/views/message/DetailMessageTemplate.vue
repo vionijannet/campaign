@@ -31,6 +31,28 @@
                 </div>
             </div>
         </div>
+
+        <div class="w-full" v-if="attachmentList.length > 0">
+            <p>Attachment</p>
+            <div class="w-full pt-2">
+                <div class=" border rounded-2xl p-4 bg-gray-100">
+                    <div class="border flex items-center bg-white rounded-lg">
+                        <div class="p-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
+                            </svg>
+                        </div>
+                        <div class="flex items-center w-full h-full pl-4 border-l">
+                            <div class="flex-col w-full">
+                                <p class="truncate max-w-[calc(100%-3.5rem)] hover:underline hover:text-blue-darkest cursor-pointer" @click="openImage(attachmentList[0].message)">
+                                    {{ attachmentList[0].message }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -52,6 +74,7 @@ const emit = defineEmits(["close"])
 const asyncSubscription: Subscription = new Subscription();
 const getDetailTemplateUseCase: GetDetailTemplateUseCase = inject("getDetailTemplateUseCase")!;
 
+const attachmentList: Ref<Message[]> = ref([]);
 const indexActiveMessage = ref(0);
 const messageList: Ref<Message[]> = ref([]);
 const indexActiveGreeting = ref(0);
@@ -60,6 +83,11 @@ const greetingList: Ref<Message[]> = ref([]);
 onMounted(() => {
     loadDetailTemplate();
 })
+
+function openImage(filename: string): void {
+    const url = "https://repliemgallery.xyz/images/" + filename;
+    window.open(url, "_blank");
+}
 
 function loadDetailTemplate(): void {
     asyncSubscription.add(
@@ -84,6 +112,8 @@ function loadDetailTemplate(): void {
                                 else if (a.message_order > b.message_order) return 1;
                                 else return 0;
                             });
+
+                        attachmentList.value = list.filter(m => m.message_type === "Attachment");
                     } else {
                         const message = templateResp.result?.message ?? templateResp.message;
                         NotificationManager.showMessage("Failed to Load Data", message, "error");
