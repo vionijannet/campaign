@@ -9,6 +9,7 @@ import { CreateTemplateReq } from "@/entity/message/CreateTemplateReq";
 import { BaseResp } from "@/entity/BaseResp";
 import { UpdateTemplateReq } from "@/entity/message/UpdateTemplateReq";
 import { TextFormatter } from "@/util/TextFormatter";
+import { UploadAttachmentResp } from "@/entity/message/UploadAttachmentResp";
 
 export interface TemplateService {
     getTemplate(template: GetTemplateReq): Observable<GetTemplateResp>;
@@ -16,6 +17,7 @@ export interface TemplateService {
     createTemplate(template: CreateTemplateReq): Observable<BaseResp>;
     updateTemplate(template: UpdateTemplateReq): Observable<BaseResp>;
     deleteTemplate(template: GetDetailTemplateReq): Observable<BaseResp>;
+    uploadAttachment(file: File): Observable<UploadAttachmentResp>;
 }
 
 export class TemplateServiceImpl extends BaseService implements TemplateService {
@@ -78,6 +80,18 @@ export class TemplateServiceImpl extends BaseService implements TemplateService 
 
     deleteTemplate(template: GetDetailTemplateReq): Observable<BaseResp> {
         return this.httpDelete(`${this.API_ENDPOINT}/${template.template_id}`)
+            .pipe(
+                map((response) => JSON.parse(JSON.stringify(response.data as string)))
+            )
+    }
+
+    uploadAttachment(file: File): Observable<UploadAttachmentResp> {
+        const attachment = new FormData();
+        attachment.append("file", file);
+
+        return this.httpPost("/message/attachment", attachment, {
+            responseType: "blob",
+        })
             .pipe(
                 map((response) => JSON.parse(JSON.stringify(response.data as string)))
             )

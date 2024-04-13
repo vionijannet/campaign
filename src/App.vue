@@ -30,6 +30,7 @@ import { GetGroupUseCase, GetGroupUseCaseImpl } from './usecase/audience/GetGrou
 import { GetPageDetailUseCase, GetPageDetailUseCaseImpl } from './usecase/page/GetPageDetailUseCase';
 import { AddGroupUseCase, AddGroupUseCaseImpl } from './usecase/audience/AddGroupUseCase';
 import { DeleteGroupUseCase, DeleteGroupUseCaseImpl } from './usecase/audience/DeleteGroupUseCase';
+import { UploadAttachmentUseCase, UploadAttachmentUseCaseImpl } from './usecase/template/UploadAttachmentUseCase';
 import { initFacebook } from './oauth-fb/FacebookAuth';
 
 const axiosInstance: AxiosInstance = axios.create({    
@@ -50,6 +51,8 @@ const updateTemplate: UpdateTemplateUseCase = new UpdateTemplateUseCaseImpl(temp
 provide("updateTemplateUseCase", updateTemplate);
 const deleteTemplate: DeleteTemplateUseCase = new DeleteTemplateUseCaseImpl(templateService);
 provide("deleteTemplateUseCase", deleteTemplate);
+const uploadAttachment: UploadAttachmentUseCase = new UploadAttachmentUseCaseImpl(templateService);
+provide("uploadAttachmentUseCase", uploadAttachment);
 
 const campaignService: CampaignService = new CampaignServiceImpl(axiosInstance);
 const getCampaign: GetCampaignUseCase = new GetCampaignUseCaseImpl(campaignService);

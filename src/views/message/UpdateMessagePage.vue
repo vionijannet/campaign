@@ -254,7 +254,6 @@ function updateTemplate(): void {
                     flag_delete: v.flag_delete ?? false,
                 }
             }),
-        filename: "",
     };
 
     const errorList = updateTemplateUseCase.validate(updateReq);

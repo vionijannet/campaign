@@ -3,7 +3,6 @@ import { GetDetailTemplateReq } from "./GetDetailTemplateReq";
 export interface UpdateTemplateReq extends GetDetailTemplateReq {
     template_name: string;
     message_list: UpdatedMessage[];
-    filename: string;
 }
 
 export interface UpdatedMessage {

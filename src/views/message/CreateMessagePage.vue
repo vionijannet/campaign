@@ -49,14 +49,14 @@
         <div class="w-full" id="upload-attachment">
             <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
                 <div class="flex-col">
-                    <p class="font-medium">Upload PDF</p>
+                    <p class="font-medium">Upload Image</p>
                     <p class="font-light text-sm text-gray-700">You can only upload one file</p>
                 </div>
                 <div>
                     <label v-if="attachmentList.length < 1" for="upload-file" class="flex items-center cursor-pointer border bg-white hover:bg-gray-100 border-blue-primary text-blue-primary p-2 px-4 rounded-lg font-semibold">
-                        Browse PDF
+                        Browse Image
                     </label>
-                    <input @change="uploadFile($event)" type="file" name="image" id="upload-file" class="hidden" accept="application/pdf" ref="upload">
+                    <input @change="uploadFile($event)" type="file" name="image" id="upload-file" class="hidden" accept="png, jpeg" ref="upload">
                 </div>
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
@@ -66,7 +66,7 @@
                         <span class="text-stone-500">Select File to Upload</span>
                     </label>
                 </div>
-                <div v-else class="grid lg:grid-cols-2 xl:grid-cols-4 gap-4">
+                <div v-else class="grid gap-4">
                     <div class="border flex items-center bg-white rounded-lg" v-for="(attachment, index) in attachmentList" :key="index">
                         <div class="p-4">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -169,12 +169,14 @@ function addGreeting(): void {
 function uploadFile(event: Event): void {
     const fileList = (event.target as HTMLInputElement).files;
     if (fileList) {
+        const imageList = [
+            "image/png",
+            "image/jpeg"
+        ];
+
         for (let i = 0; i < fileList.length; i++) {
             // Validate type
-            if ("application/pdf" !== fileList[i].type.trim()) {
-                NotificationManager.showMessage("Failed to Upload PDF", "Invalid file type", "error");
-                (upload.value as HTMLFormElement).value = null;
-            } else {
+            if (imageList.includes(fileList[i].type.trim())) {
                 TextFormatter.generateFileChecksum(fileList[0])
                     .pipe(
                         finalize(() => (upload.value as HTMLFormElement).value = null)
@@ -189,9 +191,12 @@ function uploadFile(event: Event): void {
                             });
                         },
                         error: (e) => {
-                            NotificationManager.showMessage("Failed to Upload PDF", e, "error");
+                            NotificationManager.showMessage("Failed to Upload Image", e, "error");
                         }
                     });
+            } else {
+                NotificationManager.showMessage("Failed to Upload Image", "Invalid file type", "error");
+                (upload.value as HTMLFormElement).value = null;
             }
         }
     }
@@ -217,7 +222,6 @@ function createTemplate(): void {
             }
         }),
         template_name: templateName.value,
-        filename: "",
     };
 
     const errorList = createTemplateUseCase.validate(createReq);
