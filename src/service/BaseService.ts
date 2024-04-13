@@ -14,7 +14,7 @@ export class BaseService {
             (config) => {
                 if (config.headers) {
                     config.headers["Authorization"] = "";
-                    config.headers["Username"] = "user_one";
+                    config.headers["Username"] = "user_admin";
                     config.headers["Password"] = "6e824d43504ae0934548679a50ec8123";
                 }
 

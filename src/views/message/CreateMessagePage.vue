@@ -180,7 +180,6 @@ function uploadFile(event: Event): void {
                 // Get url
                 uploadAttachmentUseCase.execute(fileList[0]).subscribe({
                     next: (resp) => {
-                        console.log("h3h3", resp);
                         if (resp.code === 200) {
                             // Add to message list
                             attachment.value = {

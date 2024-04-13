@@ -47,23 +47,23 @@
         <div class="w-full" id="upload-attachment">
             <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
                 <div class="flex-col">
-                    <p class="font-medium">Upload PDF</p>
+                    <p class="font-medium">Upload Image</p>
                     <p class="font-light text-sm text-gray-700">You can only upload one file</p>
                 </div>
                 <div>
-                    <label v-if="attachmentList.length < 1" for="upload-file" class="flex items-center cursor-pointer border bg-white hover:bg-gray-100 border-blue-primary text-blue-primary p-2 px-4 rounded-lg font-semibold">Browse PDF</label>
-                    <input @change="uploadFile($event)" type="file" name="image" id="upload-file" class="hidden" ref="upload" accept="application/pdf">
+                    <label v-if="attachment.filename.length < 1" for="upload-file" class="flex items-center cursor-pointer border bg-white hover:bg-gray-100 border-blue-primary text-blue-primary p-2 px-4 rounded-lg font-semibold">Browse Image</label>
+                    <input @change="uploadFile($event)" type="file" name="image" id="upload-file" class="hidden" ref="upload" accept="png, jpeg">
                 </div>
             </div>
             <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
-                <div v-if="attachmentList.length < 1">
+                <div v-if="attachment.filename.length < 1">
                     <label for="upload-file" class="flex text-center items-center flex-col space-y-4 p-8">
                         <img src="@/assets/upload.svg" alt="Upload">
                         <p class="text-stone-500">Select File to Upload</p>
                     </label>
                 </div>
                 <div v-else class="grid lg:grid-cols-2 xl:grid-cols-4 gap-4">
-                    <div class="border flex items-center bg-white rounded-lg" v-for="(attachment, index) in attachmentList" :key="index">
+                    <div class="border flex items-center bg-white rounded-lg">
                         <div class="p-4">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
@@ -74,7 +74,7 @@
                                 <p class="truncate max-w-[calc(100%-3.5rem)]">
                                     {{ attachment.filename }}
                                 </p>
-                                <p class="text-xs text-red-500 cursor-pointer hover:underline" @click="removeAttachment(index)">
+                                <p class="text-xs text-red-500 cursor-pointer hover:underline" @click="removeAttachment()">
                                     Remove
                                 </p>
                             </div>
@@ -104,6 +104,7 @@ import { UpdateTemplateReq } from '@/entity/message/UpdateTemplateReq';
 import router from '@/router';
 import { GetDetailTemplateUseCase } from '@/usecase/template/GetDetailTemplateUseCase';
 import { UpdateTemplateUseCase } from '@/usecase/template/UpdateTemplateUseCase';
+import { UploadAttachmentUseCase } from '@/usecase/template/UploadAttachmentUseCase';
 import { NotificationManager } from '@/util/NotificationManager';
 import { TextFormatter } from '@/util/TextFormatter';
 import { finalize } from 'rxjs';
@@ -118,7 +119,9 @@ const upload: Ref<HTMLFormElement | null> = ref(null);
 
 const updateTemplateUseCase: UpdateTemplateUseCase = inject("updateTemplateUseCase")!;
 const getDetailTemplateUseCase: GetDetailTemplateUseCase = inject("getDetailTemplateUseCase")!;
+const uploadAttachmentUseCase: UploadAttachmentUseCase = inject("uploadAttachmentUseCase")!;
 
+const attachmentList: Ref<Message[]> = ref([]);
 const indexActiveMessage = ref(0);
 const messageList: Ref<Message[]> = ref([{
     flag_delete: false,
@@ -148,7 +151,20 @@ const filteredGreetingList = computed(() => {
     }).filter(data => data.flag_delete === false);
 });
 
-const attachmentList: Ref<MessageAttachment[]> = ref([]);
+const attachment: Ref<MessageAttachment> = computed(() => {
+    if (attachmentList.value.filter(data => data.flag_delete === false).length < 1) {
+        return {
+            filename: "",
+            url: "",
+        };
+    } else {
+        const index = attachmentList.value.findIndex(data => data.flag_delete === false);
+        return {
+            filename: attachmentList.value[index].message,
+            url: attachmentList.value[index].message,
+        }
+    }
+})
 
 function backToList(): void {
     router.push("/message");
@@ -177,36 +193,40 @@ function addGreeting(): void {
 function uploadFile(event: Event): void {
     const fileList = (event.target as HTMLInputElement).files;
     if (fileList) {
-        for (let i = 0; i < fileList.length; i++) {
+        if (fileList.length > 0) {
             // Validate type
-            if ("application/pdf" !== fileList[i].type.trim()) {
-                NotificationManager.showMessage("Failed to Upload PDF", "Invalid file type", "error");
-                (upload.value as HTMLFormElement).value = null;
-            } else {
-                TextFormatter.generateFileChecksum(fileList[0])
-                    .pipe(
-                        finalize(() => (upload.value as HTMLFormElement).value = null)
-                    )
-                    .subscribe({
-                        next: (checksum) => {
-                            attachmentList.value = [];
+            if (TextFormatter.isFileTypeImage(fileList[0])) {
+                // Get url
+                uploadAttachmentUseCase.execute(fileList[0]).subscribe({
+                    next: (resp) => {
+                        if (resp.code === 200) {
+                            // Add to message list
                             attachmentList.value.push({
-                                filename: fileList[i].name,
-                                checksum,
-                                message_attachment: fileList[i]
+                                message: resp.result.data.filename,
+                                flag_delete: false,
+                                message_id: "",
+                                message_order: "1",
+                                message_type: "Attachment"
                             });
-                        },
-                        error: (e) => {
-                            NotificationManager.showMessage("Failed to Upload PDF", e, "error");
+                        } else {
+                            const error = resp.result.message ?? resp.message;
+                            NotificationManager.showMessage("Failed to Upload Image", error, "error");
                         }
-                    });
+                    },
+                    error: (e) => {
+                        NotificationManager.showMessage("Failed to Upload Image", e, "error");
+                    }
+                })
+            } else {
+                NotificationManager.showMessage("Failed to Upload Image", "Invalid file type", "error");
+                (upload.value as HTMLFormElement).value = null;
             }
         }
     }
 }
 
-function removeAttachment(index: number): void {
-    attachmentList.value.splice(index, 1);
+function removeAttachment(): void {
+    attachmentList.value.map(v => v.flag_delete = true);
 }
 
 function setTemplateName(name: string): void {
@@ -228,6 +248,11 @@ function loadData(): void {
                     const list = templateResp.result.data.message_list ?? [];
                     messageList.value = list.filter(h => h.message_type === "Message");
                     greetingList.value = list.filter(h => h.message_type === "Greeting");
+                    attachmentList.value = list.filter(h => h.message_type === "Attachment")
+                        .map(h => {
+                            h.flag_delete = false;
+                            return h;
+                        });
                 } else {
                     const message = templateResp.result?.message ?? templateResp.message;
                     NotificationManager.showMessage("Failed to Load Data", message, "error");
@@ -245,6 +270,7 @@ function updateTemplate(): void {
         template_id: templateId,
         template_name: templateName.value,
         message_list: messageList.value.concat(greetingList.value)
+            .concat(attachmentList.value)
             .map(v => {
                 return {
                     message_id: v.message_id,
@@ -253,7 +279,7 @@ function updateTemplate(): void {
                     message_type: v.message_type,
                     flag_delete: v.flag_delete ?? false,
                 }
-            }),
+            })
     };
 
     const errorList = updateTemplateUseCase.validate(updateReq);
