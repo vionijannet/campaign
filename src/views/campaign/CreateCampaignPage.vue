@@ -107,16 +107,104 @@
             <div v-if="!isMessageTemplateSelected">
                 <div class="w-full border rounded-lg p-4 my-2 space-y-2">
                     <InputDropdown :placeholder="'Select message type'" :selected="createCampaignReq.message_list[0].message_type"
-                        :id="'type-0'" @change="createCampaignReq.message_list[0].message_type = $event.key" :option-list="messageTypeList">
+                        :id="'type-0'" @change="onChangeMessageType(0, $event.key)" :option-list="getMessageTypeList(0)">
                     </InputDropdown>
-                    <textarea rows="5" class="w-full outline-none border rounded-lg p-4" placeholder="Type your message" v-model="createCampaignReq.message_list[0].message"></textarea>
+                    <textarea v-if="createCampaignReq.message_list[0].message_type !== 'Attachment'" rows="5" class="w-full outline-none border rounded-lg p-4"
+                        placeholder="Type your message" v-model="createCampaignReq.message_list[0].message">
+                    </textarea>
+                    <div class="w-full" id="upload-attachment" v-else>
+                        <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
+                            <div class="flex-col">
+                                <p class="font-medium">Upload Image</p>
+                                <p class="font-light text-sm text-gray-700">You can only upload one file</p>
+                            </div>
+                            <div>
+                                <label v-if="createCampaignReq.message_list[0].message.length < 1" for="upload-file"
+                                    class="flex items-center cursor-pointer border bg-white hover:bg-gray-100 border-blue-primary text-blue-primary p-2 px-4 rounded-lg font-semibold">
+                                    Browse Image
+                                </label>
+                                <input @change="uploadFile($event, 0)" type="file" name="image" id="upload-file" class="hidden" accept="png, jpeg" ref="upload">
+                            </div>
+                        </div>
+                        <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
+                            <div v-if="createCampaignReq.message_list[0].message.length < 1">
+                                <label for="upload-file" class="flex text-center items-center flex-col space-y-4 p-8">
+                                    <img src="@/assets/upload.svg" alt="Upload">
+                                    <span class="text-stone-500">Select File to Upload</span>
+                                </label>
+                            </div>
+                            <div v-else class="grid gap-4">
+                                <div class="border flex items-center bg-white rounded-lg">
+                                    <div class="p-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
+                                        </svg>
+                                    </div>
+                                    <div class="flex items-center w-full h-full pl-4 border-l">
+                                        <div class="flex-col w-full">
+                                            <p class="truncate max-w-[calc(100%-3.5rem)]">
+                                                {{ createCampaignReq.message_list[0].message }}
+                                            </p>
+                                            <p class="text-xs text-red-500 cursor-pointer hover:underline" @click="removeAttachment(0)">
+                                                Remove
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="w-full border rounded-lg p-4 my-2 flex items-start space-x-2" v-for="m, i in createCampaignReq.message_list.filter((_v, i) => i > 0)">
                     <div class="w-full space-y-1">
                         <InputDropdown :placeholder="'Select message type'" :selected="createCampaignReq.message_list[i+1].message_type"
-                            :id="`type-${i+1}`" @change="createCampaignReq.message_list[i+1].message_type = $event.key" :option-list="messageTypeList"> 
+                            :id="`type-${i+1}`" @change="onChangeMessageType(i+1, $event.key)" :option-list="getMessageTypeList(i+1)">
                         </InputDropdown>
-                        <textarea rows="5" class="w-full outline-none border rounded-lg p-4" placeholder="Type your message" v-model="createCampaignReq.message_list[i+1].message"></textarea>
+                    <textarea v-if="createCampaignReq.message_list[i+1].message_type !== 'Attachment'" rows="5" class="w-full outline-none border rounded-lg p-4"
+                        placeholder="Type your message" v-model="createCampaignReq.message_list[i+1].message">
+                    </textarea>
+                    <div class="w-full" id="upload-attachment" v-else>
+                        <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
+                            <div class="flex-col">
+                                <p class="font-medium">Upload Image</p>
+                                <p class="font-light text-sm text-gray-700">You can only upload one file</p>
+                            </div>
+                            <div>
+                                <label v-if="createCampaignReq.message_list[i+1].message.length < 1" for="upload-file"
+                                    class="flex items-center cursor-pointer border bg-white hover:bg-gray-100 border-blue-primary text-blue-primary p-2 px-4 rounded-lg font-semibold">
+                                    Browse Image
+                                </label>
+                                <input @change="uploadFile($event, i+1)" type="file" name="image" id="upload-file" class="hidden" accept="png, jpeg" ref="upload">
+                            </div>
+                        </div>
+                        <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
+                            <div v-if="createCampaignReq.message_list[i+1].message.length < 1">
+                                <label for="upload-file" class="flex text-center items-center flex-col space-y-4 p-8">
+                                    <img src="@/assets/upload.svg" alt="Upload">
+                                    <span class="text-stone-500">Select File to Upload</span>
+                                </label>
+                            </div>
+                            <div v-else class="grid gap-4">
+                                <div class="border flex items-center bg-white rounded-lg">
+                                    <div class="p-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
+                                        </svg>
+                                    </div>
+                                    <div class="flex items-center w-full h-full pl-4 border-l">
+                                        <div class="flex-col w-full">
+                                            <p class="truncate max-w-[calc(100%-3.5rem)]">
+                                                {{ createCampaignReq.message_list[i+1].message }}
+                                            </p>
+                                            <p class="text-xs text-red-500 cursor-pointer hover:underline" @click="removeAttachment(i+1)">
+                                                Remove
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     </div>
                     <button class="flex-1 pt-3" @click="removeMessage(i+1)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#d93517" class="w-6 h-6">
@@ -171,8 +259,11 @@ import { CreateCampaignUseCase } from '@/usecase/campaign/CreateCampaignUseCase'
 import { finalize } from 'rxjs';
 import { NotificationManager } from '@/util/NotificationManager';
 import { FieldError } from '@/entity/BaseResp';
+import { UploadAttachmentUseCase } from '@/usecase/template/UploadAttachmentUseCase';
+import { TextFormatter } from '@/util/TextFormatter';
 
 const createCampaignUseCase: CreateCampaignUseCase = inject("createCampaignUseCase")!;
+const uploadAttachmentUseCase: UploadAttachmentUseCase = inject("uploadAttachmentUseCase")!;
 
 const isPopupAudiensOpen = ref(false);
 const isPopupTemplateOpen = ref(false);
@@ -199,6 +290,10 @@ const messageTypeList: OptionEntity[] = [
         key: "Greeting",
         value: "Greeting",
     },
+    {
+        key: "Attachment",
+        value: "Attachment",
+    },
 ]
 
 const page: Ref<Page> = ref({
@@ -209,6 +304,7 @@ const page: Ref<Page> = ref({
 });
 const templateName = ref("");
 
+const upload: Ref<HTMLFormElement | null> = ref(null);
 const createCampaignReq: Ref<CreateCampaignReq> = ref({
     page_id: "",
     campaign_name: "",
@@ -232,10 +328,19 @@ function backToList(): void {
     router.push("/campaign");
 }
 
+function getMessageTypeList(index: number): OptionEntity[] {
+    if (createCampaignReq.value.message_list.findIndex(data => data.message_type === "Attachment") > -1 &&
+        createCampaignReq.value.message_list[index].message_type !== "Attachment") {
+        return [messageTypeList[0], messageTypeList[1]];
+    }
+
+    return messageTypeList;
+}
+
 function addMessage(): void {
     createCampaignReq.value.message_list.push({
         message: "",
-        message_type: "",
+        message_type: "Message",
         message_order: (createCampaignReq.value.message_list.length + 1).toString(),
     });
 }
@@ -318,7 +423,12 @@ function setMessageOrder(): void {
         .map((data, index) => {
             return { ...data, message_order: (index+1).toString() }
         });
-    createCampaignReq.value.message_list = messageList.concat(greetingList);
+    const attachmentList = createCampaignReq.value.message_list.filter(data => data.message_type === "Attachment")
+        .map((data) => {
+            return { ...data, message_order: "1" }
+        });
+    createCampaignReq.value.message_list = messageList.concat(greetingList)
+        .concat(attachmentList);
 }
 
 function setCampaignName(name: string): void {
@@ -386,6 +496,44 @@ function validateTemplate(error: FieldError[]): void {
     const filteredError = error.filter(data => data.field === "template_id");
     templateValidation.value = filteredError.length > 0 ?
         filteredError[0].message[0] : "";
+}
+
+function onChangeMessageType(index: number, data: "Greeting" | "Message" | "Attachment"): void {
+    createCampaignReq.value.message_list[index].message_type = data;
+    createCampaignReq.value.message_list[index].message = "";
+}
+
+function uploadFile(event: Event, index: number): void {
+    const fileList = (event.target as HTMLInputElement).files;
+    if (fileList) {
+        if (fileList.length > 0) {
+            // Validate type
+            if (TextFormatter.isFileTypeImage(fileList[0])) {
+                // Get url
+                uploadAttachmentUseCase.execute(fileList[0]).subscribe({
+                    next: (resp) => {
+                        if (resp.code === 200) {
+                            // Add to message list
+                            createCampaignReq.value.message_list[index].message = resp.result.data.filename;
+                        } else {
+                            const error = resp.result.message ?? resp.message;
+                            NotificationManager.showMessage("Failed to Upload Image", error, "error");
+                        }
+                    },
+                    error: (e) => {
+                        NotificationManager.showMessage("Failed to Upload Image", e, "error");
+                    }
+                })
+            } else {
+                NotificationManager.showMessage("Failed to Upload Image", "Invalid file type", "error");
+                (upload.value as HTMLFormElement).value = null;
+            }
+        }
+    }
+}
+
+function removeAttachment(index: number): void {
+    createCampaignReq.value.message_list[index].message = "";
 }
 </script>
 
