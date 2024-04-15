@@ -150,7 +150,6 @@ function onLeaveShowOption(): void {
 }
 
 onMounted(() => {
-    console.log("t", token.value);
     if (token.value.trim().length < 1) {
         signOut();
     }

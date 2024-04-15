@@ -107,8 +107,6 @@ async function signIn(): Promise<void> {
         return;
     }
 
-    
-
-    // router.push('/')
+    router.push('/')
 }
 </script>
