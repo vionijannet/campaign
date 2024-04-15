@@ -8,7 +8,7 @@
                 <img src="@/assets/logo.png" alt="RepliEm" class="mx-auto w-10">
                 <h1 class="font-extrabold text-4xl text-center">Welcome to RepliEm</h1>
 
-                <div class="py-8 space-y-4 !pb-2">
+                <!-- <div class="py-8 space-y-4 !pb-2">
                     <InputText label-for="email" label-text="Email Address" placeholder="example@mail.com" />
                     <div>
                         <InputText label-for="password" label-text="Password" placeholder="********" />
@@ -22,10 +22,10 @@
                     <vue-recaptcha :sitekey="siteKey" :class="isRecaptchaError ? 'border border-red-500' : ''" class="mx-auto w-[304px] h-[78px]"
                         @verify="recaptchaVerified" @expire="recaptchaExpired" @fail="recaptchaFailed" @error="recaptchaError" ref="recaptcha">
                     </vue-recaptcha>
-                </div>
+                </div> -->
 
-                <div>
-                    <ButtonBase @click="signIn">Sign In</ButtonBase>
+                <div class="py-8 space-y-1">
+                    <ButtonBase @click="signIn">Sign In Using Facebook</ButtonBase>
                     <p class="text-xs text-right py-1 text-neutral-500">Not on RepliEm yet?
                         <b class="underline cursor-pointer" @click="isPopupCreateAccountShown = true">Sign Up</b>
                     </p>

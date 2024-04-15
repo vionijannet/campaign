@@ -9,7 +9,8 @@
         </div>
     </div>
     <div>
-        <TableExpandComponent class="mb-2" :table-header="tableHeader" :table-body="groupList" :search-criteria="searchCriteria" :total-row="totalRow">
+        <TableExpandComponent class="mb-2" :table-header="tableHeader" :table-body="groupList"
+            :search-criteria="searchCriteria" :total-row="totalRow" @table-changed="loadData">
             <template #group_name="{slotProps}">
                 <div class="p-2">
                     {{ slotProps.group_name }}

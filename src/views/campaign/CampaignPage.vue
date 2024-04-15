@@ -9,7 +9,8 @@
         </div>
     </div>
     <div>
-        <TableExpandComponent class="mb-2" :table-header="tableHeader" :table-body="campaignList" :search-criteria="searchCriteria" :total-row="totalRow" :is-loading="isLoading">
+        <TableExpandComponent :table-header="tableHeader" :table-body="campaignList" :search-criteria="searchCriteria"
+            class="mb-2" :total-row="totalRow" :is-loading="isLoading" @table-changed="loadCampaign">
             <template #name="{slotProps}">
                 <div class="flex items-center space-x-2 p-2">
                     <svg @click="slotProps.isExpanded = !slotProps.isExpanded" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 transform transition-all cursor-pointer" :class="slotProps.isExpanded ? 'rotate-90' : ''">

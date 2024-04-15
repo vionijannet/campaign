@@ -5,7 +5,8 @@
         </div>
     </div>
     <div>
-        <TableExpandComponent class="mb-2" :table-header="tableHeader" :table-body="audiensList" :search-criteria="searchCriteria" :total-row="totalRow">
+        <TableExpandComponent :table-header="tableHeader" :table-body="audiensList" @table-changed="loadData"
+            class="mb-2" :search-criteria="searchCriteria" :total-row="totalRow" :is-loading="isLoading">
             <template #audience_name="{slotProps}">
                 <div class="p-2 flex space-x-2 items-center">
                     <img :src="slotProps.audience_photo" :alt="`Picture of ${slotProps.audience_name}`" @error="handleImageError">

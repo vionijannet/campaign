@@ -46,8 +46,8 @@
             <section v-if="selectedData === 'history'" class="p-6 space-y-6">
                 <h1 class="font-bold text-2xl leading-4 pb-4 pt-2">Login History</h1>
                 
-                <TableExpandComponent :table-header="tableHeader" :table-body="historyList" :search-criteria="searchCriteria"
-                    class="mb-2" @table-changed="loadHistoryLog" :total-row="totalRow">
+                <TableExpandComponent :table-header="tableHeader" :table-body="historyList" class="mb-2"
+                    :search-criteria="searchCriteria" @table-changed="loadHistoryLog" :total-row="totalRow">
                 </TableExpandComponent>
             </section>
             <section v-else-if="selectedData === 'security'" class="p-6 space-y-6">
