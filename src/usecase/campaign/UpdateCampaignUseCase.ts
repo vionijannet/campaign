@@ -15,6 +15,8 @@ export class UpdateCampaignUseCaseImpl implements UpdateCampaignUseCase {
     validate(campaign: UpdateCampaignReq): FieldError[] {
         const error: FieldError[] = [];
 
+        console.log("xx", campaign);
+
         if (campaign.campaign_name.trim().length < 1) {
             error.push({
                 field: "campaign_name",

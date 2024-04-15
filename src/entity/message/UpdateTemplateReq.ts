@@ -8,7 +8,7 @@ export interface UpdateTemplateReq extends GetDetailTemplateReq {
 export interface UpdatedMessage {
     message_id: string;
     message: string;
-    message_type: string;
+    message_type: "Greeting" | "Message" | "Attachment";
     message_order: string;
     flag_delete: boolean;
 }

@@ -160,51 +160,51 @@
                         <InputDropdown :placeholder="'Select message type'" :selected="createCampaignReq.message_list[i+1].message_type"
                             :id="`type-${i+1}`" @change="onChangeMessageType(i+1, $event.key)" :option-list="getMessageTypeList(i+1)">
                         </InputDropdown>
-                    <textarea v-if="createCampaignReq.message_list[i+1].message_type !== 'Attachment'" rows="5" class="w-full outline-none border rounded-lg p-4"
-                        placeholder="Type your message" v-model="createCampaignReq.message_list[i+1].message">
-                    </textarea>
-                    <div class="w-full" id="upload-attachment" v-else>
-                        <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
-                            <div class="flex-col">
-                                <p class="font-medium">Upload Image</p>
-                                <p class="font-light text-sm text-gray-700">You can only upload one file</p>
+                        <textarea v-if="createCampaignReq.message_list[i+1].message_type !== 'Attachment'" rows="5" class="w-full outline-none border rounded-lg p-4"
+                            placeholder="Type your message" v-model="createCampaignReq.message_list[i+1].message">
+                        </textarea>
+                        <div class="w-full" id="upload-attachment" v-else>
+                            <div class="border border-b-0 p-4 rounded-2xl rounded-b-none flex items-center justify-between">
+                                <div class="flex-col">
+                                    <p class="font-medium">Upload Image</p>
+                                    <p class="font-light text-sm text-gray-700">You can only upload one file</p>
+                                </div>
+                                <div>
+                                    <label v-if="createCampaignReq.message_list[i+1].message.length < 1" for="upload-file"
+                                        class="flex items-center cursor-pointer border bg-white hover:bg-gray-100 border-blue-primary text-blue-primary p-2 px-4 rounded-lg font-semibold">
+                                        Browse Image
+                                    </label>
+                                    <input @change="uploadFile($event, i+1)" type="file" name="image" id="upload-file" class="hidden" accept="png, jpeg" ref="upload">
+                                </div>
                             </div>
-                            <div>
-                                <label v-if="createCampaignReq.message_list[i+1].message.length < 1" for="upload-file"
-                                    class="flex items-center cursor-pointer border bg-white hover:bg-gray-100 border-blue-primary text-blue-primary p-2 px-4 rounded-lg font-semibold">
-                                    Browse Image
-                                </label>
-                                <input @change="uploadFile($event, i+1)" type="file" name="image" id="upload-file" class="hidden" accept="png, jpeg" ref="upload">
-                            </div>
-                        </div>
-                        <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
-                            <div v-if="createCampaignReq.message_list[i+1].message.length < 1">
-                                <label for="upload-file" class="flex text-center items-center flex-col space-y-4 p-8">
-                                    <img src="@/assets/upload.svg" alt="Upload">
-                                    <span class="text-stone-500">Select File to Upload</span>
-                                </label>
-                            </div>
-                            <div v-else class="grid gap-4">
-                                <div class="border flex items-center bg-white rounded-lg">
-                                    <div class="p-4">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
-                                        </svg>
-                                    </div>
-                                    <div class="flex items-center w-full h-full pl-4 border-l">
-                                        <div class="flex-col w-full">
-                                            <p class="truncate max-w-[calc(100%-3.5rem)]">
-                                                {{ createCampaignReq.message_list[i+1].message }}
-                                            </p>
-                                            <p class="text-xs text-red-500 cursor-pointer hover:underline" @click="removeAttachment(i+1)">
-                                                Remove
-                                            </p>
+                            <div class="border p-4 rounded-2xl border-t-0 rounded-t-none bg-gray-100">
+                                <div v-if="createCampaignReq.message_list[i+1].message.length < 1">
+                                    <label for="upload-file" class="flex text-center items-center flex-col space-y-4 p-8">
+                                        <img src="@/assets/upload.svg" alt="Upload">
+                                        <span class="text-stone-500">Select File to Upload</span>
+                                    </label>
+                                </div>
+                                <div v-else class="grid gap-4">
+                                    <div class="border flex items-center bg-white rounded-lg">
+                                        <div class="p-4">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
+                                            </svg>
+                                        </div>
+                                        <div class="flex items-center w-full h-full pl-4 border-l">
+                                            <div class="flex-col w-full">
+                                                <p class="truncate max-w-[calc(100%-3.5rem)]">
+                                                    {{ createCampaignReq.message_list[i+1].message }}
+                                                </p>
+                                                <p class="text-xs text-red-500 cursor-pointer hover:underline" @click="removeAttachment(i+1)">
+                                                    Remove
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     </div>
                     <button class="flex-1 pt-3" @click="removeMessage(i+1)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#d93517" class="w-6 h-6">
