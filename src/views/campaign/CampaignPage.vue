@@ -64,6 +64,7 @@ import { finalize, Subscription } from 'rxjs';
 import { GetCampaignUseCase } from '@/usecase/campaign/GetCampaignUseCase';
 import { NotificationManager } from '@/util/NotificationManager';
 import { DeleteCampaignUseCase } from '@/usecase/campaign/DeleteCampaignUseCase';
+import { SendCampaignUseCase } from '@/usecase/campaign/SendCampaignUseCase';
 
 const asyncSubscription: Subscription = new Subscription();
 
@@ -115,10 +116,25 @@ const tableHeader: Ref<TableHeader[]> = ref([
 ] as TableHeader[]);
 
 const getCampaignUseCase: GetCampaignUseCase = inject("getCampaignUseCase")!;
+const sendCampaignUseCase: SendCampaignUseCase = inject("sendCampaignUseCase")!;
 const deleteCampaignUseCase: DeleteCampaignUseCase = inject("deleteCampaignUseCase")!;
 
 function manualTriggerCampaign(campaignId: string): void {
-    console.log("manual trigger campaign", campaignId);
+    asyncSubscription.add(
+        sendCampaignUseCase.execute({
+            campaign_id: campaignId
+        }).subscribe(
+            {
+                next: (resp) => {
+                    // TODO: Do something on success / error send campaign manual to facebook 
+                    console.log(resp);
+                },
+                error: (error) => {
+                    NotificationManager.showMessage("Network Error", error, "error");
+                }
+            }
+        )
+    )
 }
 
 function redirectToUpdateCampaign(campaignId: string): void {

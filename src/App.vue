@@ -17,8 +17,9 @@ import { PageService, PageServiceImpl } from './service/PageService';
 import { GetPageUseCase, GetPageUseCaseImpl } from './usecase/page/GetPageUseCase';
 import { DeleteCampaignUseCase, DeleteCampaignUseCaseImpl } from './usecase/campaign/DeleteCampaignUseCase';
 import { CreateCampaignUseCase, CreateCampaignUseCaseImpl } from './usecase/campaign/CreateCampaignUseCase';
-import {GetDetailCampaignUseCase, GetDetailCampaignUseCaseImpl} from "@/usecase/campaign/GetDetailCampaignUseCase";
+import { GetDetailCampaignUseCase, GetDetailCampaignUseCaseImpl } from "@/usecase/campaign/GetDetailCampaignUseCase";
 import { UpdateCampaignUseCase, UpdateCampaignUseCaseImpl } from './usecase/campaign/UpdateCampaignUseCase';
+import { SendCampaignUseCase, SendCampaignUseCaseImpl } from './usecase/campaign/SendCampaignUseCase';
 import { FacebookService, FacebookServiceImpl } from './service/FacebookService';
 import { GetFacebookLinkedUseCase, GetFacebookLinkedUseCaseImpl } from './usecase/facebook/GetFacebookLinkedUseCase';
 import { UserService, UserServiceImpl } from './service/UserService';
@@ -65,6 +66,8 @@ const getDetailCampaign: GetDetailCampaignUseCase = new GetDetailCampaignUseCase
 provide("getDetailCampaignUseCase", getDetailCampaign);
 const updateCampaign: UpdateCampaignUseCase = new UpdateCampaignUseCaseImpl(campaignService);
 provide("updateCampaignUseCase", updateCampaign);
+const sendCampaign: SendCampaignUseCase = new SendCampaignUseCaseImpl(campaignService);
+provide("sendCampaignUseCase", sendCampaign);
 
 const pageService: PageService = new PageServiceImpl(axiosInstance);
 const getPage: GetPageUseCase = new GetPageUseCaseImpl(pageService);
