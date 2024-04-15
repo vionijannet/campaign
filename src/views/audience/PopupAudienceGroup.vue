@@ -8,7 +8,7 @@
             placeholder="Group Name Goes Here" @type="setGroupName" :validation="groupNameValidation" />
         <div class="space-y-1">
             <label for="page" class="font-semibold text-base">Page</label>
-            <InputDropdown :placeholder="'Select page'" :selected="selectedPage" :disabled="props.type === 'display'"
+            <InputDropdown :placeholder="'Select page'" :selected="selectedPage" :disabled="isPageDisabled"
                 :id="'page'" @change="onChangePage($event.key)" :option-list="pageOptionList" :validation="pageValidation">
             </InputDropdown>
         </div>
@@ -113,6 +113,8 @@ import { FieldError } from '@/entity/BaseResp';
 import { GetDetailGroupUseCase } from '@/usecase/audience/GetDetailGroupUseCase';
 import { TextFormatter } from '@/util/TextFormatter';
 import { NotificationManager } from '@/util/NotificationManager';
+import { UpdateGroupReq } from '@/entity/audience/UpdateGroupReq';
+import { UpdateGroupUseCase } from '@/usecase/audience/UpdateGroupUseCase';
 
 const props = defineProps({
     type: {
@@ -124,6 +126,8 @@ const props = defineProps({
         default: "",
     }
 })
+
+const isPageDisabled = computed(() => props.type !== "create")
 
 const title = computed(() => {
     let result = "Category Audiens";
@@ -140,6 +144,7 @@ const title = computed(() => {
 const getPageUseCase: GetPageUseCase = inject("getPageUseCase")!;
 const getDetailGroupUseCase: GetDetailGroupUseCase = inject("getDetailGroupUseCase")!;
 const addGroupUseCase: AddGroupUseCase = inject("addGroupUseCase")!;
+const updateGroupUseCase: UpdateGroupUseCase = inject("updateGroupUseCase")!;
 
 const pageList: Ref<Page[]> = ref([]);
 
@@ -231,8 +236,43 @@ function validateAudience(error: FieldError[]): void {
 }
 
 function updateGroup(): void {
-    console.log("update");
-    emit("success");
+    const updateGroupReq: UpdateGroupReq = {
+        audience_list: selectedAudience.value,
+        group_color_hex: selectedColor.value,
+        group_id: props.group_id,
+        group_name: groupName.value,
+    };
+
+    const errorList = updateGroupUseCase.validate(updateGroupReq);
+
+    if (errorList.length < 1) {
+        isLoading.value = true;
+
+        updateGroupUseCase.execute(updateGroupReq)
+            .pipe(
+                finalize(() => isLoading.value = false)
+            ).subscribe(
+                {
+                    next: (resp) => {
+                        if (resp.code === 200) {
+                            emit("success");
+                        } else {
+                            const message = resp.result?.message ?? resp.message;
+                            NotificationManager.showMessage("Failed to Load Data", message, "error");
+
+                            backToList();
+                        }
+                    },
+                    error: (error) => {
+                        NotificationManager.showMessage("Network Error", error, "error");
+                        backToList();
+                    }
+                }
+            )
+    } else {
+        validateGroupName(errorList);
+        validateAudience(errorList);
+    }
 }
 
 function submitGroup(): void {

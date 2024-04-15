@@ -66,7 +66,7 @@ export class AudienceServiceImpl extends BaseService implements AudienceService 
     }
 
     updateGroup(group: UpdateGroupReq): Observable<BaseResp> {
-        return this.httpPost(`${this.GROUP_API_ENDPOINT}/${group.group_id}`, TextFormatter.convertEmptyPropertyToNull(group))
+        return this.httpPut(`${this.GROUP_API_ENDPOINT}/${group.group_id}`, TextFormatter.convertEmptyPropertyToNull(group))
             .pipe(
                 map((response) => JSON.parse(JSON.stringify(response.data as string)))
             );
