@@ -9,7 +9,8 @@
         </div>
     </div>
     <div>
-        <TableExpandComponent class="mb-2" :table-header="tableHeader" :table-body="linkedList" :search-criteria="searchCriteria" :total-row="totalRow">
+        <TableExpandComponent class="mb-2" :table-header="tableHeader" :table-body="linkedList"
+            :search-criteria="searchCriteria" :total-row="totalRow" @table-changed="loadData">
             <template #name="{slotProps}">
                 <div class="p-2">
                     {{ slotProps.facebook_linked_name }}
