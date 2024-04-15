@@ -110,6 +110,9 @@ import { Ref, computed, inject, onMounted, ref } from 'vue';
 import Multiselect from '@vueform/multiselect';
 import { AddGroupReq } from '@/entity/audience/AddGroupReq';
 import { FieldError } from '@/entity/BaseResp';
+import { GetDetailGroupUseCase } from '@/usecase/audience/GetDetailGroupUseCase';
+import { TextFormatter } from '@/util/TextFormatter';
+import { NotificationManager } from '@/util/NotificationManager';
 
 const props = defineProps({
     type: {
@@ -135,6 +138,7 @@ const title = computed(() => {
 })
 
 const getPageUseCase: GetPageUseCase = inject("getPageUseCase")!;
+const getDetailGroupUseCase: GetDetailGroupUseCase = inject("getDetailGroupUseCase")!;
 const addGroupUseCase: AddGroupUseCase = inject("addGroupUseCase")!;
 
 const pageList: Ref<Page[]> = ref([]);
@@ -252,7 +256,33 @@ onMounted(() => {
 });
 
 function loadDetailGroup(): void {
-    console.log("load detail group");
+    isLoading.value = true;
+
+    getDetailGroupUseCase.execute({
+        groupId: props.group_id
+    }).pipe(
+        finalize(() => isLoading.value = false)
+    ).subscribe(
+        {
+            next: (groupResp) => {
+                if (groupResp.code === 200) {
+                    groupName.value = groupResp.result.data.group_name;
+                    selectedPage.value = groupResp.result.data.page_id;
+                    selectedAudience.value = groupResp.result.data.audience_list.map(data => data.audience_id);
+                    selectedColor.value = TextFormatter.generateHexCodeFromNativeColor(groupResp.result.data.group_color_hex);
+                } else {
+                    const message = groupResp.result?.message ?? groupResp.message;
+                    NotificationManager.showMessage("Failed to Load Data", message, "error");
+
+                    backToList();
+                }
+            },
+            error: (error) => {
+                NotificationManager.showMessage("Network Error", error, "error");
+                backToList();
+            }
+        }
+    )
 }
 
 function loadPage(): void {

@@ -28,8 +28,10 @@ import { GetDashboardUseCase, GetDashboardUseCaseImpl } from './usecase/user/Get
 import { AudienceService, AudienceServiceImpl } from './service/AudienceService';
 import { GetAudienceUseCase, GetAudienceUseCaseImpl } from './usecase/audience/GetAudienceUseCase';
 import { GetGroupUseCase, GetGroupUseCaseImpl } from './usecase/audience/GetGroupUseCase';
+import { GetDetailGroupUseCase, GetDetailGroupUseCaseImpl } from './usecase/audience/GetDetailGroupUseCase';
 import { GetPageDetailUseCase, GetPageDetailUseCaseImpl } from './usecase/page/GetPageDetailUseCase';
 import { AddGroupUseCase, AddGroupUseCaseImpl } from './usecase/audience/AddGroupUseCase';
+import { UpdateGroupUseCase, UpdateGroupUseCaseImpl } from './usecase/audience/UpdateGroupUseCase';
 import { DeleteGroupUseCase, DeleteGroupUseCaseImpl } from './usecase/audience/DeleteGroupUseCase';
 import { UploadAttachmentUseCase, UploadAttachmentUseCaseImpl } from './usecase/template/UploadAttachmentUseCase';
 import { initFacebook } from './oauth-fb/FacebookAuth';
@@ -88,6 +90,10 @@ const addGroup: AddGroupUseCase = new AddGroupUseCaseImpl(audienceService);
 provide("addGroupUseCase", addGroup);
 const deleteGroup: DeleteGroupUseCase = new DeleteGroupUseCaseImpl(audienceService);
 provide("deleteGroupUseCase", deleteGroup);
+const getDetailGroup: GetDetailGroupUseCase = new GetDetailGroupUseCaseImpl(audienceService);
+provide("getDetailGroupUseCase", getDetailGroup);
+const updateGroup: UpdateGroupUseCase = new UpdateGroupUseCaseImpl(audienceService);
+provide("updateGroupUseCase", updateGroup);
 
 const userService: UserService = new UserServiceImpl(axiosInstance);
 const getLoginHistory: GetLoginHistoryUseCase = new GetLoginHistoryUseCaseImpl(userService);

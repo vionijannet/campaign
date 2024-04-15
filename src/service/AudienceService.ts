@@ -9,13 +9,17 @@ import { AddGroupReq } from "@/entity/audience/AddGroupReq";
 import { BaseResp } from "@/entity/BaseResp";
 import { TextFormatter } from "@/util/TextFormatter";
 import { GetDetailGroupReq } from "@/entity/audience/GetDetailGroupReq";
+import { GetDetailGroupResp } from "@/entity/audience/GetDetailGroupResp";
+import { UpdateGroupReq } from "@/entity/audience/UpdateGroupReq";
 
 export interface AudienceService {
     getAudience(audience: GetAudienceReq): Observable<GetAudienceResp>;
 
     getGroup(group: GetGroupReq): Observable<GetGroupResp>;
     addGroup(group: AddGroupReq): Observable<BaseResp>;
+    updateGroup(group: UpdateGroupReq): Observable<BaseResp>;
     deleteGroup(group: GetDetailGroupReq): Observable<BaseResp>;
+    getDetailGroup(group: GetDetailGroupReq): Observable<GetDetailGroupResp>;
 }
 
 export class AudienceServiceImpl extends BaseService implements AudienceService {
@@ -61,8 +65,22 @@ export class AudienceServiceImpl extends BaseService implements AudienceService 
             );
     }
 
+    updateGroup(group: UpdateGroupReq): Observable<BaseResp> {
+        return this.httpPost(`${this.GROUP_API_ENDPOINT}/${group.group_id}`, TextFormatter.convertEmptyPropertyToNull(group))
+            .pipe(
+                map((response) => JSON.parse(JSON.stringify(response.data as string)))
+            );
+    }
+
     deleteGroup(group: GetDetailGroupReq): Observable<BaseResp> {
         return this.httpDelete(`${this.GROUP_API_ENDPOINT}/${group.groupId}`)
+            .pipe(
+                map((response) => JSON.parse(JSON.stringify(response.data as string)))
+            )
+    }
+
+    getDetailGroup(group: GetDetailGroupReq): Observable<GetDetailGroupResp> {
+        return this.httpGet(`${this.GROUP_API_ENDPOINT}/${group.groupId}`)
             .pipe(
                 map((response) => JSON.parse(JSON.stringify(response.data as string)))
             )

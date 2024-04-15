@@ -1,3 +1,5 @@
+import { Audience } from "./Audience";
+
 export interface Group {
     group_id: string;
     group_name: string;
@@ -7,4 +9,5 @@ export interface Group {
     status: string;
     page_id: string;
     page_name: string;
+    audience_list: Audience[];
 }
