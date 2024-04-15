@@ -38,6 +38,28 @@ export class TextFormatter {
         let validator = new FileValidator();
         return validator.isImage(file);
     }
+
+    public static generateHexCodeFromNativeColor(color: string): string {
+        if (color.startsWith("#")) {
+            return color;
+        }
+
+        if (color === "red") {
+            return "#FF0000";
+        } else if (color === "yellow") {
+            return "#FFFF00";
+        } else if (color === "green") {
+            return "#00FF00";
+        } else if (color === "blue") {
+            return "#0000FF";
+        } else if (color === "purple") {
+            return "#FF00FF";
+        } else if (color === "white") {
+            return "#fff";
+        }
+
+        return "#000";
+    }
 }
 
 class FileValidator {
