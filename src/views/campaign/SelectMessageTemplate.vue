@@ -3,7 +3,7 @@
         <p class="text-2xl font-bold">Select Template</p> 
         <div class="grid grid-cols-2 gap-x-4">
             <div class="space-y-4">
-                <div class="space-y-2 max-h-96 overflow-y-auto">
+                <div class="space-y-2 max-h-96 overflow-y-auto" ref="messageComponent" @scroll="onScroll">
                     <CheckboxGeneral v-for="t in templateOptionList" :id="t.key"
                         :key="t.key" :text="t.value" group="page" @select="setSelectedTemplate">
                     </CheckboxGeneral>
@@ -25,14 +25,18 @@ import ButtonBase from '@/components/button/ButtonBase.vue';
 import CheckboxGeneral from '@/components/in-app/CheckboxGeneral.vue';
 import { TemplateMessage } from '@/entity/message/TemplateMessage';
 import { GetTemplateUseCase } from '@/usecase/template/GetTemplateUseCase';
+import { NotificationManager } from '@/util/NotificationManager';
 import { Subscription, finalize } from 'rxjs';
-import { Ref, computed, inject, onMounted, ref } from 'vue';
+import { Ref, computed, inject, onMounted, onUnmounted, ref } from 'vue';
 
 const emit = defineEmits(["selected", "cancel"]);
 
 const asyncSubscription: Subscription = new Subscription();
 const getTemplateUseCase: GetTemplateUseCase = inject("getTemplateUseCase")!;
 const isLoading = ref(false);
+
+const page = ref(0);
+const totalData = ref(0);
 
 const templateList: Ref<TemplateMessage[]> = ref([]);
 const templateOptionList: Ref<OptionEntity[]> = computed(() => {
@@ -48,17 +52,27 @@ const selectedTemplate = computed(() => {
         return templateList.value[index];
 })
 
+function onScroll(e: Event): void {
+    const target = e.target as HTMLDivElement;
+    
+    const { scrollTop, clientHeight, scrollHeight } = target;
+    if (scrollTop + clientHeight >= scrollHeight && templateList.value.length < totalData.value) {
+        page.value = page.value + 1;
+        loadTemplate(page.value);
+    }
+}
+
 onMounted(() => {
     loadTemplate();
 })
 
-function loadTemplate(): void {
+function loadTemplate(page=0): void {
     isLoading.value = true;
 
     asyncSubscription.add(
         getTemplateUseCase.execute({
-            limit: 100,
-            page: 0,
+            limit: 10,
+            page,
             sort_by: "",
             template_name: ""
         }).pipe(
@@ -67,8 +81,18 @@ function loadTemplate(): void {
             {
                 next: (getTemplateResp) => {
                     if (getTemplateResp.code === 200) {
-                        templateList.value = getTemplateResp.result.data.content.template_list ?? [];
+                        templateList.value = templateList.value.concat(getTemplateResp.result.data.content.template_list ?? []);
+                        totalData.value = getTemplateResp.result.data.total_elements;
+                    } else {
+                        const message = getTemplateResp.result?.message ?? getTemplateResp.message;
+                        NotificationManager.showMessage("Failed to Get Template", message, "error");
+
+                        emit("cancel");
                     }
+                },
+                error: (error) => {
+                    NotificationManager.showMessage("Failed to Get Template", error, "error");
+                    emit("cancel");
                 }
             }
         )
