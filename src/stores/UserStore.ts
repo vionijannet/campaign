@@ -7,6 +7,7 @@ export const useUserStore = defineStore("user", () => {
     const role = ref("Administrator");
     const phone = ref("08113276836");
     const token = ref("");
+    const isMetaVerification = ref(true);
 
     function setName(value: string): void {
         name.value = value;
@@ -37,7 +38,7 @@ export const useUserStore = defineStore("user", () => {
         token.value = "";
     }
 
-    return { name, email ,setName, setEmail, setRole, removeData, role, setPhone, phone, token, setToken }
+    return { name, email ,setName, setEmail, setRole, removeData, role, setPhone, phone, token, setToken, isMetaVerification }
 }, {
     persist: true,
 });

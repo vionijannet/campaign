@@ -224,7 +224,7 @@
 
     <ModalComponent v-if="isPopupAudiensOpen" @close="isPopupAudiensOpen=false" :custom-class="'!max-w-xl'">
         <SelectAudience :audience_list="page.audience_list" :checked-audience="createCampaignReq.audience_list"
-            @cancel="isPopupAudiensOpen = false" @continue="setCheckedAudience">
+            @cancel="isPopupAudiensOpen = false" @continue="setCheckedAudience" :group-list="groupList">
         </SelectAudience>
     </ModalComponent>
 
@@ -246,7 +246,7 @@ import ModalComponent from '@/components/modal/ModalComponent.vue';
 import LoadingScreen from '@/components/loading/LoadingScreen.vue';
 import SelectMessageTemplate from '@/views/campaign/SelectMessageTemplate.vue';
 import router from '@/router';
-import { computed, inject, ref, type Ref } from 'vue';
+import { computed, inject, onMounted, ref, type Ref } from 'vue';
 import DatePicker from 'vue-datepicker-next';
 import SelectPage from './SelectPage.vue';
 import { Page } from '@/entity/page/Page';
@@ -261,9 +261,12 @@ import { NotificationManager } from '@/util/NotificationManager';
 import { FieldError } from '@/entity/BaseResp';
 import { UploadAttachmentUseCase } from '@/usecase/template/UploadAttachmentUseCase';
 import { TextFormatter } from '@/util/TextFormatter';
+import { GetGroupUseCase } from '@/usecase/audience/GetGroupUseCase';
+import { Group } from '@/entity/audience/Group';
 
 const createCampaignUseCase: CreateCampaignUseCase = inject("createCampaignUseCase")!;
 const uploadAttachmentUseCase: UploadAttachmentUseCase = inject("uploadAttachmentUseCase")!;
+const getGroupUseCase: GetGroupUseCase = inject("getGroupUseCase")!;
 
 const isPopupAudiensOpen = ref(false);
 const isPopupTemplateOpen = ref(false);
@@ -302,6 +305,7 @@ const page: Ref<Page> = ref({
     created_at: "",
     audience_list: [],
 });
+const groupList: Ref<Group[]> = ref([]);
 const templateName = ref("");
 
 const upload: Ref<HTMLFormElement | null> = ref(null);
@@ -352,10 +356,13 @@ function removeMessage(index: number): void {
 function continueCreateCampaign(data: Page): void {
     // Set to page data
     page.value = data;
+    console.log("s",page.value.page_id);
     // Set page id to req
     createCampaignReq.value.page_id = data.page_id;
     // Close popup
     isPopupCreateOpen.value = false;
+
+    getGroup();
 }
 
 function setCheckedAudience(data: string[]): void {
@@ -534,6 +541,25 @@ function uploadFile(event: Event, index: number): void {
 
 function removeAttachment(index: number): void {
     createCampaignReq.value.message_list[index].message = "";
+}
+
+function getGroup(): void {
+    getGroupUseCase.execute({
+        group_name: "",
+        limit: 100,
+        page: 0,
+        page_id: page.value.page_id,
+        page_name: "",
+        sort_by: "",
+    }).subscribe(
+        {
+            next: (getGroupResp) => {
+                if (getGroupResp.code === 200) {
+                    groupList.value = getGroupResp.result.data.content.group_list ?? [];
+                }
+            }
+        }
+    )
 }
 </script>
 

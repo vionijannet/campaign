@@ -25,6 +25,7 @@ import ButtonBase from '@/components/button/ButtonBase.vue';
 import CheckboxGeneral from '@/components/in-app/CheckboxGeneral.vue';
 import { Page } from '@/entity/page/Page';
 import { GetPageUseCase } from '@/usecase/page/GetPageUseCase';
+import { NotificationManager } from '@/util/NotificationManager';
 import { Subscription, finalize } from 'rxjs';
 import { Ref, computed, inject, onMounted, onUnmounted, ref } from 'vue';
 
@@ -75,7 +76,16 @@ function loadPage(): void {
                 next: (getPageResp) => {
                     if (getPageResp.code === 200) {
                         pageList.value = getPageResp.result.data.content.page_list ?? [];
+                    } else {
+                        const message = getPageResp.result?.message ?? getPageResp.message;
+                        NotificationManager.showMessage("Failed to Get Page", message, "error");
+
+                        emit("cancel");
                     }
+                },
+                error: (error) => {
+                    NotificationManager.showMessage("Failed to Get Page", error, "error");
+                    emit("cancel");
                 }
             }
         )
