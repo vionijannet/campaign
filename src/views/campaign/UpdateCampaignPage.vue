@@ -13,7 +13,7 @@
         <InputText label-text="Campaign Name" placeholder="Type your campaign name" :value="updateCampaignReq.campaign_name"
             label-for="campaign-name" @type="setCampaignName($event)" :validation="campaignNameValidation">
         </InputText>
-        <div>
+        <div v-if="!isHideInterval" id="section-scheduler">
             <p class="font-semibold text-lg">Scheduler</p>
             <div class="flex justify-between items-center">
                 <p>Turning on to set schedule to your campaign</p>
@@ -49,7 +49,7 @@
                 </div>
             </div>
         </div>
-        <div id="section-interval">
+        <div v-if="!isHideInterval" id="section-interval">
             <p class="font-semibold text-lg">Interval</p>
             <div class="flex justify-between space-x-4 my-2">
                 <div class="w-full">
@@ -224,7 +224,7 @@
 
     <ModalComponent v-if="isPopupAudiensOpen" @close="isPopupAudiensOpen=false" :custom-class="'!max-w-xl'">
         <SelectAudience :audience_list="audienceList" :checked-audience="updateCampaignReq.audience_list"
-            @cancel="isPopupAudiensOpen = false" @continue="setCheckedAudience">
+            @cancel="isPopupAudiensOpen = false" @continue="setCheckedAudience" :group-list="groupList">
         </SelectAudience>
     </ModalComponent>
 
@@ -260,6 +260,9 @@ import { TextFormatter } from '@/util/TextFormatter';
 import { UpdateCampaignUseCase } from '@/usecase/campaign/UpdateCampaignUseCase';
 import { FieldError } from '@/entity/BaseResp';
 import { UploadAttachmentUseCase } from '@/usecase/template/UploadAttachmentUseCase';
+import { useUserStore } from '@/stores/UserStore';
+import { Group } from '@/entity/audience/Group';
+import { GetGroupUseCase } from '@/usecase/audience/GetGroupUseCase';
 
 const route = useRoute();
 
@@ -267,6 +270,11 @@ const getDetailCampaignUseCase: GetDetailCampaignUseCase = inject("getDetailCamp
 const getPageDetailUseCase: GetPageDetailUseCase = inject("getPageDetailUseCase")!;
 const updateCampaignUseCase: UpdateCampaignUseCase = inject("updateCampaignUseCase")!;
 const uploadAttachmentUseCase: UploadAttachmentUseCase = inject("uploadAttachmentUseCase")!;
+const getGroupUseCase: GetGroupUseCase = inject("getGroupUseCase")!;
+
+const userStore = useUserStore();
+
+const isHideInterval = computed(() => userStore.isMetaVerification);
 
 const isPopupAudiensOpen = ref(false);
 const isPopupTemplateOpen = ref(false);
@@ -327,6 +335,7 @@ const updateCampaignReq: Ref<UpdateCampaignReq> = ref({
     interval_max: 0,
     audience_list: [],
 })
+const groupList: Ref<Group[]> = ref([]);
 const filteredMessageList = computed(() =>
     updateCampaignReq.value.message_list.filter(data => data.flag_delete === false)
 );
@@ -603,6 +612,7 @@ function loadData(): void {
 
                     if (pageId.value) {
                         loadPage();
+                        loadGroup();
                     }
                 } else {
                     const message = resp.result?.message ?? resp.message;
@@ -638,6 +648,25 @@ function loadPage(): void {
                 }
             }
         )
+}
+
+function loadGroup(): void {
+    getGroupUseCase.execute({
+        group_name: "",
+        limit: 100,
+        page: 0,
+        page_id: pageId.value,
+        page_name: "",
+        sort_by: "",
+    }).subscribe(
+        {
+            next: (getGroupResp) => {
+                if (getGroupResp.code === 200) {
+                    groupList.value = getGroupResp.result.data.content.group_list ?? [];
+                }
+            }
+        }
+    )
 }
 
 function validateCampaignName(error: FieldError[]): void {

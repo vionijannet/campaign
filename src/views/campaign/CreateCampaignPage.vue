@@ -13,7 +13,7 @@
         <InputText label-for="campaign-name" placeholder="Type your campaign name" :value="createCampaignReq.campaign_name"
             label-text="Campaign Name" @type="setCampaignName($event)" :validation="campaignNameValidation">
         </InputText>
-        <div>
+        <div v-if="!isHideInterval" id="section-scheduler">
             <p class="font-semibold text-lg">Scheduler</p>
             <div class="flex justify-between items-center">
                 <p>Turning on to set schedule to your campaign</p>
@@ -49,7 +49,7 @@
                 </div>
             </div>
         </div>
-        <div id="section-interval">
+        <div v-if="!isHideInterval" id="section-interval">
             <p class="font-semibold text-lg">Interval</p>
             <div class="flex justify-between space-x-4 my-2">
                 <div class="w-full">
@@ -263,10 +263,15 @@ import { UploadAttachmentUseCase } from '@/usecase/template/UploadAttachmentUseC
 import { TextFormatter } from '@/util/TextFormatter';
 import { GetGroupUseCase } from '@/usecase/audience/GetGroupUseCase';
 import { Group } from '@/entity/audience/Group';
+import { useUserStore } from '@/stores/UserStore';
 
 const createCampaignUseCase: CreateCampaignUseCase = inject("createCampaignUseCase")!;
 const uploadAttachmentUseCase: UploadAttachmentUseCase = inject("uploadAttachmentUseCase")!;
 const getGroupUseCase: GetGroupUseCase = inject("getGroupUseCase")!;
+
+const userStore = useUserStore();
+
+const isHideInterval = computed(() => userStore.isMetaVerification);
 
 const isPopupAudiensOpen = ref(false);
 const isPopupTemplateOpen = ref(false);
