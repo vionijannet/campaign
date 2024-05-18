@@ -142,7 +142,8 @@ function changePage(page: string): void {
                 props.searchCriteria.page = props.searchCriteria.page - 1;
         }
         else if (page === "next") {
-            if (selectedPage.value + 1 < totalPage.value)
+            console.log(selectedPage.value);
+            if (selectedPage.value + 1 <= totalPage.value)
                 props.searchCriteria.page = props.searchCriteria.page + 1;
         }
         else
