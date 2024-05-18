@@ -37,7 +37,7 @@ import { UploadAttachmentUseCase, UploadAttachmentUseCaseImpl } from './usecase/
 import { initFacebook } from './oauth-fb/FacebookAuth';
 
 const axiosInstance: AxiosInstance = axios.create({    
-    baseURL: "http://127.0.0.1:8080",
+    baseURL: import.meta.env.VITE_API_URL,
     timeout: 5000
 });
 

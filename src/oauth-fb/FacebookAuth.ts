@@ -27,7 +27,6 @@ export async function initFacebook(appId: string | undefined): Promise<void> {
         //     xfbml: true,
         // });
 
-        console.log("p");
         window.fbAsyncInit = function () {
             const FB = window.FB;
             FB.init({
@@ -47,20 +46,15 @@ export async function initFacebook(appId: string | undefined): Promise<void> {
         //         xfbml: true,
         //     });
 
-            console.log("ini r berarti");
 
-            // load facebook sdk script
-            (function (d, s, id) {
-                var js, fjs = d.getElementsByTagName(s)[0];
-                if (d.getElementById(id)) { return; }
-                js = d.createElement(s); js.id = id;
-                (js as any).src = "https://connect.facebook.net/en_US/sdk/debug.js";
-                (fjs.parentNode as ParentNode).insertBefore(js, fjs);
-            } (document, 'script', 'facebook-jssdk'));
-            
-        //     console.log("s");
-        // })
-        // console.log("q");
+        // load facebook sdk script
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s); js.id = id;
+            (js as any).src = "https://connect.facebook.net/en_US/sdk/debug.js";
+            (fjs.parentNode as ParentNode).insertBefore(js, fjs);
+        } (document, 'script', 'facebook-jssdk'));
     })
 }
 
