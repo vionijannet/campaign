@@ -17,45 +17,43 @@ declare global {
 import * as Facebook from "fb-sdk-wrapper";
 
 export async function initFacebook(appId: string | undefined): Promise<void> {
-    return new Promise(() => {
-        // if (!appId) return;
-        // Facebook.load();
-        // return await Facebook.init({
-        //     appId: appId,
-        //     version: "v19.0",
-        //     cookie: true,
-        //     xfbml: true,
-        // });
+    if (!appId) return;
+    Facebook.load();
+    return await Facebook.init({
+        appId: appId,
+        version: "v19.0",
+        cookie: true,
+        xfbml: true,
+    });
 
-        window.fbAsyncInit = function () {
-            const FB = window.FB;
-            FB.init({
-                appId: appId,
-                cookie: true,
-                xfbml: true,
-                version: "v19.0",
-            });
-        };
+    // window.fbAsyncInit = function () {
+    //     const FB = window.FB;
+    //     FB.init({
+    //         appId: appId,
+    //         cookie: true,
+    //         xfbml: true,
+    //         version: "v19.0",
+    //     });
+    // };
 
-        // // wait for facebook sdk to initialize before starting the vue app
-        // Facebook.load().then(() => {
-        //     Facebook.init({
-        //         appId: appId,
-        //         version: "v19.0",
-        //         cookie: true,
-        //         xfbml: true,
-        //     });
+    // // // wait for facebook sdk to initialize before starting the vue app
+    // // Facebook.load().then(() => {
+    // //     Facebook.init({
+    // //         appId: appId,
+    // //         version: "v19.0",
+    // //         cookie: true,
+    // //         xfbml: true,
+    // //     });
 
 
-        // load facebook sdk script
-        (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) { return; }
-            js = d.createElement(s); js.id = id;
-            (js as any).src = "https://connect.facebook.net/en_US/sdk/debug.js";
-            (fjs.parentNode as ParentNode).insertBefore(js, fjs);
-        } (document, 'script', 'facebook-jssdk'));
-    })
+    // // load facebook sdk script
+    // (function (d, s, id) {
+    //     var js, fjs = d.getElementsByTagName(s)[0];
+    //     if (d.getElementById(id)) { return; }
+    //     js = d.createElement(s); js.id = id;
+    //     (js as any).src = "https://connect.facebook.net/en_US/sdk/debug.js";
+    //     (fjs.parentNode as ParentNode).insertBefore(js, fjs);
+    // } (document, 'script', 'facebook-jssdk'));
 }
 
 export async function login(): Promise<FaceBookResponse | null> {

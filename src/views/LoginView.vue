@@ -45,16 +45,17 @@
 </template>
 
 <script setup lang="ts">
-import InputText from "@/components/input/InputText.vue";
 import ButtonBase from "@/components/button/ButtonBase.vue";
 import { Ref, onMounted, ref } from "vue";
 import router from "@/router";
 import ModalComponent from "@/components/modal/ModalComponent.vue";
 import CreateAccount from "./account/CreateAccount.vue";
-import vueRecaptcha from 'vue3-recaptcha2';
 import { useUserStore } from "@/stores/UserStore";
-import { login } from '@/oauth-fb/FacebookAuth';
+import { initFacebook, login } from '@/oauth-fb/FacebookAuth';
 
+onMounted(async () => {
+    initFacebook("252744180318694");
+})
 
 const isPopupForgotPasswordShown = ref(false);
 const isPopupCreateAccountShown = ref(false);
@@ -72,35 +73,14 @@ function redirectTo(name: string): void {
     window.open(routeData.href, "_blank");
 }
 
-function recaptchaVerified(response: any): void {
-    console.log("v", response);
-}
-
-function recaptchaExpired(): void {
-    recaptcha.value.reset();
-}
-
-function recaptchaFailed(): void {
-    console.log("f");
-}
-
-function recaptchaError(reason: any): void {
-    console.log("e", reason);
-}
-
 async function signIn(): Promise<void> {
-    // googleAuthCodeLogin().then((response) => {
-    //     console.log("Handle the response", response)
-    //     const userData = decodeCredential(response.code)
-    //     console.log("Handle the userData", userData)
-    // });
     userStore.setName("John Doe");
     userStore.setEmail("johndoe@gmail.com");
     userStore.setRole("Administrator");
     userStore.setPhone("08113276836");
     userStore.setToken("tokenabcdefg");
 
-    const result = await new Promise(window.FB.login);
+    const result = await login();
     if (result) {
         console.log("api", result);
     } else {

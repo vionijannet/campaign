@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import axios, { AxiosInstance } from 'axios';
 import { TemplateService, TemplateServiceImpl } from './service/TemplateService';
-import { provide } from 'vue';
+import { onMounted, provide } from 'vue';
 import { GetTemplateUseCase, GetTemplateUseCaseImpl } from './usecase/template/GetTemplateUseCase';
 import { GetDetailTemplateUseCase, GetDetailTemplateUseCaseImpl } from './usecase/template/GetDetailTemplateUseCase';
 import { CreateTemplateUseCase, CreateTemplateUseCaseImpl } from './usecase/template/CreateTemplateUseCase';
@@ -41,7 +41,9 @@ const axiosInstance: AxiosInstance = axios.create({
     timeout: 5000
 });
 
-initFacebook("252744180318694");
+onMounted(async() => {
+    initFacebook("252744180318694");
+})
 
 const templateService: TemplateService = new TemplateServiceImpl(axiosInstance);
 const getTemplate: GetTemplateUseCase = new GetTemplateUseCaseImpl(templateService);
