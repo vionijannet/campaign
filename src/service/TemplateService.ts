@@ -72,7 +72,7 @@ export class TemplateServiceImpl extends BaseService implements TemplateService 
     }
     
     updateTemplate(template: UpdateTemplateReq): Observable<BaseResp> {
-        return this.httpPut(this.API_ENDPOINT, TextFormatter.convertEmptyPropertyToNull(template))
+        return this.httpPut(`${this.API_ENDPOINT}/${template.template_id}`, TextFormatter.convertEmptyPropertyToNull(template))
             .pipe(
                 map((response) => JSON.parse(JSON.stringify(response.data as string)))
             )
