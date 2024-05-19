@@ -42,7 +42,7 @@ const axiosInstance: AxiosInstance = axios.create({
 });
 
 onMounted(async() => {
-    initFacebook("252744180318694");
+    initFacebook(import.meta.env.VITE_APP_ID);
 })
 
 const templateService: TemplateService = new TemplateServiceImpl(axiosInstance);
