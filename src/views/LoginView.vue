@@ -46,26 +46,47 @@
 
 <script setup lang="ts">
 import ButtonBase from "@/components/button/ButtonBase.vue";
-import { Ref, onMounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import router from "@/router";
 import ModalComponent from "@/components/modal/ModalComponent.vue";
 import CreateAccount from "./account/CreateAccount.vue";
 import { useUserStore } from "@/stores/UserStore";
-import { initFacebook, login } from '@/oauth-fb/FacebookAuth';
+import { initFacebook } from '@/oauth-fb/FacebookAuth';
+import { useRoute } from "vue-router";
+import { Subscription, interval } from "rxjs";
 
 onMounted(async () => {
-    initFacebook("252744180318694");
+    initFacebook(import.meta.env.VITE_APP_ID);
 })
 
-const isPopupForgotPasswordShown = ref(false);
 const isPopupCreateAccountShown = ref(false);
-
-const recaptcha: Ref<any> = ref(null);
-const isRecaptchaError = ref(false);
 
 const siteKey = "6Lc9Z40hAAAAAFRdtS72GNcB76a1ltmdqWQ-6Zd5";
 
 const userStore = useUserStore();
+
+const route = useRoute();
+
+onMounted(() => {
+    if (userStore.token.trim().length > 0) {
+        router.push("/");
+    } else if (route.query.code) {
+        getToken(route.query.code as string);
+    }
+
+    // TEST DUMMY GET CODE FROM OAUTH
+    // subscription.add(
+    //     interval(5000).subscribe(() => {
+    //         router.push("/sign-in?code=tokenabcdefg")
+    //     })
+    // )
+})
+
+// const subscription = new Subscription();
+
+// onUnmounted(() => {
+//     subscription.unsubscribe();
+// })
 
 function redirectTo(name: string): void {
     const path = name === "tos" ? "/terms" : "/policy";
@@ -73,20 +94,26 @@ function redirectTo(name: string): void {
     window.open(routeData.href, "_blank");
 }
 
-async function signIn(): Promise<void> {
+function signIn(): void {
     userStore.setName("John Doe");
     userStore.setEmail("johndoe@gmail.com");
     userStore.setRole("Administrator");
     userStore.setPhone("08113276836");
     userStore.setToken("tokenabcdefg");
 
-    const result = await login();
-    if (result) {
-        console.log("api", result);
-    } else {
-        return;
-    }
-
-    router.push('/')
+    router.push("/");
 }
+
+function getToken(token: string): void {
+    console.log("get token", token);
+    signIn();
+}
+
+watch(route, (value) => {
+    if (value.query.code) {
+        getToken(value.query.code as string);
+    }
+}, {
+    deep: true
+});
 </script>
