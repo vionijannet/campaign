@@ -25,6 +25,8 @@ import { GetFacebookLinkedUseCase, GetFacebookLinkedUseCaseImpl } from './usecas
 import { UserService, UserServiceImpl } from './service/UserService';
 import { GetLoginHistoryUseCase, GetLoginHistoryUseCaseImpl } from './usecase/user/GetLoginHistoryUseCase';
 import { GetDashboardUseCase, GetDashboardUseCaseImpl } from './usecase/user/GetDashboardUseCase';
+import { LoginUseCase, LoginUseCaseImpl } from './usecase/user/LoginUseCase';
+import { RegisterUseCase, RegisterUseCaseImpl } from './usecase/user/RegisterUseCase';
 import { AudienceService, AudienceServiceImpl } from './service/AudienceService';
 import { GetAudienceUseCase, GetAudienceUseCaseImpl } from './usecase/audience/GetAudienceUseCase';
 import { GetGroupUseCase, GetGroupUseCaseImpl } from './usecase/audience/GetGroupUseCase';
@@ -102,4 +104,8 @@ const getLoginHistory: GetLoginHistoryUseCase = new GetLoginHistoryUseCaseImpl(u
 provide("getLoginHistoryUseCase", getLoginHistory);
 const getDashboard: GetDashboardUseCase = new GetDashboardUseCaseImpl(userService);
 provide("getDashboardUseCase", getDashboard);
+const login: LoginUseCase = new LoginUseCaseImpl(userService);
+provide("loginUseCase", login);
+const register: RegisterUseCase = new RegisterUseCaseImpl(userService);
+provide("registerUseCase", register);
 </script>

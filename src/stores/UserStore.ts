@@ -8,6 +8,7 @@ export const useUserStore = defineStore("user", () => {
     const phone = ref("08113276836");
     const token = ref("");
     const isMetaVerification = ref(true);
+    const isAlreadyAddFacebook = ref(false);
 
     function setName(value: string): void {
         name.value = value;
@@ -29,6 +30,10 @@ export const useUserStore = defineStore("user", () => {
         token.value = value;
     }
 
+    function setFacebookAccount(value: boolean): void {
+        isAlreadyAddFacebook.value = value;
+    }
+
     function removeData(): void {
         name.value = "";
         email.value = "";
@@ -38,7 +43,10 @@ export const useUserStore = defineStore("user", () => {
         token.value = "";
     }
 
-    return { name, email ,setName, setEmail, setRole, removeData, role, setPhone, phone, token, setToken, isMetaVerification }
+    return {
+        name, email, role, phone, token, isMetaVerification, isAlreadyAddFacebook, 
+        setName, setEmail, setRole, removeData, setPhone, setToken, setFacebookAccount
+    }
 }, {
     persist: true,
 });

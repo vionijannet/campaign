@@ -9,9 +9,11 @@
                 <h1 class="font-extrabold text-4xl text-center">Welcome to RepliEm</h1>
 
                 <div class="py-8 space-y-4 !pb-2">
-                    <InputText label-for="username" label-text="Username" placeholder="Ex: john_doe" />
+                    <InputText v-model="loginReq.username" label-for="username" label-text="Username"
+                        placeholder="Ex: john_doe" :validation="usernameValidation" />
                     <div>
-                        <InputPassword label-for="password" label-text="Password" placeholder="********" />
+                        <InputPassword v-model="loginReq.password" label-for="password" label-text="Password"
+                            placeholder="********" :validation="passwordValidation" />
                         <!-- <p class="text-sm underline cursor-pointer py-1" @click="isPopupForgotPasswordShown = true">
                             Forgot your password?
                         </p> -->
@@ -34,54 +36,47 @@
     </div>
 
     <ModalComponent v-if="isPopupCreateAccountShown" @close="isPopupCreateAccountShown = false">
-        <CreateAccount></CreateAccount>
+        <CreateAccount @success="onSuccessSignUp"></CreateAccount>
     </ModalComponent>
 </template>
 
 <script setup lang="ts">
 import ButtonBase from "@/components/button/ButtonBase.vue";
-import { onMounted, ref, watch } from "vue";
+import { Ref, inject, onMounted, ref } from "vue";
 import router from "@/router";
 import ModalComponent from "@/components/modal/ModalComponent.vue";
 import CreateAccount from "./account/CreateAccount.vue";
 import { useUserStore } from "@/stores/UserStore";
-import { initFacebook } from '@/oauth-fb/FacebookAuth';
-import { useRoute } from "vue-router";
 import InputText from "@/components/input/InputText.vue";
 import InputPassword from "@/components/input/InputPassword.vue";
-
-onMounted(async () => {
-    initFacebook(import.meta.env.VITE_APP_ID);
-})
+import { LoginReq } from "@/entity/user/LoginReq";
+import { LoginUseCase } from "@/usecase/user/LoginUseCase";
+import { FieldError } from "@/entity/BaseResp";
+import { finalize } from "rxjs";
+import { NotificationManager } from "@/util/NotificationManager";
+import { RegisterResp } from "@/entity/user/RegisterResp";
+import { RegisterReq } from "@/entity/user/RegisterReq";
 
 const isPopupCreateAccountShown = ref(false);
 
-const siteKey = "6Lc9Z40hAAAAAFRdtS72GNcB76a1ltmdqWQ-6Zd5";
+const loginReq: Ref<LoginReq> = ref({
+    username: "",
+    password: "",
+} as LoginReq);
+const isLoading = ref(false);
+
+const usernameValidation = ref("");
+const passwordValidation = ref("");
 
 const userStore = useUserStore();
 
-const route = useRoute();
+const loginUseCase: LoginUseCase = inject("loginUseCase")!;
 
 onMounted(() => {
     if (userStore.token.trim().length > 0) {
         router.push("/");
-    } else if (route.query.code) {
-        getToken(route.query.code as string);
     }
-
-    // TEST DUMMY GET CODE FROM OAUTH
-    // subscription.add(
-    //     interval(5000).subscribe(() => {
-    //         router.push("/sign-in?code=tokenabcdefg")
-    //     })
-    // )
 })
-
-// const subscription = new Subscription();
-
-// onUnmounted(() => {
-//     subscription.unsubscribe();
-// })
 
 function redirectTo(name: string): void {
     const path = name === "tos" ? "/terms" : "/policy";
@@ -90,25 +85,68 @@ function redirectTo(name: string): void {
 }
 
 function signIn(): void {
-    userStore.setName("John Doe");
-    userStore.setEmail("johndoe@gmail.com");
-    userStore.setRole("Administrator");
-    userStore.setPhone("08113276836");
-    userStore.setToken("tokenabcdefg");
+    resetValidation(); 
+    
+    const errorList = loginUseCase.validate(loginReq.value);
+    if (errorList.length < 1) {
+        isLoading.value = true;
 
-    router.push("/");
-}
+        loginUseCase.execute(loginReq.value)
+            .pipe(
+                finalize(() => isLoading.value = false)
+            ).subscribe(
+                {
+                    next: (resp) => {
+                        if (resp.code === 200) {
+                            userStore.setName(resp.result.data.full_name ?? "John Doe");
+                            userStore.setEmail(resp.result.data.email ?? "johndoe@gmail.com");
+                            userStore.setRole("User");
+                            userStore.setPhone(resp.result.data.phone_number ?? "08113276836");
+                            userStore.setToken(resp.result.data.access_token ?? "INVALIDTOKEN");
+                            userStore.setFacebookAccount(true);
 
-function getToken(token: string): void {
-    console.log("get token", token);
-    signIn();
-}
-
-watch(route, (value) => {
-    if (value.query.code) {
-        getToken(value.query.code as string);
+                            router.push("/");
+                        } else {
+                            const message = resp.result?.message ?? resp.message;
+                            NotificationManager.showMessage("Failed to Sign In", message, "error");
+                        }
+                    },
+                    error: (error) => {
+                        NotificationManager.showMessage("Failed to Sign In", error, "error");
+                    }
+                }
+            )
+    } else {
+        validateUsername(errorList);
+        validatePassword(errorList);
     }
-}, {
-    deep: true
-});
+}
+
+function resetValidation(): void {
+    usernameValidation.value = "";
+    passwordValidation.value = "";
+}
+
+function validateUsername(errorList: FieldError[]): void {
+    const filteredError = errorList.filter(data => data.field === "username");
+    usernameValidation.value = filteredError.length > 0 ?
+        filteredError[0].message[0] : "";
+}
+
+function validatePassword(errorList: FieldError[]): void {
+    const filteredError = errorList.filter(data => data.field === "password");
+    passwordValidation.value = filteredError.length > 0 ?
+        filteredError[0].message[0] : "";
+}
+
+function onSuccessSignUp(req: RegisterReq, resp: RegisterResp) {
+    userStore.setName(req.full_name ?? "John Doe");
+    userStore.setEmail(req.email ?? "johndoe@gmail.com");
+    userStore.setRole("User");
+    userStore.setPhone(req.phone_number ?? "08113276836");
+    userStore.setToken(resp.result.data.access_token ?? "INVALIDTOKEN");
+    userStore.setFacebookAccount(false);
+
+    router.push("/facebook");
+}
 </script>

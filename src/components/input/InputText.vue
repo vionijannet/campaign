@@ -11,15 +11,15 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-const props = defineProps(["labelFor", "placeholder", "labelText", "value", "disabled", "validation", "maxlength"]);
-const emit = defineEmits(["type", "leave"]);
+const props = defineProps(["labelFor", "placeholder", "labelText", "modelValue", "disabled", "validation", "maxlength"]);
+const emit = defineEmits(["update:modelValue", "leave"]);
 
 const text = computed({
     get() {
-        return props.value;
+        return props.modelValue;
     },
     set(newValue: string) {
-        emit("type", newValue);
+        emit("update:modelValue", newValue);
     }
 });
 
