@@ -124,6 +124,7 @@ import { Subscription, finalize } from 'rxjs';
 import { NotificationManager } from "@/util/NotificationManager";
 import { LoginHistory } from "@/entity/user/LoginHistory";
 import { GetDashboardUseCase } from "@/usecase/user/GetDashboardUseCase";
+import { useUserStore } from "@/stores/UserStore";
 
 const asyncSubscription: Subscription = new Subscription();
 
@@ -210,8 +211,12 @@ function loadDashboard(): void {
     )
 }
 
+const userStore = useUserStore();
+
 onMounted(() => {
-    loadHistoryLog();
-    loadDashboard();
+    if (userStore.token) {
+        loadHistoryLog();
+        loadDashboard();
+    }
 })
 </script>

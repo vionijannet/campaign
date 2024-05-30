@@ -45,6 +45,7 @@ import { NotificationManager } from '@/util/NotificationManager';
 import PopupAudienceGroup from './PopupAudienceGroup.vue';
 import ModalComponent from '@/components/modal/ModalComponent.vue';
 import { DeleteGroupUseCase } from '@/usecase/audience/DeleteGroupUseCase';
+import { useUserStore } from '@/stores/UserStore';
 
 const asyncSubscription: Subscription = new Subscription();
 
@@ -137,8 +138,12 @@ const isPopupGroupOpen = ref(false);
 const getGroupUseCase: GetGroupUseCase = inject("getGroupUseCase")!;
 const deleteGroupUseCase: DeleteGroupUseCase = inject("deleteGroupUseCase")!;
 
+const userStore = useUserStore();
+
 onMounted(() => {
-    loadData();
+    if (userStore.token) {
+        loadData();
+    }
 })
 
 function loadData(group_name=""): void {

@@ -570,7 +570,9 @@ function removeTemplate(): void {
 }
 
 onMounted(() => {
-    loadData();
+    if (userStore.token) {
+        loadData();
+    }
 })
 
 function loadData(): void {

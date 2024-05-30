@@ -26,6 +26,7 @@ import Search from '@/components/search/Search.vue';
 import { GetAudienceUseCase } from '@/usecase/audience/GetAudienceUseCase';
 import { finalize, Subscription } from 'rxjs';
 import { NotificationManager } from '@/util/NotificationManager';
+import { useUserStore } from '@/stores/UserStore';
 
 const asyncSubscription: Subscription = new Subscription();
 
@@ -61,8 +62,11 @@ const isLoading = ref(false);
 
 const getAudienceUseCase: GetAudienceUseCase = inject("getAudienceUseCase")!;
 
+const userStore = useUserStore();
+
 onMounted(() => {
-    loadData();
+    if (userStore.token)
+        loadData();
 })
 
 function loadData(audience_name=""): void {

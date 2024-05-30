@@ -275,7 +275,7 @@ const isHideInterval = computed(() => userStore.isMetaVerification);
 
 const isPopupAudiensOpen = ref(false);
 const isPopupTemplateOpen = ref(false);
-const isPopupCreateOpen = ref(true);
+const isPopupCreateOpen = ref(false);
 const isLoading = ref(false);
 
 const selectedDate: Ref<string | null> = ref(null);
@@ -332,6 +332,12 @@ const createCampaignReq: Ref<CreateCampaignReq> = ref({
 
 const isMessageTemplateSelected = computed(() => createCampaignReq.value.template_id.length > 0);
 const isMessageBodyNew = computed(() => createCampaignReq.value.message_list.length > 1 || createCampaignReq.value.message_list[0].message.trim().length > 0);
+
+onMounted(() => {
+    if (userStore.token) {
+        isPopupCreateOpen.value = true;
+    }
+})
 
 function backToList(): void {
     router.push("/campaign");

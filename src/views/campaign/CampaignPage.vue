@@ -66,6 +66,7 @@ import { GetCampaignUseCase } from '@/usecase/campaign/GetCampaignUseCase';
 import { NotificationManager } from '@/util/NotificationManager';
 import { DeleteCampaignUseCase } from '@/usecase/campaign/DeleteCampaignUseCase';
 import { SendCampaignUseCase } from '@/usecase/campaign/SendCampaignUseCase';
+import { useUserStore } from '@/stores/UserStore';
 
 const asyncSubscription: Subscription = new Subscription();
 
@@ -173,8 +174,12 @@ function percentageDeliver(data: Campaign): string {
     return "0%"
 }
 
+const userStore = useUserStore();
+
 onMounted(() => {
-    loadCampaign();
+    if (userStore.token) {
+        loadCampaign();
+    }
 })
 
 function loadCampaign(campaign_name="", page_name=""): void {

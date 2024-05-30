@@ -51,6 +51,7 @@ import { DateConverter } from '@/util/DateConverter';
 import ModalComponent from '@/components/modal/ModalComponent.vue';
 import { NotificationManager } from "@/util/NotificationManager";
 import { DeleteTemplateUseCase } from "@/usecase/template/DeleteTemplateUseCase";
+import { useUserStore } from "@/stores/UserStore";
 
 const asyncSubscription: Subscription = new Subscription();
 const selectedTemplateId = ref("");
@@ -128,8 +129,12 @@ function convertCreatedAt(date: string): string {
     return DateConverter.convertDateObjectToDateString(new Date(date));
 }
 
+const userStore = useUserStore();
+
 onMounted(() => {
-    loadTemplate("");
+    if (userStore.token) {
+        loadTemplate("");
+    }
 })
 
 onUnmounted(() => {

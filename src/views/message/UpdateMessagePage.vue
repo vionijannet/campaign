@@ -102,6 +102,7 @@ import { FieldError } from '@/entity/BaseResp';
 import { Message, MessageAttachment } from '@/entity/message/TemplateMessage';
 import { UpdateTemplateReq } from '@/entity/message/UpdateTemplateReq';
 import router from '@/router';
+import { useUserStore } from '@/stores/UserStore';
 import { GetDetailTemplateUseCase } from '@/usecase/template/GetDetailTemplateUseCase';
 import { UpdateTemplateUseCase } from '@/usecase/template/UpdateTemplateUseCase';
 import { UploadAttachmentUseCase } from '@/usecase/template/UploadAttachmentUseCase';
@@ -233,8 +234,12 @@ function setTemplateName(name: string): void {
     templateName.value = name;
 }
 
+const userStore = useUserStore();
+
 onMounted(() => {
-    loadData();
+    if (userStore.token) {
+        loadData();
+    }
 })
 
 function loadData(): void {

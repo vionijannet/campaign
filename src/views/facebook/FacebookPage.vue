@@ -41,6 +41,7 @@ import { FacebookLinked } from '@/entity/facebook/FacebookLinked';
 import { GetFacebookLinkedUseCase } from '@/usecase/facebook/GetFacebookLinkedUseCase';
 import { finalize, Subscription } from 'rxjs';
 import { NotificationManager } from '@/util/NotificationManager';
+import { useUserStore } from '@/stores/UserStore';
 
 const asyncSubscription: Subscription = new Subscription();
 
@@ -110,8 +111,12 @@ function loadData(name=""): void {
     )
 }
 
+const userStore = useUserStore();
+
 onMounted(() => {
-    loadData();
+    if (userStore.token) {
+        loadData();
+    }
 })
 
 function previewAccount(accId: string): void {
