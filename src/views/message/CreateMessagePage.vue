@@ -257,6 +257,7 @@ function createTemplate(): void {
     };
 
     const errorList = createTemplateUseCase.validate(createReq);
+    validateTemplate(errorList);
     if (errorList.length < 1) {
         isLoading.value = true;
     
@@ -279,8 +280,6 @@ function createTemplate(): void {
                     }
                 }
             )
-    } else {
-        validateTemplate(errorList);
     }
 }
 

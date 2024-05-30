@@ -283,6 +283,7 @@ function updateTemplate(): void {
     };
 
     const errorList = updateTemplateUseCase.validate(updateReq);
+    validateTemplate(errorList);
     if (errorList.length < 1) {
         isLoading.value = true;
 
@@ -303,8 +304,6 @@ function updateTemplate(): void {
                 }
             }
         )
-    } else {
-        validateTemplate(errorList);
     }
 }
 
