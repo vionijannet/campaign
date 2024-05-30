@@ -8,24 +8,18 @@
                 <img src="@/assets/logo.png" alt="RepliEm" class="mx-auto w-10">
                 <h1 class="font-extrabold text-4xl text-center">Welcome to RepliEm</h1>
 
-                <!-- <div class="py-8 space-y-4 !pb-2">
-                    <InputText label-for="email" label-text="Email Address" placeholder="example@mail.com" />
+                <div class="py-8 space-y-4 !pb-2">
+                    <InputText label-for="username" label-text="Username" placeholder="Ex: john_doe" />
                     <div>
-                        <InputText label-for="password" label-text="Password" placeholder="********" />
-                        <p class="text-sm underline cursor-pointer py-1" @click="isPopupForgotPasswordShown = true">
+                        <InputPassword label-for="password" label-text="Password" placeholder="********" />
+                        <!-- <p class="text-sm underline cursor-pointer py-1" @click="isPopupForgotPasswordShown = true">
                             Forgot your password?
-                        </p>
+                        </p> -->
                     </div>
                 </div>
 
-                <div class="flex items-center justify-center pb-2">
-                    <vue-recaptcha :sitekey="siteKey" :class="isRecaptchaError ? 'border border-red-500' : ''" class="mx-auto w-[304px] h-[78px]"
-                        @verify="recaptchaVerified" @expire="recaptchaExpired" @fail="recaptchaFailed" @error="recaptchaError" ref="recaptcha">
-                    </vue-recaptcha>
-                </div> -->
-
                 <div class="py-8 space-y-1">
-                    <ButtonBase @click="signIn">Sign In Using Facebook</ButtonBase>
+                    <ButtonBase @click="signIn">Sign In</ButtonBase>
                     <p class="text-xs text-right py-1 text-neutral-500">Not on RepliEm yet?
                         <b class="underline cursor-pointer" @click="isPopupCreateAccountShown = true">Sign Up</b>
                     </p>
@@ -46,14 +40,15 @@
 
 <script setup lang="ts">
 import ButtonBase from "@/components/button/ButtonBase.vue";
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import router from "@/router";
 import ModalComponent from "@/components/modal/ModalComponent.vue";
 import CreateAccount from "./account/CreateAccount.vue";
 import { useUserStore } from "@/stores/UserStore";
 import { initFacebook } from '@/oauth-fb/FacebookAuth';
 import { useRoute } from "vue-router";
-import { Subscription, interval } from "rxjs";
+import InputText from "@/components/input/InputText.vue";
+import InputPassword from "@/components/input/InputPassword.vue";
 
 onMounted(async () => {
     initFacebook(import.meta.env.VITE_APP_ID);
