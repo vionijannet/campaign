@@ -326,7 +326,7 @@ const createCampaignReq: Ref<CreateCampaignReq> = ref({
     }],
     template_id: "",
     interval_min: 0,
-    interval_max: 0,
+    interval_max: 15,
     audience_list: [],
 })
 
@@ -361,7 +361,6 @@ function removeMessage(index: number): void {
 function continueCreateCampaign(data: Page): void {
     // Set to page data
     page.value = data;
-    console.log("s",page.value.page_id);
     // Set page id to req
     createCampaignReq.value.page_id = data.page_id;
     // Close popup
@@ -384,6 +383,7 @@ function removeAudience(index: number): void {
 }
 
 function saveCampaign(): void {
+    resetValidation();
     setMessageOrder();
 
     // Reset message list if template id
@@ -472,6 +472,16 @@ function onSelectedTemplate(template: TemplateMessage): void {
 function removeTemplate(): void {
     createCampaignReq.value.template_id = "";
     templateName.value = "";
+}
+
+function resetValidation(): void {
+    campaignNameValidation.value = "";
+    dateValidation.value = "";
+    timeValidation.value = "";
+    intervalMinValidation.value = "";
+    intervalMaxValidation.value = "";
+    audienceValidation.value = "";
+    templateValidation.value = "";
 }
 
 function validateCampaignName(error: FieldError[]): void {

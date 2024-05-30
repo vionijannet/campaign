@@ -332,7 +332,7 @@ const updateCampaignReq: Ref<UpdateCampaignReq> = ref({
     }],
     template_id: "",
     interval_min: 0,
-    interval_max: 0,
+    interval_max: 15,
     audience_list: [],
 })
 const groupList: Ref<Group[]> = ref([]);
@@ -585,9 +585,9 @@ function loadData(): void {
                         audience_list: [],
                         campaign_id: campaignId as string,
                         campaign_name: resp.result.data.campaign_name ?? "",
-                        interval_max: resp.result.data.interval_max,
-                        interval_min: resp.result.data.interval_min,
-                        is_scheduled: resp.result.data.is_scheduled,
+                        interval_max: resp.result.data.interval_max ?? 15,
+                        interval_min: resp.result.data.interval_min ?? 0,
+                        is_scheduled: resp.result.data.is_scheduled ?? false,
                         message_list: resp.result.data.message_list.map(data => {
                             return {
                                 ...data,
