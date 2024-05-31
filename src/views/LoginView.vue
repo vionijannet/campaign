@@ -104,7 +104,7 @@ function signIn(): void {
                         if (resp.code === 200) {
                             userStore.setName(resp.result.data.full_name ?? "John Doe");
                             userStore.setEmail(resp.result.data.email ?? "johndoe@gmail.com");
-                            userStore.setRole("User");
+                            userStore.setRole(resp.result.data.role ?? "User");
                             userStore.setPhone(resp.result.data.phone_number ?? "08113276836");
                             userStore.setToken(resp.result.data.access_token ?? "INVALIDTOKEN");
                             userStore.setFacebookAccount(true);
@@ -146,7 +146,7 @@ function validatePassword(errorList: FieldError[]): void {
 function onSuccessSignUp(req: RegisterReq, resp: RegisterResp) {
     userStore.setName(req.full_name ?? "John Doe");
     userStore.setEmail(req.email ?? "johndoe@gmail.com");
-    userStore.setRole("User");
+    userStore.setRole(resp.result.data.role ?? "User");
     userStore.setPhone(req.phone_number ?? "08113276836");
     userStore.setToken(resp.result.data.access_token ?? "INVALIDTOKEN");
     userStore.setFacebookAccount(false);

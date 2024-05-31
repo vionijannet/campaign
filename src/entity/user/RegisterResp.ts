@@ -11,5 +11,6 @@ interface ResultRegister extends ResultResp {
         refresh_token: string;
         expired_time: string;
         refresh_expired_time: string;
+        role: string;
     }
 }
