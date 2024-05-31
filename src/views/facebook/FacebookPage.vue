@@ -70,11 +70,11 @@ const tableHeader: Ref<TableHeader[]> = ref([
         name: "Added",
         isSortable: true
     },
-    {
-        key: "action",
-        name: "Action",
-        isSortable: false
-    },
+    // {
+    //     key: "action",
+    //     name: "Action",
+    //     isSortable: false
+    // },
 ] as TableHeader[]);
 const linkedList: Ref<FacebookLinked[]> = ref([]);
 const totalRow: Ref<number> = ref(2);
