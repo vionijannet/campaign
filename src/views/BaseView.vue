@@ -152,6 +152,8 @@ function onLeaveShowOption(): void {
 onMounted(() => {
     if (token.value.trim().length < 1) {
         signOut();
+    } else if (store.isAlreadyAddFacebook) {
+        router.push("/facebook");
     }
 })
 

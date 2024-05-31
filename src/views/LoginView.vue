@@ -74,7 +74,11 @@ const loginUseCase: LoginUseCase = inject("loginUseCase")!;
 
 onMounted(() => {
     if (userStore.token.trim().length > 0) {
-        router.push("/");
+        if (userStore.isAlreadyAddFacebook) {
+            router.push("/");
+        } else {
+            router.push("/facebook");
+        }
     }
 })
 

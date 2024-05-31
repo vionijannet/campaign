@@ -16,7 +16,7 @@ export class BaseService {
                 const userStore = useUserStore();
 
                 if (config.headers && userStore.token) {
-                    config.headers["Authorization"] = userStore.token;
+                    config.headers["Authorization"] = `Bearer ${userStore.token}`;
                     // TODO: Remove config by username and password
                     // config.headers["Username"] = "user_admin";
                     // config.headers["Password"] = "6e824d43504ae0934548679a50ec8123";

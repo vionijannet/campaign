@@ -32,6 +32,8 @@ import { RegisterUseCase } from "@/usecase/user/RegisterUseCase";
 import { FieldError } from "@/entity/BaseResp";
 import { finalize } from "rxjs";
 import { NotificationManager } from "@/util/NotificationManager";
+import { useUserStore } from "@/stores/UserStore";
+import { useRouter } from "vue-router";
 
 const registerReq: Ref<RegisterReq> = ref({
     email: "",
@@ -124,4 +126,18 @@ function validatePhone(errorList: FieldError[]): void {
     phoneValidation.value = filteredError.length > 0 ?
         filteredError[0].message[0] : "";
 }
+
+const router = useRouter();
+
+const userStore = useUserStore();
+
+onMounted(() => {
+    if (userStore.token) {
+        if (userStore.isAlreadyAddFacebook) {
+            router.push("/")
+        } else {
+            router.push("/facebook");
+        }
+    }
+})
 </script>

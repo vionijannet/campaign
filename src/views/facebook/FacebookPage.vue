@@ -2,7 +2,7 @@
     <div class="absolute -top-2 right-0 my-6 mx-8">
         <div class="flex space-x-4">
             <Search />
-            <ButtonBase class="flex !w-fit">
+            <ButtonBase class="flex !w-fit" @click="redirectToAddAccount">
                 <img src="../../assets/icon-create.svg" alt="Create">
                 <span class="ml-2">Add Account</span>
             </ButtonBase>
@@ -34,7 +34,7 @@
 import ButtonBase from '@/components/button/ButtonBase.vue';
 import TableExpandComponent from '@/components/table/TableExpandComponent.vue';
 import router from "@/router";
-import { inject, onMounted, ref, type Ref } from 'vue';
+import { inject, onMounted, ref, watch, type Ref } from 'vue';
 import { SearchCriteria, TableHeader } from '@/components/ComponentEntity';
 import Search from '@/components/search/Search.vue';
 import { FacebookLinked } from '@/entity/facebook/FacebookLinked';
@@ -42,6 +42,8 @@ import { GetFacebookLinkedUseCase } from '@/usecase/facebook/GetFacebookLinkedUs
 import { finalize, Subscription } from 'rxjs';
 import { NotificationManager } from '@/util/NotificationManager';
 import { useUserStore } from '@/stores/UserStore';
+import { useRoute } from 'vue-router';
+import { GetAccountUseCase } from '@/usecase/facebook/GetAccountUseCase';
 
 const asyncSubscription: Subscription = new Subscription();
 
@@ -80,6 +82,9 @@ const totalRow: Ref<number> = ref(2);
 const isLoading = ref(false);
 
 const getFacebookLinkedUseCase: GetFacebookLinkedUseCase = inject("getFacebookLinkedUseCase")!;
+const getAccountUseCase: GetAccountUseCase = inject("getAccountUseCase")!;
+
+const route = useRoute();
 
 function loadData(name=""): void {
     isLoading.value = true;
@@ -111,11 +116,21 @@ function loadData(name=""): void {
     )
 }
 
+function redirectToAddAccount(): void {
+    const url = import.meta.env.VITE_API_URL + "/oauth2/authorization/facebook";
+    window.location.href = url;
+    // window.open(url, "add account", "width=200,height=200")
+}
+
 const userStore = useUserStore();
 
 onMounted(() => {
     if (userStore.token) {
         loadData();
+
+        if (route.query.code) {
+            getNewFacebookPage(route.query.code as string)
+        }
     }
 })
 
@@ -134,4 +149,37 @@ function deleteAccount(accId: string): void {
 function syncAccount(accId: string): void {
     console.log("sync", accId);
 }
+
+function getNewFacebookPage(token: string): void {
+    asyncSubscription.add(
+        getAccountUseCase.execute({
+            code: token
+        }).subscribe(
+            {
+                next: (resp) => {
+                    if (resp.code === 200) {
+                        // Set store
+                        userStore.setFacebookAccount(true);
+                        // Reload data in table
+                        loadData();
+                    } else {
+                        const message = resp.result?.message ?? resp.message;
+                        NotificationManager.showMessage("Failed to Fetch New Page", message, "error");
+                    }
+                },
+                error: (error) => {
+                    NotificationManager.showMessage("Network Error", error, "error");
+                }
+            }
+        )
+    )
+}
+
+watch(route, (value) => {
+    if (value.query.code) {
+        getNewFacebookPage(value.query.code as string);
+    }
+}, {
+    deep: true
+});
 </script>

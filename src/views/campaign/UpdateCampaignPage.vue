@@ -571,7 +571,11 @@ function removeTemplate(): void {
 
 onMounted(() => {
     if (userStore.token) {
-        loadData();
+        if (!userStore.isAlreadyAddFacebook) {
+            router.push("/facebook");
+        } else {
+            loadData();
+        }
     }
 })
 

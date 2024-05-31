@@ -335,7 +335,11 @@ const isMessageBodyNew = computed(() => createCampaignReq.value.message_list.len
 
 onMounted(() => {
     if (userStore.token) {
-        isPopupCreateOpen.value = true;
+        if (!userStore.isAlreadyAddFacebook) {
+            router.push("/facebook");
+        } else {
+            isPopupCreateOpen.value = true;
+        }
     }
 })
 

@@ -37,10 +37,11 @@ import { UpdateGroupUseCase, UpdateGroupUseCaseImpl } from './usecase/audience/U
 import { DeleteGroupUseCase, DeleteGroupUseCaseImpl } from './usecase/audience/DeleteGroupUseCase';
 import { UploadAttachmentUseCase, UploadAttachmentUseCaseImpl } from './usecase/template/UploadAttachmentUseCase';
 import { initFacebook } from './oauth-fb/FacebookAuth';
+import { GetAccountUseCase, GetAccountUseCaseImpl } from './usecase/facebook/GetAccountUseCase';
 
 const axiosInstance: AxiosInstance = axios.create({    
     baseURL: import.meta.env.VITE_API_URL,
-    timeout: 5000
+    timeout: 60000
 });
 
 onMounted(async() => {
@@ -84,6 +85,8 @@ provide("getPageDetailUseCase", getPageDetail);
 const facebookService: FacebookService = new FacebookServiceImpl(axiosInstance);
 const getFacebookLinked: GetFacebookLinkedUseCase = new GetFacebookLinkedUseCaseImpl(facebookService);
 provide("getFacebookLinkedUseCase", getFacebookLinked);
+const getAccount: GetAccountUseCase = new GetAccountUseCaseImpl(facebookService);
+provide("getAccountUseCase", getAccount);
 
 const audienceService: AudienceService = new AudienceServiceImpl(axiosInstance);
 const getAudience: GetAudienceUseCase = new GetAudienceUseCaseImpl(audienceService);

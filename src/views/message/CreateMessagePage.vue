@@ -106,12 +106,13 @@ import { FieldError } from '@/entity/BaseResp';
 import { CreateTemplateReq, NewMessage } from '@/entity/message/CreateTemplateReq';
 import { Message, MessageAttachment } from '@/entity/message/TemplateMessage';
 import router from '@/router';
+import { useUserStore } from '@/stores/UserStore';
 import { CreateTemplateUseCase } from '@/usecase/template/CreateTemplateUseCase';
 import { UploadAttachmentUseCase } from '@/usecase/template/UploadAttachmentUseCase';
 import { NotificationManager } from '@/util/NotificationManager';
 import { TextFormatter } from '@/util/TextFormatter';
 import { finalize } from 'rxjs';
-import { inject, ref, type Ref } from 'vue';
+import { inject, onMounted, ref, type Ref } from 'vue';
 
 const createTemplateUseCase: CreateTemplateUseCase = inject("createTemplateUseCase")!;
 const uploadAttachmentUseCase: UploadAttachmentUseCase = inject("uploadAttachmentUseCase")!;
@@ -303,4 +304,14 @@ function validateTemplate(error: FieldError[]): void {
     templateValidation.value = filteredError.length > 0 ?
         filteredError[0].message[0] : "";
 }
+
+const userStore = useUserStore();
+
+onMounted(() => {
+    if (userStore.token) {
+        if (!userStore.isAlreadyAddFacebook) {
+            router.push("/facebook");
+        }
+    }
+})
 </script>

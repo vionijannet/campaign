@@ -27,6 +27,7 @@ import { GetAudienceUseCase } from '@/usecase/audience/GetAudienceUseCase';
 import { finalize, Subscription } from 'rxjs';
 import { NotificationManager } from '@/util/NotificationManager';
 import { useUserStore } from '@/stores/UserStore';
+import { useRouter } from 'vue-router';
 
 const asyncSubscription: Subscription = new Subscription();
 
@@ -64,9 +65,16 @@ const getAudienceUseCase: GetAudienceUseCase = inject("getAudienceUseCase")!;
 
 const userStore = useUserStore();
 
+const router = useRouter();
+
 onMounted(() => {
-    if (userStore.token)
-        loadData();
+    if (userStore.token) {
+        if (!userStore.isAlreadyAddFacebook) {
+            router.push("/facebook");
+        } else {
+            loadData();
+        }
+    }
 })
 
 function loadData(audience_name=""): void {

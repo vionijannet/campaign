@@ -46,6 +46,7 @@ import PopupAudienceGroup from './PopupAudienceGroup.vue';
 import ModalComponent from '@/components/modal/ModalComponent.vue';
 import { DeleteGroupUseCase } from '@/usecase/audience/DeleteGroupUseCase';
 import { useUserStore } from '@/stores/UserStore';
+import { useRouter } from 'vue-router';
 
 const asyncSubscription: Subscription = new Subscription();
 
@@ -140,9 +141,15 @@ const deleteGroupUseCase: DeleteGroupUseCase = inject("deleteGroupUseCase")!;
 
 const userStore = useUserStore();
 
+const router = useRouter();
+
 onMounted(() => {
     if (userStore.token) {
-        loadData();
+        if (!userStore.isAlreadyAddFacebook) {
+            router.push("/facebook");
+        } else {
+            loadData();
+        }
     }
 })
 

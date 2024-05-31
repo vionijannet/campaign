@@ -125,6 +125,7 @@ import { NotificationManager } from "@/util/NotificationManager";
 import { LoginHistory } from "@/entity/user/LoginHistory";
 import { GetDashboardUseCase } from "@/usecase/user/GetDashboardUseCase";
 import { useUserStore } from "@/stores/UserStore";
+import router from "@/router";
 
 const asyncSubscription: Subscription = new Subscription();
 
@@ -215,8 +216,12 @@ const userStore = useUserStore();
 
 onMounted(() => {
     if (userStore.token) {
-        loadHistoryLog();
-        loadDashboard();
+        if (!userStore.isAlreadyAddFacebook) {
+            router.push("/facebook");
+        } else {
+            loadHistoryLog();
+            loadDashboard();
+        }
     }
 })
 </script>

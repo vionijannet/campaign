@@ -133,7 +133,11 @@ const userStore = useUserStore();
 
 onMounted(() => {
     if (userStore.token) {
-        loadTemplate("");
+        if (!userStore.isAlreadyAddFacebook) {
+            router.push("/facebook");
+        } else {
+            loadTemplate("");
+        }
     }
 })
 

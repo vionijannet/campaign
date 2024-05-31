@@ -92,7 +92,7 @@
 <script setup lang="ts">
 import { SearchCriteria, TableHeader } from '@/components/ComponentEntity';
 import { useUserStore } from '@/stores/UserStore';
-import { Ref, computed, inject, onUnmounted, ref } from 'vue';
+import { Ref, computed, inject, onMounted, onUnmounted, ref } from 'vue';
 import { LoginHistory } from "@/entity/user/LoginHistory";
 import TableExpandComponent from '@/components/table/TableExpandComponent.vue';
 import ButtonBase from '@/components/button/ButtonBase.vue';
@@ -100,11 +100,14 @@ import { Subscription, finalize } from 'rxjs';
 import _default from 'vue-datepicker-next';
 import { GetLoginHistoryUseCase } from '@/usecase/user/GetLoginHistoryUseCase';
 import { NotificationManager } from '@/util/NotificationManager';
+import { useRouter } from 'vue-router';
 
 const userStore = useUserStore();
 const name = computed(() => userStore.name);
 const email = computed(() => userStore.email);
 const phone = computed(() => userStore.phone);
+
+const router = useRouter();
 
 const tableHeader: TableHeader[] = [
     {
@@ -192,6 +195,16 @@ function loadHistoryLog(): void {
         )
     )
 }
+
+onMounted(() => {
+    if (userStore.token) {
+        if (!userStore.isAlreadyAddFacebook) {
+            router.push("/facebook");
+        }
+    } else {
+        router.push("/sign-in");
+    }
+})
 
 onUnmounted(() => {
     asyncSubscription.unsubscribe();
