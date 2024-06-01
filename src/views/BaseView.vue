@@ -108,7 +108,7 @@
                 </nav>
 
             </section>
-            <section class="space-y-2" v-if="isAlreadyLinkedFacebook">
+            <section class="space-y-2">
                 <p class="px-4 text-gray-400">Settings</p>
                 <nav>
                     <router-link to="/account" class="flex items-center py-3 px-4 hover:bg-sky-100 space-x-2 hover:rounded-xl group transition duration-0 font-semibold" exact-active-class="text-blue-primary">

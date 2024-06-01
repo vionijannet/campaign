@@ -197,11 +197,7 @@ function loadHistoryLog(): void {
 }
 
 onMounted(() => {
-    if (userStore.token) {
-        if (!userStore.isAlreadyAddFacebook) {
-            router.push("/facebook");
-        }
-    } else {
+    if (!userStore.token) {
         router.push("/sign-in");
     }
 })
