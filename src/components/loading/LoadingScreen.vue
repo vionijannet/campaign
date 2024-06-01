@@ -5,7 +5,7 @@
                 <slot>
                     <div class="flex flex-col space-y-2 items-center justify-center w-full h-full">
                         <div class="animate-pulse rounded-full bg-slate-300 h-14 w-14"></div>
-                        <p class="!animate-none">Loading...</p>
+                        <p class="!animate-none text-2xl font-medium pt-2">Loading...</p>
                     </div>
                 </slot>
             </div>

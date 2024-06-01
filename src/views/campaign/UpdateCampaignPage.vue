@@ -471,8 +471,6 @@ function saveCampaign(): void {
     updateCampaignReq.value.scheduled_date = updateCampaignReq.value.is_scheduled ? 
         `${selectedDate.value} ${selectedTime.value}` : "";
 
-    console.log("b4", updateCampaignReq.value);
-    
     const validationList = updateCampaignUseCase.validate(updateCampaignReq.value);
     if (validationList.length < 1) {
         updateCampaignUseCase.execute(updateCampaignReq.value)

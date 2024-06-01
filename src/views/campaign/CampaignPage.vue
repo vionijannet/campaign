@@ -128,8 +128,10 @@ function manualTriggerCampaign(campaignId: string): void {
         }).subscribe(
             {
                 next: (resp) => {
-                    // TODO: Do something on success / error send campaign manual to facebook 
-                    console.log(resp);
+                    const message = resp.result?.message ?? resp.message;
+                    const title = resp.code === 200 ?
+                        "Successfully Send Campaign" : "Failed to Send Campaign";
+                    NotificationManager.showMessage(title, message);
                 },
                 error: (error) => {
                     NotificationManager.showMessage("Network Error", error, "error");

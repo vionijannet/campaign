@@ -5,19 +5,22 @@
             <h1 class="font-extrabold text-4xl text-center">Welcome to RepliEm</h1>
 
             <div class="py-8 space-y-4">
-                <InputText v-model="registerReq.username" label-for="username" label-text="Username"
+                <InputText :disabled="isLoading" v-model="registerReq.username" label-for="username" label-text="Username"
                     placeholder="Example: johndoe123" :validation="usernameValidation" />
-                <InputText v-model="registerReq.full_name" label-for="fullname" label-text="Full Name"
+                <InputText :disabled="isLoading" v-model="registerReq.full_name" label-for="fullname" label-text="Full Name"
                     placeholder="John Doe" :validation="fullNameValidation" />
-                <InputText v-model="registerReq.email" label-for="email" label-text="Email"
+                <InputText :disabled="isLoading" v-model="registerReq.email" label-for="email" label-text="Email"
                     placeholder="example@mail.com" :validation="emailValidation" />
-                <InputPassword v-model="registerReq.password" label-for="password" label-text="Password"
+                <InputPassword :disabled="isLoading" v-model="registerReq.password" label-for="password" label-text="Password"
                     placeholder="********" :validation="passwordValidation" />
-                <InputText v-model="registerReq.phone_number" label-for="phone" label-text="Phone Number"
+                <InputText :disabled="isLoading" v-model="registerReq.phone_number" label-for="phone" label-text="Phone Number"
                     placeholder="Example: 089876478291" :validation="phoneValidation" />
             </div>
 
-            <ButtonBase @click="signUp">Sign Up</ButtonBase>
+            <ButtonBase @click="signUp" :disabled="isLoading">
+                <span v-if="isLoading">Loading...</span>
+                <span v-else>Sign Up</span>
+            </ButtonBase>
         </div>
     </div>
 </template>
@@ -49,7 +52,7 @@ const passwordValidation = ref("");
 const phoneValidation = ref("");
 const usernameValidation = ref("");
 
-const isLoading = ref(true);
+const isLoading = ref(false);
 
 const emit = defineEmits(["success"]);
 

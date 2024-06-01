@@ -38,6 +38,8 @@
     <ModalComponent v-if="isPopupCreateAccountShown" @close="isPopupCreateAccountShown = false">
         <CreateAccount @success="onSuccessSignUp"></CreateAccount>
     </ModalComponent>
+
+    <LoadingScreen v-if="isLoading" />
 </template>
 
 <script setup lang="ts">
@@ -56,6 +58,7 @@ import { finalize } from "rxjs";
 import { NotificationManager } from "@/util/NotificationManager";
 import { RegisterResp } from "@/entity/user/RegisterResp";
 import { RegisterReq } from "@/entity/user/RegisterReq";
+import LoadingScreen from "@/components/loading/LoadingScreen.vue";
 
 const isPopupCreateAccountShown = ref(false);
 

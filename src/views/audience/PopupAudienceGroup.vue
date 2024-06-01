@@ -4,17 +4,17 @@
     </h1>
     <hr class="w-full" />
     <div class="pt-4 pb-2 space-y-4 px-4">
-        <InputText :disabled="props.type === 'display'" :value="groupName" label-for="group-name" label-text="Group Name"
+        <InputText :disabled="props.type === 'display' || isLoading" :value="groupName" label-for="group-name" label-text="Group Name"
             placeholder="Group Name Goes Here" @type="setGroupName" :validation="groupNameValidation" />
         <div class="space-y-1">
             <label for="page" class="font-semibold text-base">Page</label>
-            <InputDropdown :placeholder="'Select page'" :selected="selectedPage" :disabled="isPageDisabled"
+            <InputDropdown :placeholder="'Select page'" :selected="selectedPage" :disabled="isPageDisabled || isLoading"
                 :id="'page'" @change="onChangePage($event.key)" :option-list="pageOptionList" :validation="pageValidation">
             </InputDropdown>
         </div>
         <div class="space-y-1">
             <label for="audience" class="font-semibold text-base">Audience</label>
-            <Multiselect :options="audienceList" mode="tags" v-model="selectedAudience" placeholder="Select audience" :disabled="selectedPage.length < 1 || props.type === 'display'"
+            <Multiselect :options="audienceList" mode="tags" v-model="selectedAudience" placeholder="Select audience" :disabled="selectedPage.length < 1 || props.type === 'display' || isLoading"
                 :class="[selectedPage.length < 1 || props.type === 'display' ? '!cursor-not-allowed' : '!cursor-pointer', audienceValidation.length > 0 ? 'border-red-500' : '']"
                 :classes="{
                     container: 'relative mx-auto w-full flex items-center justify-end box-border border border-gray-300 rounded-lg bg-white text-base leading-snug outline-none py-1',
@@ -72,28 +72,19 @@
                 }"
             ></Multiselect>
             <p class="text-sm text-red-500" v-if="audienceValidation.length > 0">{{ audienceValidation }}</p>
-            <!-- <InputDropdown :placeholder="'Select audience'" :selected="selectedAudience" :
-                :id="'audience'" @change="onChangeAudience" :option-list="audienceList">
-            </InputDropdown> -->
         </div>
         <div class="space-y-1 flex flex-col pb-2">
             <label for="color" class="font-semibold text-base">Color</label>
-            <input type="color" id="color" name="color" class="h-12" v-model="selectedColor" :title="selectedColor" :disabled="props.type === 'display'" />
+            <input type="color" id="color" name="color" class="h-12" v-model="selectedColor" :title="selectedColor" :disabled="props.type === 'display' || isLoading" />
         </div>
-        <!-- <div class="flex space-x-2 items-center py-2">
-            <label for="publish" tabindex="0" :aria-checked="isPublish" class="peer relative inline-flex flex-shrink-0 cursor-pointer transition-colors ease-in-out duration-200 border-2 border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 rounded-full" :class="{'bg-blue-primary': isPublish, 'bg-gray-100': !isPublish}">
-                <input type="checkbox" name="publish" id="publish" class="hidden" v-model="isPublish" />
-                <span aria-hidden="true" class="rounded-full w-5 h-5 flex items-center justify-center text-gray-400 text-xs"></span>
-                <span aria-hidden="true" class="rounded-full w-5 h-5 flex items-center justify-center text-gray-400 text-xs"></span>
-                <span aria-hidden="true" class="absolute transform transition ease-in-out duration-200 h-5 w-5 rounded-full bg-white shadow flex items-center justify-center text-xs" :class="{'translate-x-full text-blue-primary': isPublish, 'translate-x-0 text-gray-400': !isPublish}"></span>
-            </label>
-            <span>Publish</span>
-        </div> -->
     </div>
     <hr class="pt-2" v-if="props.type !== 'display'" />
     <div class="w-full flex justify-end items-center space-x-4 pt-6 pb-3 pr-4" v-if="props.type !== 'display'">
-        <ButtonBase type="error" class="!w-32" @click="backToList">Back</ButtonBase>
-        <ButtonBase class="!w-32" @click="submitGroup">Save</ButtonBase>
+        <ButtonBase type="error" class="!w-32" @click="backToList" :disabled="isLoading">Back</ButtonBase>
+        <ButtonBase class="!w-32" @click="submitGroup" :disabled="isLoading">
+            <span v-if="isLoading"></span>
+            <span v-else>Save</span>
+        </ButtonBase>
     </div>
 </template>
 

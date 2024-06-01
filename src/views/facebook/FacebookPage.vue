@@ -16,16 +16,6 @@
                     {{ slotProps.facebook_linked_name }}
                 </div>
             </template>
-            <template #action="{slotProps}">
-                <div class="flex items-center space-x-4" v-if="slotProps.is_deleted !== null && slotProps.is_deleted === false">
-                    <img src="../../assets/preview.svg" title="Preview" alt="Preview" class="cursor-pointer" @click="previewAccount(slotProps.accountId)" />
-                    <img src="../../assets/trash.svg" title="Delete" alt="Delete" class="cursor-pointer" @click="deleteAccount(slotProps.accountId)" />
-                    <img src="../../assets/update.svg" title="Update" alt="Update" class="cursor-pointer" @click="redirectToUpdateAccount(slotProps.accountId)" />
-                    <div class="w-5 h-5 bg-emerald-400 rounded-full flex justify-center items-center cursor-pointer ">
-                        <img src="../../assets/sync.svg" title="Sync" alt="Sync" class="w-3 rotate-90" @click="syncAccount(slotProps.accountId)" />
-                    </div>
-                </div>
-            </template>
         </TableExpandComponent>
     </div>
 </template>
@@ -70,11 +60,6 @@ const tableHeader: Ref<TableHeader[]> = ref([
         name: "Added",
         isSortable: true
     },
-    // {
-    //     key: "action",
-    //     name: "Action",
-    //     isSortable: false
-    // },
 ] as TableHeader[]);
 const linkedList: Ref<FacebookLinked[]> = ref([]);
 const totalRow: Ref<number> = ref(2);
@@ -134,22 +119,6 @@ onMounted(() => {
     }
 })
 
-function previewAccount(accId: string): void {
-    console.log("preview account", accId);
-}
-
-function redirectToUpdateAccount(accId: string): void {
-    console.log("update", accId);
-}
-
-function deleteAccount(accId: string): void {
-    console.log("delete", accId);
-}
-
-function syncAccount(accId: string): void {
-    console.log("sync", accId);
-}
-
 function getNewFacebookPage(token: string): void {
     asyncSubscription.add(
         getAccountUseCase.execute({
@@ -160,6 +129,8 @@ function getNewFacebookPage(token: string): void {
                     if (resp.code === 200) {
                         // Set store
                         userStore.setFacebookAccount(true);
+                        // Route to facebook
+                        router.push("/facebook");
                         // Reload data in table
                         loadData();
                     } else {
