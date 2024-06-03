@@ -10,10 +10,10 @@
 
                 <div class="py-8 space-y-4 !pb-2">
                     <InputText v-model="loginReq.username" label-for="username" label-text="Username"
-                        placeholder="Ex: john_doe" :validation="usernameValidation" />
+                        placeholder="Ex: john_doe" :validation="usernameValidation" @enter="signIn" />
                     <div>
                         <InputPassword v-model="loginReq.password" label-for="password" label-text="Password"
-                            placeholder="********" :validation="passwordValidation" />
+                            placeholder="********" :validation="passwordValidation" @enter="signIn" />
                         <!-- <p class="text-sm underline cursor-pointer py-1" @click="isPopupForgotPasswordShown = true">
                             Forgot your password?
                         </p> -->
