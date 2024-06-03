@@ -66,7 +66,7 @@ export class UserServiceImpl extends BaseService implements UserService {
     }
 
     login(data: LoginReq): Observable<LoginResp> {
-        return this.httpPost("/auth/login/fb", TextFormatter.convertEmptyPropertyToNull(data))
+        return this.httpPost("/auth/login", TextFormatter.convertEmptyPropertyToNull(data))
             .pipe(
                 map((response) => {
                     const tempResp: any = response;
