@@ -112,7 +112,7 @@ function signIn(): void {
                             userStore.setToken(resp.result.data.access_token ?? "INVALIDTOKEN");
                             userStore.setFacebookAccount(true);
 
-                            router.push("/");
+                            router.push({ path: "/", name: "Dashboard" });
                         } else {
                             const message = resp.result?.message ?? resp.message;
                             NotificationManager.showMessage("Failed to Sign In", message, "error");

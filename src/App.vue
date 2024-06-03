@@ -36,17 +36,12 @@ import { AddGroupUseCase, AddGroupUseCaseImpl } from './usecase/audience/AddGrou
 import { UpdateGroupUseCase, UpdateGroupUseCaseImpl } from './usecase/audience/UpdateGroupUseCase';
 import { DeleteGroupUseCase, DeleteGroupUseCaseImpl } from './usecase/audience/DeleteGroupUseCase';
 import { UploadAttachmentUseCase, UploadAttachmentUseCaseImpl } from './usecase/template/UploadAttachmentUseCase';
-import { initFacebook } from './oauth-fb/FacebookAuth';
 import { GetAccountUseCase, GetAccountUseCaseImpl } from './usecase/facebook/GetAccountUseCase';
 
 const axiosInstance: AxiosInstance = axios.create({    
     baseURL: import.meta.env.VITE_API_URL,
     timeout: 60000
 });
-
-onMounted(async() => {
-    initFacebook(import.meta.env.VITE_APP_ID);
-})
 
 const templateService: TemplateService = new TemplateServiceImpl(axiosInstance);
 const getTemplate: GetTemplateUseCase = new GetTemplateUseCaseImpl(templateService);
